@@ -1,0 +1,22 @@
+{
+  "name": "womenshealthapp",
+  "version": "1.0.0",
+  "description": "Spring 2019 SD&D Project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neemay/WomensHealthApp.git"
+  },
+  "author": "Yarden Ne'eman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neemay/WomensHealthApp/issues"
+  },
+  "homepage": "https://github.com/neemay/WomensHealthApp#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
