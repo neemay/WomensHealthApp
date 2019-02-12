@@ -17,11 +17,17 @@ h2 {
   font-family: 'Patua One', cursive;
 }
 
+h3 {
+  font-family: 'Patua One', cursive;
+  margin: 0;
+}
+
 header {
   background-color: white;
   margin: 0px;
   padding: 10px;
   font-family: 'Patua One', cursive;
+  height: 60px;
 }
 
 .logo {
@@ -37,6 +43,10 @@ header {
 .picture_container {
   margin: auto;
   width: 200px;
+}
+
+.picture_container:hover {
+  background-color: pink;
 }
 
 p {
@@ -56,4 +66,24 @@ p {
 
 .blue {
   color: blue;
+}
+
+.success {
+  float: right;
+}
+
+.title {
+  float: left;
+}
+
+.row {
+  margin: 0px;
+}
+
+#error {
+  display: none;
+}
+
+#logInMessage {
+  display: none;
 }
