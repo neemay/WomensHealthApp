@@ -11,12 +11,49 @@
           <h1>Welcome to Obie!</h1>
           <div>
             <button class="btn btn-primary">Log In</button>
-            <button class="btn btn-primary">Sign up</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#createAccountModal">Sign up</button>
           </div>
         </div>
       </div>
     </div>
-
+    <!--  Modals  -->
+    <div class="modal fade" id="createAccountModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Sign up</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container">
+              <div>
+                <div class="form-group">
+                  <label for="name">Preferred Name:</label>
+                  <input id="name" ng-model="createName" type="text"  class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="username">Email:</label>
+                  <input id="username" ng-model="createEmail" type="text" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input id="password" ng-model="createPassowrd" type="password" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label for="confirm">Confirm Password:</label>
+                  <input id="confirm" ng-model="confirmPassword" type="password" class="form-control" />
+                </div>
+              </div>
+              <div ng-show="passwordError" class="error">Error: Passwords do not match</div>
+            </form>
+            <button type="button" class="btn btn-primary" id="createAccount" ng-click="createAccount()">Create</button>
+            <button type="button" class="btn btn-danger" id="cancel" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <% include ../templates/footer.ejs %>
     <script src="resources/js/index.js"></script>
   </body>
