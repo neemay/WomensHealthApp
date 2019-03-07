@@ -1,7 +1,40 @@
-.bg-light {
-  background-color: lavender!important;
+body {
+  background-color: #e8ecef;
 }
 
 .modal-body .form-container {
   padding: 10px;
+}
+
+.page-header {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.panel-container {
+  margin-top: 20px;
+}
+
+.panel {
+  margin-bottom: 20px;
+}
+
+.panel-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 10px;
+}
+
+.panel-body {
+  background-color: white;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 20px;
+}
+
+.btn {
+  margin-bottom: 10px;
+  display: block;
 }

@@ -7,74 +7,149 @@
   <body ng-controller="controller">
 
     <% include ../templates/header.ejs %>
-
-
     <!-- Insert Body here -->
-    <div class="container">
-      <div class="row">
-        <div align="center" class="offset-md-2 col-md-8">
-          <h2>MyName's Profile</h2>
+    <div class="container-fluid">
+      <div class="offset-md-2 col-md-8 page-header">
+        <h2>MyName's Profile</h2>
+      </div>
+      <div class="row panel-container">
+        <div class="offset-sm-1 col-sm-10 offset-md-0 col-md-3 offset-lg-0 col-lg-3">
+          <div class="panel">
+            <div class="panel-header">
+              My information
+            </div>
+            <div class="panel-body">
+              Info goes here
+              <button class="btn btn-primary">Edit preferred name</button>
+            </div>
+          </div>
         </div>
+        <div class="offset-sm-1 col-sm-10 offset-md-0 col-md-6 offset-lg-0 col-lg-6">
+          <div class="panel">
+            <div class="panel-header">
+              My reminders
+            </div>
+            <div class="panel-body">
+              <strong>Birth control reminders</strong>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="bcDaily">
+                <label class="custom-control-label" for="bcDaily">Birth control daily reminder</label>
+              </div>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="bcRefill">
+                <label class="custom-control-label" for="bcRefill">Birth control refill reminder</label>
+              </div>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="bcRenewal">
+                <label class="custom-control-label" for="bcRenewal">Birth control renewal reminder</label>
+              </div>
+              <strong>Yearly appointment reminders</strong>
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="apptReminder">
+                <label class="custom-control-label" for="apptReminder">
+                  Remind me to make an appointment every 
+                  <select>
+                    <option>January</option>
+                    <option>February</option>
+                    <option>March</option>
+                    <option>April</option>
+                    <option>May</option>
+                    <option>June</option>
+                    <option>July</option>
+                    <option>August</option>
+                    <option>September</option>
+                    <option>October</option>
+                    <option>November</option>
+                    <option>December</option>
+                  </select>
+                </label>
+              </div>
+              <button class="btn btn-primary">Edit reminder preferences</button>
+            </div>
+          </div>
+        </div>
+        <div class="offset-sm-1 col-sm-10 offset-md-0 col-md-3 offset-lg-0 col-lg-3">
+          <div class="panel">
+            <div class="panel-header">
+              My actions
+            </div>
+            <div class="panel-body">
+              <strong>My period</strong>
+                <button class="btn btn-primary">Record start/end of period</button>
+                <button class="btn btn-primary">Add period symptoms</button>
+              <strong>My perscription</strong>
+                <button class="btn btn-primary">Change/add prescription</button>
+                <button class="btn btn-primary">Add prescription symptoms</button>
+            </div>
+          </div>
+        </div>  
       </div>
     </div>
 	
+<!--
 	<div class="container">
-		<div class="row">
-			<div class="col-md-3">
-				<table class="table table-borderless">
-					<thead class="thead-light">
-						<tr>
-							<th>My information</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Information here</td>
-						</tr>
-						<tr>
-							<td><button type="'button" class="btn btn-primary">Edit preferred name</button></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="col-md-6">
-				<table class="table table-borderless">
-					<thead class="thead-light">
-						<tr>
-							<th>My reminders</th>
-						</tr>
-					</thead>
-					<tbody>
-						<td>Reminders go here</td>
-					</tbody>
-				</table>
-			</div>
-			<div class="col-md-3">
-				<table class="table table-borderless">
-					<thead class="thead-light">
-						<tr>
-							<th>My actions<th>
-						</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td>My period</td>
-					</tr>
-					<tr>
-						<td><button type="'button" class="btn btn-primary">Record start/end of period</button></td>
-					</tr>
-					<tr>
-						<td><button type="'button" class="btn btn-primary">Add period symptoms</button></td>
-					</tr>
-					<tr>
-						<td>My prescription<td>
-					</tr>
-						<td><button type="'button" class="btn btn-primary">Change/add prescription</button></td>
-					</tr>
-					<tr>
-						<td><button type="'button" class="btn btn-primary">Add prescription symptoms</button></td>
-					</tr>	
-	</div>
+      <div class="row">
+		<div class="col-md-3">
+          <table class="table table-borderless">
+		    <thead class="thead-light">
+		      <tr>
+				<th>My information</th>
+		      </tr>
+		    </thead>
+            <tbody>
+              <tr>
+                <td>Information here</td>
+              </tr>
+              <tr>
+                <td><button type="'button" class="btn btn-primary">Edit preferred name</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <table class="table table-borderless">
+            <thead class="thead-light">
+              <tr>
+                <th>My reminders</th>
+              </tr>
+            </thead>
+            <tbody>
+              <td>Reminders go here</td>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-3">
+          <table class="table table-borderless">
+            <thead class="thead-light">
+              <tr>
+                <th>My actions<th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                  <td>My period</td>
+              </tr>
+              <tr>
+                  <td><button type="'button" class="btn btn-primary">Record start/end of period</button></td>
+              </tr>
+              <tr>
+                  <td><button type="'button" class="btn btn-primary">Add period symptoms</button></td>
+              </tr>
+              <tr>
+                  <td>My prescription<td>
+              </tr>
+              <tr>  
+                  <td><button type="'button" class="btn btn-primary">Change/add prescription</button></td>
+              </tr>
+              <tr>
+                  <td><button type="'button" class="btn btn-primary">Add prescription symptoms</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </div>
+-->
 	
     <% include ../templates/footer.ejs %>
     <script src="resources/js/profile.js"></script>
