@@ -10,23 +10,27 @@
 
 
     <!-- Insert Body here -->
-    <div class="container">
-      <div class="row">
-        <div align="center" class="offset-md-2 col-md-8">
-			<h2>Welcome User</h2>
-        </div>
-      </div>
-    </div>
-	
-	<div class = "container">
-		<div class="row mx-auto">
-			<div align="center" class="offset-md-2 col-md-4">
-				<h2>Good evening</h2>
-			</div>
-			<div align="center" class="col-md-4">
-				<h2>Good evening</h2>
-			</div>
+    <div class="container-fluid">
+		<div class="offset-md-2 col-md-8 secondary-page-header">
+			<h2>Welcome MyName</h2>
 		</div>
+		<div class="row dashboard-panel-container">
+			<div class="offset-sm-1 col-sm-10 offset-md-2 col-md-4 offset-lg-2 col-lg-4">
+				<div class="panel">
+					<div class="dashboard-panel">
+						<h3>My Period</h3>
+						<button class="btn btn-primary">Add period symptoms</button>
+					</div>
+				</div>
+			</div>
+			<div class="offset-sm-1 col-sm-10 offset-md-0 col-md-4 offset-lg-0 col-lg-4">
+				<div class="panel">
+					<div class="dashboard-panel">
+						<h3>My Birth Control</h3>
+						<button class="btn btn-primary">Add birth control symptoms</button>
+					</div>
+				</div>
+			</div>
 	</div>
 
     <% include ../templates/footer.ejs %>

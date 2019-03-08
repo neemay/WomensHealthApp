@@ -6,13 +6,16 @@
 
   <body ng-controller="controller">
     <div class="container">
-      <div class="row">
-        <div align="center" class="offset-md-2 col-md-8">
+      <div class="jumbotron text-center">
+        <div align="center" class="col-md-12">
           <h1>Welcome to Obie!</h1>
-          <div>
-            <button class="btn btn-primary">Log In</button>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#createAccountModal">Sign up</button>
-          </div>
+		  <p style="font-size:120%">Obie is a new women's* health tracking application that aims to empower users by helping them track and<br>
+		  visualize important reproductive health information<p>
+		  <p style="font-size:90%">*Obie is not exclusive to (cis) women and aims to be inclusive to anyone that experiences menstruation or that takes oral birth<br>
+		  control pills.<p>
+		  <hr>
+		  <button class="btn btn-secondary btn-index">Log In</button>
+		  <button class="btn btn-primary btn-index" data-toggle="modal" data-target="#createAccountModal">Sign up</button>
         </div>
       </div>
     </div>
@@ -54,6 +57,7 @@
         </div>
       </div>
     </div>
+	
     <% include ../templates/footer.ejs %>
     <script src="resources/js/index.js"></script>
   </body>
