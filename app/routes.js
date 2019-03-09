@@ -7,7 +7,6 @@ module.exports = function(app, passport) {
 
   //Dashboard page
   app.get('/dashboard', isLoggedIn, function(req, res) {
-    console.log("Dashboard redirect");
     res.render('pages/dashboard', { title: 'Obie Dashboard', user: req.user });
   });
 
@@ -34,7 +33,7 @@ module.exports = function(app, passport) {
   
   app.post('/signup', passport.authenticate('local-signup', {
       successRedirect : '/dashboard',
-      failureRedirect : '/#login',
+      failureRedirect : '/#signup',
       failureFlash : true
   }));
   
