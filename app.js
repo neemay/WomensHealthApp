@@ -1,28 +1,34 @@
 var express = require('express');
 var path = require('path');
 var app = express();
-//var mongoose = require('mongoose');
+var port = process.env.PORT || 3000;
+var mongoose = require('mongoose');
+var passport = require('passport');
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var flash = require('connect-flash');
+var cookieParser = require('cookie-parser');
+//database connection
+var configDB = require('./config/database.js');
+mongoose.connect(configDB.url);
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '/public/views'));
-app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(req, res) {
-    res.render('pages/index', { title: 'Obie Home' });
-});
+//express setup
+app.set('view engine', 'ejs'); //set up ejs for templating
+app.set('views', path.join(__dirname, '/public/views')); //set path for views folder
+app.use(express.static(__dirname + '/public')); //set path for static files
+app.use(bodyParser());
+app.use(cookieParser());
 
-app.get('/dashboard', function(req, res) {
-    res.render('pages/dashboard', { title: 'Obie Dashboard' });
-});
+//passport setup
+require('./config/passport')(passport);
+app.use(session({secret: 'softwaredesignanddocumentation'}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 
-app.get('/profile', function(req, res) {
-    res.render('pages/profile', { title: 'My Profile' });
-});
-
-app.get('/history', function(req, res) {
-    res.render('pages/history', { title: 'My History' });
-});
-
+//routes
+require('./app/routes.js')(app, passport);
 //Connect to the Mongo Database
 //mongoose.connect('mongodb://localhost/users', { useNewUrlParser: true });
 
@@ -49,4 +55,4 @@ app.get('/history', function(req, res) {
 //  res.send("wee");
 //});
 
-app.listen(3000, () => console.log('Server listening on port 3000.'));
+app.listen(port, () => console.log('Server listening on port 3000.'));

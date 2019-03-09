@@ -4,7 +4,7 @@
       <% include ../templates/head.ejs %>
   </head>
 
-  <body ng-controller="controller">
+  <body ng-controller="controller" ng-init="init()">
     <div class="container">
       <div class="jumbotron text-center">
         <div align="center" class="col-md-12">
@@ -14,7 +14,7 @@
 		  <p style="font-size:90%">*Obie is not exclusive to (cis) women and aims to be inclusive to anyone that experiences menstruation or that takes oral birth<br>
 		  control pills.<p>
 		  <hr>
-		  <button class="btn btn-secondary btn-index">Log In</button>
+		  <button class="btn btn-secondary btn-index" data-toggle="modal" data-target="#loginModal">Login</button>
 		  <button class="btn btn-primary btn-index" data-toggle="modal" data-target="#createAccountModal">Sign up</button>
         </div>
       </div>
@@ -30,34 +30,68 @@
             </button>
           </div>
           <div class="modal-body">
+            <% if (signupMessage.length > 0) { %>
+              <div class="alert alert-danger"><%= signupMessage %></div>
+            <% } %>
             <form class="form-container">
               <div>
+<!--
                 <div class="form-group">
                   <label for="name">Preferred Name:</label>
-                  <input id="name" ng-model="createName" type="text"  class="form-control" />
+                  <input name="name" ng-model="createName" type="text"  class="form-control" />
                 </div>
+-->
                 <div class="form-group">
-                  <label for="username">Email:</label>
-                  <input id="username" ng-model="createEmail" type="text" class="form-control" />
+                  <label for="email">Email:</label>
+                  <input name="createEmail" type="text" ng-model="createEmail" class="form-control" />
                 </div>
                 <div class="form-group">
                   <label for="password">Password:</label>
-                  <input id="password" ng-model="createPassowrd" type="password" class="form-control" />
+                  <input name="createPassword" ng-model="createPassword" type="password" class="form-control" />
                 </div>
                 <div class="form-group">
                   <label for="confirm">Confirm Password:</label>
                   <input id="confirm" ng-model="confirmPassword" type="password" class="form-control" />
                 </div>
               </div>
-              <div ng-show="passwordError" class="error">Error: Passwords do not match</div>
+<!--              <div ng-show="passwordError" class="error">Error: Passwords do not match</div>-->
             </form>
-            <button type="button" class="btn btn-primary" id="createAccount" ng-click="createAccount()">Create</button>
+            <button type="submit" class="btn btn-primary" id="createAccount" ng-click="createAccount()">Create</button>
             <button type="button" class="btn btn-danger" id="cancel" data-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>
     </div>
 	
+    <!--  Login modal  -->
+    <div class="modal fade" id="loginModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Log in</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <% if (loginMessage.length > 0) { %>
+              <div class="alert alert-danger"><%= loginMessage %></div>
+            <% } %>
+            <form class="form-container" action="/login" method="post">
+              <div class="form-group">
+                <label>Email</label>
+                <input type="text" class="form-control" name="email">
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password">
+              </div>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <% include ../templates/footer.ejs %>
     <script src="resources/js/index.js"></script>
   </body>
