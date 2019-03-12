@@ -29,30 +29,8 @@ app.use(flash());
 
 //routes
 require('./app/routes.js')(app, passport);
-//Connect to the Mongo Database
-//mongoose.connect('mongodb://localhost/users', { useNewUrlParser: true });
 
-//Set up the database schema
-//var Schema = mongoose.Schema;
-
-//Save the whole tweet object in the database for extensibility
-//var dbSchema = new Schema({
-//  username: String
-//});
-
-//Create a model using this schema
-//var User = mongoose.model('User', dbSchema);
-//module.exports = User;
-
-//app.get('/addToDB', function(req, res) {
-//  var new_user = new User({
-//    username: "Yarden"
-//  });
-//  new_user.save(function(err) {
-//    if(err) throw err;
-//  });
-//  console.log("Saved to DB");
-//  res.send("wee");
-//});
+//API functions
+require('./app/api.js')(app);
 
 app.listen(port, () => console.log('Server listening on port 3000.'));
