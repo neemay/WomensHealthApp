@@ -20,5 +20,12 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.userName = response.name;
     });
+	
+	$http({
+      method: 'GET',
+      url: '/getEmail',
+    }).success(function(response) {
+      $scope.email = response.email;
+    });
   }
 });
