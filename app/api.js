@@ -11,4 +11,9 @@ module.exports = function(app) {
     }
     res.send({success: true, name: req.user.user.name});
   });
+   //Function to get the current user's email
+  app.get('/getEmail', function(req, res) {
+    
+    res.send({success: true, email: req.user.user.email});
+  });
 };
