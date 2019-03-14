@@ -4,7 +4,7 @@
       <% include ../templates/head.ejs %>
   </head>
 
-  <body ng-controller="controller">
+  <body ng-controller="controller" ng-init="init()">
 
     <% include ../templates/header.ejs %>
 
@@ -47,64 +47,6 @@
 			</div>
 		</div>
 	</div>
-	
-	
-	<!--
-    <div class="container-fluid">
-      <div class="row">
-        <div align="center" class="offset-md-2 col-md-8">
-          <h2>Username's history</h2>
-        </div>
-      </div>
-    </div>
-	
-	<div class="container">
-		<div class="row">
-			<div class="col-md-3">
-				<table class="table">
-					<thead class="thead-light">
-						<tr>
-							<th>My period history</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>blank space for data</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="col-md-3">
-				<table class="table">
-					<thead class="thead-light">
-						<tr>
-							<th> My prescription history </th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>blank space for data</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="col-md-6">
-				<table class="table">
-					<thead class="thead-light">
-						<tr>
-							<th>My stats</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Stats go here</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	-->
 
     <% include ../templates/footer.ejs %>
     <script src="resources/js/history.js"></script>

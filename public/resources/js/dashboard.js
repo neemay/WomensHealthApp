@@ -12,4 +12,13 @@ app.controller('controller', function ($scope, $http, $window) {
       $window.location.href = '/';
     });
   }
+  
+  $scope.init = function() {
+    $http({
+      method: 'GET',
+      url: '/getUserName',
+    }).success(function(response) {
+      $scope.userName = response.name;
+    });
+  }
 });

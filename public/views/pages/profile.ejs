@@ -4,7 +4,7 @@
       <% include ../templates/head.ejs %>
   </head>
 
-  <body ng-controller="controller">
+  <body ng-controller="controller" ng-init="init()">
 
     <% include ../templates/header.ejs %>
     <!-- Insert Body here -->
@@ -85,71 +85,6 @@
         </div>  
       </div>
     </div>
-	
-<!--
-	<div class="container">
-      <div class="row">
-		<div class="col-md-3">
-          <table class="table table-borderless">
-		    <thead class="thead-light">
-		      <tr>
-				<th>My information</th>
-		      </tr>
-		    </thead>
-            <tbody>
-              <tr>
-                <td>Information here</td>
-              </tr>
-              <tr>
-                <td><button type="'button" class="btn btn-primary">Edit preferred name</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-6">
-          <table class="table table-borderless">
-            <thead class="thead-light">
-              <tr>
-                <th>My reminders</th>
-              </tr>
-            </thead>
-            <tbody>
-              <td>Reminders go here</td>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-3">
-          <table class="table table-borderless">
-            <thead class="thead-light">
-              <tr>
-                <th>My actions<th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                  <td>My period</td>
-              </tr>
-              <tr>
-                  <td><button type="'button" class="btn btn-primary">Record start/end of period</button></td>
-              </tr>
-              <tr>
-                  <td><button type="'button" class="btn btn-primary">Add period symptoms</button></td>
-              </tr>
-              <tr>
-                  <td>My prescription<td>
-              </tr>
-              <tr>  
-                  <td><button type="'button" class="btn btn-primary">Change/add prescription</button></td>
-              </tr>
-              <tr>
-                  <td><button type="'button" class="btn btn-primary">Add prescription symptoms</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-    </div>
-  </div>
--->
 	
     <% include ../templates/footer.ejs %>
     <script src="resources/js/profile.js"></script>
