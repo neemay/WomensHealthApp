@@ -27,4 +27,13 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   }
 
+  $scope.init = function() {
+    if($window.location.hash == "#periodModal") {
+      $("#periodModal").modal();
+    }
+    else if($window.location.hash == "#prescriptionSymptomModal") {
+      $("#prescriptionSymptomModal").modal();
+    }
+  }
+
 });
