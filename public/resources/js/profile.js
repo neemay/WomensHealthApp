@@ -12,19 +12,27 @@ app.controller('controller', function ($scope, $http, $window) {
       $window.location.href = '/';
     });
   }
-   $scope.init = function() {
+  
+  $scope.init = function() {
     $http({
       method: 'GET',
       url: '/getUserName',
     }).success(function(response) {
       $scope.userName = response.name;
     });
-	$http({
+    $http({
       method: 'GET',
       url: '/getEmail',
     }).success(function(response) {
       $scope.email = response.email;
     });
+    
+    if($window.location.hash == "#periodModal") {
+      $("#periodModal").modal();
+    }
+    else if($window.location.hash == "#prescriptionSymptomModal") {
+      $("#prescriptionSymptomModal").modal();
+    }
   }
 
 });

@@ -20,7 +20,7 @@
             </div>
             <div class="panel-body">
              Name: {{userName}}
-              <button class="btn btn-primary">Edit preferred name</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#nameModal">Edit preferred name</button>
              Email: {{email}}
 			</div>
           </div>
@@ -77,16 +77,103 @@
             <div class="panel-body">
               <strong>My period</strong>
                 <button class="btn btn-primary">Record start/end of period</button>
-                <button class="btn btn-primary">Add period symptoms</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#periodModal">Add period symptoms</button>
               <strong>My perscription</strong>
-                <button class="btn btn-primary">Change/add prescription</button>
-                <button class="btn btn-primary">Add prescription symptoms</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionModal">Change/add prescription</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal">Add prescription symptoms</button>
             </div>
           </div>
         </div>  
       </div>
     </div>
-	
+    <!-- Modals -->
+    <div class="modal fade" id="nameModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Change preferred name</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container" action="/changeName" method="post">
+              <div class="form-group">
+                <label>Preferred Name</label>
+                <input type="preferredName" class="form-control" name="preferredName">
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Period Modal -->
+    <div class="modal fade" id="periodModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Period Symptoms</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container" action="/enterPeriodSymptoms" method="post">
+              <div class="form-group">
+                <label>Enter Symptoms</label>
+                <input type="periodSymptoms" class="form-control" name="periodSymptoms">
+               </div>
+             <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Prescription Modal-->
+    <div class="modal fade" id="prescriptionModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Presciption</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container" action="/enterPrescription" method="post">
+              <div class="form-group">
+                <label>Enter Prescription</label>
+                <input type="prescription" class="form-control" name="prescription">
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Prescription Symptomt Modal-->
+    <div class="modal fade" id="prescriptionSymptomModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Prescription Symptoms</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container" action="/enterPrescriptionSymptoms" method="post">
+              <div class="form-group">
+                <label>Enter Symptoms</label>
+                <input type="prescriptionSymptoms" class="form-control" name="prescriptionSymptoms">
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <% include ../templates/footer.ejs %>
     <script src="resources/js/profile.js"></script>
   </body>
