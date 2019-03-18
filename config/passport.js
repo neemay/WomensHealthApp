@@ -34,6 +34,7 @@ module.exports = function(passport) {
           newUser.user.email = email;
           newUser.user.password = newUser.generateHash(password);
           newUser.user.name = req.body.name;
+          newUser.user.isOnPeriod = false;
           
           newUser.save(function(err) {
             if(err)

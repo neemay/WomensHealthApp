@@ -9,6 +9,12 @@
     <% include ../templates/header.ejs %>
     <!-- Insert Body here -->
     <div class="container-fluid">
+      <div class="alert alert-success alert-dismissable fade show" role="alert" id="alertSuccess" ng-show="alertSuccess">
+        {{successMessage}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
       <div class="offset-md-2 col-md-8 page-header">
         <h2>{{userName}}'s Profile</h2>
       </div>
@@ -76,8 +82,9 @@
             </div>
             <div class="panel-body">
               <strong>My period</strong>
-                <button class="btn btn-primary">Record start/end of period</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#periodModal">Add period symptoms</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#startPeriodModal" ng-show="!userIsOnPeriod">Record start of period</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-show="userIsOnPeriod">Record end of period</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-show="userIsOnPeriod">Add period symptoms</button>
               <strong>My perscription</strong>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionModal">Change/add prescription</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal">Add prescription symptoms</button>
@@ -108,8 +115,52 @@
         </div>
       </div>
     </div>
-    <!-- Period Modal -->
-    <div class="modal fade" id="periodModal">
+    <!--  Record start of period modal  -->
+    <div class="modal fade" id="startPeriodModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Record Period Start</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container">
+              <div class="form-group">
+                <label>Enter Start Date</label>
+                <input type="date" class="form-control" id="startPeriod" ng-model="startPeriod">
+              </div>
+             <button type="submit" class="btn btn-primary" ng-click="recordStartPeriod()">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  Record end of period modal  -->
+    <div class="modal fade" id="endPeriodModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Record Period End</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container">
+              <div class="form-group">
+                <label>Enter End Date</label>
+                <input type="date" class="form-control" ng-model="endPeriod">
+              </div>
+             <button type="submit" class="btn btn-primary" ng-click="recordEndPeriod()">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Period Symptoms Modal -->
+    <div class="modal fade" id="periodSymptomModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -119,12 +170,118 @@
             </button>
           </div>
           <div class="modal-body">
-            <form class="form-container" action="/enterPeriodSymptoms" method="post">
+            <form class="form-container">
               <div class="form-group">
-                <label>Enter Symptoms</label>
-                <input type="periodSymptoms" class="form-control" name="periodSymptoms">
-               </div>
-             <button type="submit" class="btn btn-primary">Submit</button>
+                <label for="symptomDate">Symptom Date</label>
+                <input name="symptomDate" type="date" class="form-control" ng-model="symptomDate">
+              </div>
+              <div class="form-group">
+                <span class="btn-group-label">Cramps: </span>
+                <div class="symptom-btns">
+                  <label>
+                    <input type="radio" ng-model="symptomCramps" ng-value="0" checked> None
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomCramps" ng-value="1"> Low
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomCramps" ng-value="2"> Moderate
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomCramps" ng-value="3"> Severe
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="btn-group-label">Nausea: </span>
+                <div class="symptom-btns">
+                  <label>
+                    <input type="radio" ng-model="symptomNausea" ng-value="0" checked> None
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomNausea" ng-value="1"> Low
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomNausea" ng-value="2"> Moderate
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomNausea" ng-value="3"> Severe
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="btn-group-label">Headache: </span>
+                <div class="symptom-btns">
+                  <label>
+                    <input type="radio" ng-model="symptomHeadache" ng-value="0" checked> None
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomHeadache" ng-value="1"> Low
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomHeadache" ng-value="2"> Moderate
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomHeadache" ng-value="3"> Severe
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="btn-group-label">Flow: </span>
+                <div class="symptom-btns">
+                  <label>
+                    <input type="radio" ng-model="symptomFlow" ng-value="0" checked> None
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomFlow" ng-value="1"> Low
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomFlow" ng-value="2"> Moderate
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomFlow" ng-value="3"> Severe
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="btn-group-label">Lower back pain: </span>
+                <div class="symptom-btns">
+                  <label>
+                    <input type="radio" ng-model="symptomBackPain" ng-value="0" checked> None
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomBackPain" ng-value="1"> Low
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomBackPain" ng-value="2"> Moderate
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomBackPain" ng-value="3"> Severe
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <span class="btn-group-label">Bloating: </span>
+                  <div class="symptom-btns">
+                  <label>
+                    <input type="radio" ng-model="symptomBloating" ng-value="0" checked> None
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomBloating" ng-value="1"> Low
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomBloating" ng-value="2"> Moderate
+                  </label>
+                  <label>
+                    <input type="radio" ng-model="symptomBloating" ng-value="3"> Severe
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="notes">Notes:</label>
+                <textarea ng-model="notes"></textarea>
+              </div>
+             <button type="submit" class="btn btn-primary" ng-click="recordPeriodSymptoms()">Submit</button>
             </form>
           </div>
         </div>
@@ -152,7 +309,7 @@
         </div>
       </div>
     </div>
-    <!-- Prescription Symptomt Modal-->
+    <!-- Prescription Symptoms Modal-->
     <div class="modal fade" id="prescriptionSymptomModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
