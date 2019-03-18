@@ -7,7 +7,8 @@ var userSchema = mongoose.Schema({
   user: {
     email: String,
     password: String,
-    name: String
+    name: String,
+    isOnPeriod: Boolean
   }
 });
 
