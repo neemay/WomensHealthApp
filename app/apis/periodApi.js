@@ -1,9 +1,9 @@
-// app/api.js
+// app/apis/periodApi.js
 
 //include any mongodb models here
-var Period = require('../app/models/period');
-var User = require('../app/models/user');
-var PeriodSymptom = require('../app/models/periodSymptom');
+var Period = require('../../app/models/period');
+var User = require('../../app/models/user');
+var PeriodSymptom = require('../../app/models/periodSymptom');
 
 //You can get the user's email by doing the following: req.user.user.email
 
@@ -60,7 +60,7 @@ module.exports = function(app) {
     var newPeriod = new Period();
     newPeriod.period.periodId = req.user.user.email + req.body.startDate.substr(0, 10);
     newPeriod.period.email = req.user.user.email;
-    newPeriod.period.startDate = req.body.startDate;
+    newPeriod.period.startDate = req.body.startDate.subStr(0, 10);
     newPeriod.period.endDate = null;
     newPeriod.save(function(err) {
       if(err)
@@ -80,7 +80,7 @@ module.exports = function(app) {
     Period.findOne({'period.endDate': null}, function(err, period) {
       if(err)
         throw err;
-      period.period.endDate = req.body.endDate;
+      period.period.endDate = req.body.endDate.substr(0, 10);
       period.save();
       User.findOne({'user.email' : req.user.user.email}, function(err, user) {
         user.user.isOnPeriod = false;
@@ -94,7 +94,7 @@ module.exports = function(app) {
   app.post('/addPeriodSymptom', function(req, res) {
     var newSymptom = new PeriodSymptom();
     newSymptom.periodSymptom.periodId = req.user.user.email + req.body.periodStartDate.substr(0, 10);
-    newSymptom.periodSymptom.date = req.body.date;
+    newSymptom.periodSymptom.date = req.body.date.substr(0, 10);
     newSymptom.periodSymptom.cramps = req.body.cramps;
     newSymptom.periodSymptom.nausea = req.body.nausea;
     newSymptom.periodSymptom.headache = req.body.headache;

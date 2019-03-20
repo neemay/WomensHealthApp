@@ -104,4 +104,23 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.successMessage = "Symptoms saved successfully";
     });
   }
+  
+  $scope.addPrescription = function() {
+    $http({
+      method: 'POST',
+      url: '/addPrescription',
+      data: {
+        name: $scope.prescriptionName,
+        refills: $scope.prescriptionRefills,
+        expiration: $scope.prescriptionExpiration,
+        startDate: $scope.prescriptionStart,
+        status: $scope.prescriptionStatus,
+        notes: $scope.prescriptionNotes
+      }
+    }).success(function(response) {
+      $("#addPrescriptionModal").modal('hide');
+      $scope.alertSuccess = true;
+      $scope.successMessage = "Prescription saved successfully";
+    });
+  }
 });
