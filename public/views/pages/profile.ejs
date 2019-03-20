@@ -86,7 +86,7 @@
                 <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-show="userIsOnPeriod">Record end of period</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-show="userIsOnPeriod">Add period symptoms</button>
               <strong>My perscription</strong>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionModal">Change/add prescription</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal">Add prescription symptoms</button>
             </div>
           </div>
@@ -279,7 +279,7 @@
               </div>
               <div class="form-group">
                 <label for="notes">Notes:</label>
-                <textarea ng-model="notes"></textarea>
+                <textarea ng-model="notes" class="form-control"></textarea>
               </div>
              <button type="submit" class="btn btn-primary" ng-click="recordPeriodSymptoms()">Submit</button>
             </form>
@@ -288,22 +288,45 @@
       </div>
     </div>
     <!--Prescription Modal-->
-    <div class="modal fade" id="prescriptionModal">
+    <div class="modal fade" id="addPrescriptionModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3>Presciption</h3>
+            <h3>Add a Presciption</h3>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <form class="form-container" action="/enterPrescription" method="post">
+            <form class="form-container">
               <div class="form-group">
-                <label>Enter Prescription</label>
-                <input type="prescription" class="form-control" name="prescription">
+                <label>Prescription Name:</label>
+                <input type="text" class="form-control" ng-model="prescriptionName">
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <div class="form-group">
+                <label>Number of Refills:</label>
+                <input type="number" class="form-control" ng-model="prescriptionRefills">
+              </div>
+              <div class="form-group">
+                <label>Expiration Date:</label>
+                <input type="date" class="form-control" ng-model="prescriptionExpiration">
+              </div>
+              <div class="form-group">
+                <label>Start Date:</label>
+                <input type="date" class="form-control" ng-model="prescriptionStart">
+              </div>
+              <div class="form-group">
+                <label>Prescription Status:</label>
+                <select class="form-control">
+                  <option ng-model="prescriptionStatus" ng-value=true>Active</option>
+                  <option ng-model="prescriptionStatus" ng-value=false>Inactive</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Notes: </label>
+                <textarea class="form-control" ng-model="prescriptionNotes" placeholder="Generic name, alternate names, etc."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" ng-click="addPrescription()">Submit</button>
             </form>
           </div>
         </div>
