@@ -1,5 +1,6 @@
 // app/apis/prescriptionApi.js
 
+//include any mongodb models here
 var User = require('../../app/models/user');
 var Prescription = require('../../app/models/prescription');
 
