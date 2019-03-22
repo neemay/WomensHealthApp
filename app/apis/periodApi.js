@@ -58,9 +58,9 @@ module.exports = function(app) {
   //Function to add the start date for a user's period
   app.post('/addPeriodStart', function(req, res) {
     var newPeriod = new Period();
-    newPeriod.period.periodId = req.user.user.email + req.body.startDate.substr(0, 10);
+    newPeriod.period.periodId = req.user.user.email + ":" + req.body.startDate;
     newPeriod.period.email = req.user.user.email;
-    newPeriod.period.startDate = req.body.startDate.subStr(0, 10);
+    newPeriod.period.startDate = req.body.startDate;
     newPeriod.period.endDate = null;
     newPeriod.save(function(err) {
       if(err)
@@ -80,7 +80,7 @@ module.exports = function(app) {
     Period.findOne({'period.endDate': null}, function(err, period) {
       if(err)
         throw err;
-      period.period.endDate = req.body.endDate.substr(0, 10);
+      period.period.endDate = req.body.endDate;
       period.save();
       User.findOne({'user.email' : req.user.user.email}, function(err, user) {
         user.user.isOnPeriod = false;
@@ -93,8 +93,8 @@ module.exports = function(app) {
   //Function to add period symptoms
   app.post('/addPeriodSymptom', function(req, res) {
     var newSymptom = new PeriodSymptom();
-    newSymptom.periodSymptom.periodId = req.user.user.email + req.body.periodStartDate.substr(0, 10);
-    newSymptom.periodSymptom.date = req.body.date.substr(0, 10);
+    newSymptom.periodSymptom.periodId = req.user.user.email + ":" + req.body.periodStartDate.substr(0, 10);
+    newSymptom.periodSymptom.date = req.body.date;
     newSymptom.periodSymptom.cramps = req.body.cramps;
     newSymptom.periodSymptom.nausea = req.body.nausea;
     newSymptom.periodSymptom.headache = req.body.headache;

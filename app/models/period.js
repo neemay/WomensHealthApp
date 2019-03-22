@@ -6,8 +6,8 @@ var periodSchema = mongoose.Schema({
   period: {
     email: String,
     periodId: String,
-    startDate: Date,
-    endDate: Date
+    startDate: String,
+    endDate: String
   }
 });
 

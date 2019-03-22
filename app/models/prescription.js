@@ -4,11 +4,12 @@ var mongoose = require('mongoose');
 
 var prescriptionSchema = mongoose.Schema({
   prescription: {
+    email: String,
     prescriptionId: String,
     name: String,
     refills: String,
-    expiration: Date,
-    startDate: Date,
+    expiration: String,
+    startDate: String,
     status: Boolean,
     notes: String
   }

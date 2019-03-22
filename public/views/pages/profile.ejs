@@ -87,6 +87,7 @@
                 <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-show="userIsOnPeriod">Add period symptoms</button>
               <strong>My perscription</strong>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()">Update a prescription</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal">Add prescription symptoms</button>
             </div>
           </div>
@@ -287,7 +288,7 @@
         </div>
       </div>
     </div>
-    <!--Prescription Modal-->
+    <!-- Add Prescription Modal-->
     <div class="modal fade" id="addPrescriptionModal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -301,7 +302,10 @@
             <form class="form-container">
               <div class="form-group">
                 <label>Prescription Name:</label>
-                <input type="text" class="form-control" ng-model="prescriptionName">
+                <select ng-model="prescriptionName" class="form-control">
+                  <option ng-value="OTHER">OTHER</option>
+                  <option ng-repeat="prescription in prescriptionList" ng-value="prescription.name">{{prescription.name}}</option>
+                </select>
               </div>
               <div class="form-group">
                 <label>Number of Refills:</label>
@@ -327,6 +331,53 @@
                 <textarea class="form-control" ng-model="prescriptionNotes" placeholder="Generic name, alternate names, etc."></textarea>
               </div>
               <button type="submit" class="btn btn-primary" ng-click="addPrescription()">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  Update Prescription Modal  -->
+    <div class="modal fade" id="updatePrescriptionModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Update a Presciption</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="form-container">
+              <div class="form-group">
+                <label>Prescription Name:</label>
+                <select ng-model="prescriptionName" class="form-control" ng-change="loadPrescription()">
+                  <option ng-repeat="prescription in userPrescriptions" ng-value="prescription.prescription.id">{{prescription.prescription.name}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Number of Refills:</label>
+                <input type="number" class="form-control" ng-model="prescriptionRefills">
+              </div>
+              <div class="form-group">
+                <label>Expiration Date:</label>
+                <input type="date" class="form-control" ng-model="prescriptionExpiration">
+              </div>
+              <div class="form-group">
+                <label>Start Date:</label>
+                <input type="date" class="form-control" ng-model="prescriptionStart" ng-disabled="editingPrescription">
+              </div>
+              <div class="form-group">
+                <label>Prescription Status:</label>
+                <select class="form-control">
+                  <option ng-model="prescriptionStatus" ng-value=true>Active</option>
+                  <option ng-model="prescriptionStatus" ng-value=false>Inactive</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Notes: </label>
+                <textarea class="form-control" ng-model="prescriptionNotes" placeholder="Generic name, alternate names, etc."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" ng-click="updatePrescription()">Submit</button>
             </form>
           </div>
         </div>
