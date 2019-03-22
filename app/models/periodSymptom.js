@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var periodSymptomSchema = mongoose.Schema({
   periodSymptom: {
     periodId: String,
-    date: Date,
+    date: String,
     cramps: String,
     nausea: String,
     headache: String,
