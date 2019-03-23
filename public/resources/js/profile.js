@@ -1,12 +1,12 @@
 var app = angular.module("obie", []);
-app.controller('controller', function ($scope, $http, $window) { 
+app.controller('controller', function ($scope, $http, $window) {
   $scope.isDashboard = false;
   $scope.isProfile = true;
   $scope.isHistory = false;
   $scope.userIsOnPeriod = false;
   $scope.alertSuccess = false;
   $scope.editingPrescription = false;
-  
+
   $scope.logout = function() {
     $http({
       method: 'GET',
@@ -15,7 +15,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $window.location.href = '/';
     });
   }
-  
+
   $scope.init = function() {
     $http({
       method: 'GET',
@@ -23,14 +23,14 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.userName = response.name;
     });
-    
+
     $http({
       method: 'GET',
       url: '/getEmail',
     }).success(function(response) {
       $scope.email = response.email;
     });
-    
+
     $http({
       method: 'GET',
       url: '/isOnPeriod',
@@ -40,7 +40,7 @@ app.controller('controller', function ($scope, $http, $window) {
       if(response.isOnPeriod)
         $scope.currentPeriod = response.currentPeriod;
     });
-    
+
     $http({
       method: 'GET',
       url: '/getPrescriptionList'
@@ -48,14 +48,49 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.prescriptionList = response.data;
       $scope.prescriptionName = "OTHER";
     });
-    
+
+    $http({
+      method: 'GET',
+      url: '/getReminderBirthControlDaily',
+    }).success(function(response) {
+      $scope.bcDaily = response.reminderBirthControlDaily;
+    });
+
+    $http({
+      method: 'GET',
+      url: '/getReminderBirthControlRefill',
+    }).success(function(response) {
+      $scope.bcRefill = response.reminderBirthControlRefill;
+    });
+
+    $http({
+      method: 'GET',
+      url: '/getReminderBirthControlRenewal',
+    }).success(function(response) {
+      $scope.bcRenewal = response.reminderBirthControlRenewal;
+    });
+
+    $http({
+      method: 'GET',
+      url: '/getReminderYearlyAppointment',
+    }).success(function(response) {
+      $scope.apptReminder = response.reminderYearlyAppointment;
+    });
+
+    $http({
+      method: 'GET',
+      url: '/getReminderYearlyAppointmentMonth',
+    }).success(function(response) {
+      $scope.apptReminderMonth = response.reminderYearlyAppointmentMonth;
+    });
+
 //    $http({
 //      method: 'GET',
 //      url: '/getUserPrescriptions'
 //    }).success(function(response) {
 //      $scope.userPrescriptions = response.data;
 //    });
-    
+
     if($window.location.hash == "#periodSymptomModal") {
       $("#periodSymptomModal").modal();
     }
@@ -68,10 +103,10 @@ app.controller('controller', function ($scope, $http, $window) {
     else if($window.location.hash == "#startPeriodModal") {
       $("#startPeriodModal").modal();
     }
-    
+
     $scope.startPeriod = new Date();
   }
-  
+
   $scope.recordStartPeriod = function() {
     $http({
       method: 'POST',
@@ -84,7 +119,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userIsOnPeriod = true;
     });
   }
-  
+
   $scope.recordEndPeriod = function() {
     $http({
       method: 'POST',
@@ -114,7 +149,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.prescriptionNotes = response.data["0"].prescription.notes;
     });
   }
-  
+
   $scope.loadPrescription = function() {
     $scope.userPrescriptions.forEach(function(presc) {
       if($scope.prescriptionName == presc.prescription.name) {
@@ -126,7 +161,7 @@ app.controller('controller', function ($scope, $http, $window) {
       }
     });
   }
-  
+
   $scope.recordPeriodSymptoms = function() {
     $http({
       method: 'POST',
@@ -149,7 +184,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.successMessage = "Symptoms saved successfully";
     });
   }
-  
+
   $scope.addPrescription = function() {
     $http({
       method: 'POST',
@@ -174,7 +209,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.successMessage = "Prescription saved successfully";
     });
   }
-  
+
   $scope.updatePrescription = function() {
     $http({
       method: 'POST',
@@ -193,6 +228,40 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.successMessage = "Prescription updated successfully";
     });
   }
+
+$scope.changeName = function() {
+  $http({
+    method: 'POST',
+    url: '/setName',
+    data: {
+      name: $scope.preferredName
+    }
+  }).success(function(response) {
+    console.log("test");
+    $("#nameModal").modal('hide');
+    $scope.alertSuccess = true;
+    $scope.userName = $scope.preferredName;
+    $scope.successMessage = "Name changed successfully";
+  });
+ }
+
+ $scope.updateReminders = function() {
+   $http({
+     method: 'POST',
+     url: '/setReminders',
+     data: {
+       reminderBirthControlDaily: $scope.bcDaily,
+       reminderBirthControlRefill: $scope.bcRefill,
+       reminderBirthControlRenewal: $scope.bcRenewal,
+       reminderYearlyAppointment: $scope.apptReminder,
+       reminderYearlyAppointmentMonth: $scope.apptReminderMonth
+     }
+   }).success(function(response) {
+     $scope.alertSuccess = true;
+     $scope.successMessage = "Reminder settings updated successfully";
+   });
+  }
+
 });
 
 //Function to convert the date object to a string with only
