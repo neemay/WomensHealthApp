@@ -3,6 +3,7 @@
 //include any mongodb models here
 var User = require('../models/user');
 var Prescription = require('../models/prescription');
+var PrescriptionSymptom = require('../models/prescriptionSymptom');
 var csv=require('csvtojson');
 
 module.exports = function(app) {
@@ -53,5 +54,31 @@ module.exports = function(app) {
       prescription.save();
       res.send({success: true});
     });
+  });
+  
+  app.post('/deletePrescription', function(req, res) {
+    var id = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
+    Prescription.deleteOne({'prescription.prescriptionId': id}, function(err) {
+      if(err)
+        throw err;
+      res.send({success: true});
+    })
+  });
+  
+  app.post('/addPrescriptionSymptom', function(req, res) {
+    var newSymptom = new PrescriptionSymptom();
+    newSymptom.prescriptionSymptom.prescriptionId = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
+    newSymptom.prescriptionSymptom.date = req.body.date;
+    newSymptom.prescriptionSymptom.spotting = req.body.spotting;
+    newSymptom.prescriptionSymptom.nausea = req.body.nausea;
+    newSymptom.prescriptionSymptom.headache = req.body.headache;
+    newSymptom.prescriptionSymptom.soreBreasts = req.body.soreBreasts;
+    newSymptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
+    newSymptom.prescriptionSymptom.notes = req.body.notes;
+    newSymptom.save(function(err) {
+      if(err)
+        throw err;
+      res.send({success: true});
+    })
   });
 };

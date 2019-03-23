@@ -96,3 +96,8 @@ textarea {
 .alert {
   margin-top: 15px;
 }
+
+.btn-inline {
+  display: inline;
+  margin-right: 10px;
+}
