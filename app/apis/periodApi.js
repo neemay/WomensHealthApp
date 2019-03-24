@@ -5,24 +5,7 @@ var Period = require('../../app/models/period');
 var User = require('../../app/models/user');
 var PeriodSymptom = require('../../app/models/periodSymptom');
 
-//You can get the user's email by doing the following: req.user.user.email
-
 module.exports = function(app) {
-  //Function to get the current user's preferred name
-  app.get('/getUserName', function(req, res) {
-    if(!req.user) {
-      res.send({success: false});
-    }
-    res.send({success: true, name: req.user.user.name});
-  });
-
-  //Function to get the current user's email
-  app.get('/getEmail', function(req, res) {
-    if(!req.user) {
-      res.send({success: false});
-    }
-    res.send({success: true, email: req.user.user.email});
-  });
 
   app.get('/isOnPeriod', function(req, res) {
     var isOnPeriod = false;
