@@ -33,5 +33,6 @@ require('./app/routes.js')(app, passport);
 //API functions
 require('./app/apis/periodApi.js')(app);
 require('./app/apis/prescriptionApi.js')(app);
+require('./app/apis/userApi.js')(app);
 
 app.listen(port, () => console.log('Server listening on port 3000.'));

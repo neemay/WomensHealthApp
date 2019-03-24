@@ -15,7 +15,7 @@ module.exports = function(app) {
     }
     res.send({success: true, name: req.user.user.name});
   });
-  
+
   //Function to get the current user's email
   app.get('/getEmail', function(req, res) {
     if(!req.user) {
@@ -23,7 +23,7 @@ module.exports = function(app) {
     }
     res.send({success: true, email: req.user.user.email});
   });
-  
+
   app.get('/isOnPeriod', function(req, res) {
     var isOnPeriod = false;
     var currentPeriod = null;
@@ -54,7 +54,7 @@ module.exports = function(app) {
       }
     });
   });
-  
+
   //Function to add the start date for a user's period
   app.post('/addPeriodStart', function(req, res) {
     var newPeriod = new Period();
@@ -72,9 +72,9 @@ module.exports = function(app) {
       });
       res.send({success: true});
     });
-    
+
   });
-  
+
   //Function to add the end date for a user's period
   app.post('/addPeriodEnd', function(req, res) {
     Period.findOne({'period.endDate': null}, function(err, period) {
@@ -89,7 +89,7 @@ module.exports = function(app) {
       res.send({success: true});
     });
   });
-  
+
   //Function to add period symptoms
   app.post('/addPeriodSymptom', function(req, res) {
     var newSymptom = new PeriodSymptom();
@@ -107,6 +107,6 @@ module.exports = function(app) {
         throw err;
       res.send({success: true});
     });
-    
+
   });
 };
