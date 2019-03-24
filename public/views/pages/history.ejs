@@ -21,7 +21,17 @@
               My period history
             </div>
             <div class="panel-body">
-              Information goes here
+              <div ng-show="hasUserPeriods">
+
+                <button type="button" class="btn btn-light" ng-repeat="period in userPeriods" ng-value="period.period.id">
+                  Period on:
+                  <span class="badge badge-primary">{{period.period.startDate}} </span>
+                </button>
+
+              </div>
+              <div ng-show="!hasUserPeriods">
+                No period history for user
+              </div>
             </div>
           </div>
         </div>
@@ -31,7 +41,19 @@
               My prescription history
             </div>
             <div class="panel-body">
-              Information goes here
+              <div ng-show="hasUserPrescriptions">
+
+                <button type="button" class="btn btn-light"
+                  ng-repeat="prescription in userPrescriptions" ng-value="prescription.prescription.id">
+                  {{prescription.prescription.name}}
+                  <span class="badge badge-primary">{{prescription.prescription.startDate}} </span>
+                </button>
+
+              </div>
+              <div ng-show="!hasUserPrescriptions">
+                No prescription history for user
+              </div>
+
             </div>
           </div>
         </div>
@@ -41,7 +63,12 @@
               My stats
             </div>
             <div class="panel-body">
-              My stats go here
+              <div ng-show="hasUserStats">
+                User stats coming soon...
+              </div>
+              <div ng-show="!hasUserStats">
+                No stats recorded for user
+              </div>
             </div>
           </div>
         </div>

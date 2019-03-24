@@ -24,7 +24,7 @@ module.exports = function(app) {
       res.send({success: true});
     });
   });
-  
+
   app.get('/getPrescriptionList', function(req, res) {
     csv().fromFile('./public/resources/prescription-names.csv')
     .then((jsonObj)=>{
@@ -32,14 +32,15 @@ module.exports = function(app) {
         res.send({data: jsonObj});
     });
   });
-  
+
   app.get('/getUserPrescriptions', function(req, res) {
     Prescription.find({'prescription.email': req.user.user.email}, function(err, prescriptions) {
       //console.log(prescriptions);
       res.send({success: true, data: prescriptions});
     });
   });
-  
+
+
   app.post('/updatePrescription', function(req, res) {
     var id = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
     //console.log(id);
@@ -55,7 +56,7 @@ module.exports = function(app) {
       res.send({success: true});
     });
   });
-  
+
   app.post('/deletePrescription', function(req, res) {
     var id = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
     Prescription.deleteOne({'prescription.prescriptionId': id}, function(err) {
@@ -64,7 +65,7 @@ module.exports = function(app) {
       res.send({success: true});
     })
   });
-  
+
   app.post('/addPrescriptionSymptom', function(req, res) {
     var newSymptom = new PrescriptionSymptom();
     newSymptom.prescriptionSymptom.prescriptionId = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;

@@ -109,4 +109,13 @@ module.exports = function(app) {
     });
 
   });
+
+
+
+  app.get('/getUserPeriods', function(req, res) {
+    Period.find({'period.email': req.user.user.email}, function(err, periods) {
+      res.send({success: true, data: periods});
+    });
+  });
+
 };
