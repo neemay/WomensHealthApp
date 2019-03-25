@@ -6,6 +6,10 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.hasUserPeriods = false;
   $scope.hasUserPrescriptions = false;
   $scope.hasUserStats = false;
+  $scope.hasPrescriptionSymptoms = false;
+  $scope.hasPeriodSymptoms = false;
+
+
 
 
   $scope.logout = function() {
@@ -16,7 +20,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $window.location.href = '/';
     });
   }
-  
+
   $scope.init = function() {
     $http({
       method: 'GET',
@@ -24,7 +28,7 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.userName = response.name;
     });
-    
+
 //	$http({
 //      method: 'GET',
 //      url: '/getEmail',
@@ -79,7 +83,7 @@ app.controller('controller', function ($scope, $http, $window) {
 //    });
 
   }
-  
+
   $scope.getPrescriptionSymptoms = function(id, name) {
     $http({
       method: 'GET',
@@ -90,9 +94,15 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.prescriptionSymptoms = response.data;
       $scope.prescriptionName = name;
+      if($scope.prescriptionSymptoms.length > 0){
+        $scope.hasPrescriptionSymptoms = true;
+      } else {
+        $scope.hasPrescriptionSymptoms = false;
+      }
+
     });
   }
-  
+
   $scope.getPeriodSymptoms = function(id, startDate) {
     //console.log(id);
     $http({
@@ -104,6 +114,11 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.periodSymptoms = response.data;
       $scope.periodStart = startDate;
+      if($scope.periodSymptoms.length > 0){
+        $scope.hasPeriodSymptoms = true;
+      } else {
+        $scope.hasPeriodSymptoms = false;
+      }
     });
   }
 
