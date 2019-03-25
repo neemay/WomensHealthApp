@@ -5,9 +5,14 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.isHistory = true;
   $scope.hasUserPeriods = false;
   $scope.hasUserPrescriptions = false;
-  $scope.hasUserStats = false;
+  $scope.hasUserStats = true;
   $scope.hasPrescriptionSymptoms = false;
   $scope.hasPeriodSymptoms = false;
+
+
+  $scope.showPeriodStats = false;
+  $scope.showPrescriptionStats = false;
+  $scope.showWeightStats = false;
 
 
 
@@ -120,6 +125,24 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.hasPeriodSymptoms = false;
       }
     });
+  }
+
+  $scope.getPeriodStats = function() {
+    $scope.showPeriodStats = !$scope.showPeriodStats;
+    $scope.showPrescriptionStats = false;
+    $scope.showWeightStats = false;
+  }
+
+  $scope.getPrescriptionStats = function() {
+    $scope.showPeriodStats = false;
+    $scope.showPrescriptionStats = !$scope.showPrescriptionStats;
+    $scope.showWeightStats = false;
+  }
+
+  $scope.getWeightStats = function() {
+    $scope.showPeriodStats = false;
+    $scope.showPrescriptionStats = false;
+    $scope.showWeightStats = !$scope.showWeightStats;
   }
 
 

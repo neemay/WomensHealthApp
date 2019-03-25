@@ -104,9 +104,7 @@
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="prescriptionModalLabel">Symptoms for {{prescriptionName}}
-
-                        </h5>
+                        <h5 class="modal-title" id="prescriptionModalLabel">Symptoms for {{prescriptionName}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
@@ -161,12 +159,21 @@
               My stats
             </div>
             <div class="panel-body">
-              <div ng-show="hasUserStats">
-                User stats coming soon...
+              <div class="btn-group" role="group" aria-label="StatType">
+                <button type="button" class="btn btn-outline-primary" ng-click="getPeriodStats()">Period</button>
+                <button type="button" class="btn btn-outline-primary" ng-click="getPrescriptionStats()">Prescription</button>
+                <button type="button" class="btn btn-outline-primary" ng-click="getWeightStats()">Weight</button>
               </div>
-              <div ng-show="!hasUserStats">
-                No stats recorded for user
+              <div ng-show="showPeriodStats">
+                Period stats coming soon...
               </div>
+              <div ng-show="showPrescriptionStats">
+                Prescription stats coming soon...
+              </div>
+              <div ng-show="showWeightStats">
+                Weight stats coming soon...
+              </div>
+
             </div>
           </div>
         </div>
