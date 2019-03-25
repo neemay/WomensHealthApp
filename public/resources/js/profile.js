@@ -53,14 +53,6 @@ app.controller('controller', function ($scope, $http, $window) {
 
     $http({
       method: 'GET',
-      url: '/getPrescriptionList'
-    }).success(function(response) {
-      $scope.prescriptionList = response.data;
-      $scope.newPrescriptionName = "OTHER";
-    });
-
-    $http({
-      method: 'GET',
       url: '/getReminderBirthControlDaily',
     }).success(function(response) {
       $scope.bcDaily = response.reminderBirthControlDaily;
@@ -93,13 +85,14 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.apptReminderMonth = response.reminderYearlyAppointmentMonth;
     });
-
-//    $http({
-//      method: 'GET',
-//      url: '/getUserPrescriptions'
-//    }).success(function(response) {
-//      $scope.userPrescriptions = response.data;
-//    });
+    
+    $http({
+      method: 'GET',
+      url: '/getPrescriptionList'
+    }).success(function(response) {
+      $scope.prescriptionList = response.data;
+      $scope.newPrescriptionName = "OTHER";
+    });
 
     if($window.location.hash == "#periodSymptomModal") {
       $("#periodSymptomModal").modal();
