@@ -165,10 +165,16 @@
                 <button type="button" class="btn btn-outline-primary" ng-click="getWeightStats()">Weight</button>
               </div>
               <div ng-show="showPeriodStats">
-                Period stats coming soon...
+                <p>
+                  <strong>Total number of periods:</strong> {{numPeriods}}
+                </p>
+                <p> More period stats coming soon...</p>
               </div>
               <div ng-show="showPrescriptionStats">
-                Prescription stats coming soon...
+                <p>
+                  <strong>Total number of prescriptions:</strong> {{numPrescriptions}}
+                </p>
+                <p> More prescription stats coming soon...</p>
               </div>
               <div ng-show="showWeightStats">
                 Weight stats coming soon...

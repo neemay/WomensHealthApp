@@ -15,6 +15,8 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.showWeightStats = false;
 
 
+  $scope.numPeriods = 0;
+  $scope.numPrescriptions = 0;
 
 
   $scope.logout = function() {
@@ -34,12 +36,6 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userName = response.name;
     });
 
-//	$http({
-//      method: 'GET',
-//      url: '/getEmail',
-//    }).success(function(response) {
-//      $scope.email = response.email;
-//    });
 
     $http({
       method: 'GET',
@@ -52,20 +48,6 @@ app.controller('controller', function ($scope, $http, $window) {
       //$scope.hasUserPeriods = true;
     });
 
-//    $http({
-//      method: 'GET',
-//      url: '/getPrescriptionList'
-//    }).success(function(response) {
-//      $scope.prescriptionList = response.data;
-//      $scope.newPrescriptionName = "OTHER";
-//    });
-
-//    $http({
-//      method: 'GET',
-//      url: '/getUserPeriods'
-//    }).success(function(response) {
-//      $scope.periodsList = response.data;
-//    });
 
     $http({
       method: 'GET',
@@ -76,16 +58,6 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.hasUserPrescriptions = true;
       }
     });
-
-//    $http({
-//      method: 'GET',
-//      url: '/getUserPeriods'
-//    }).success(function(response) {
-//      $scope.userPeriods = response.data;
-//      if(response.data.length){
-//        $scope.hasUserPeriods = true;
-//      }
-//    });
 
   }
 
@@ -127,25 +99,43 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   }
 
+
+
   $scope.getPeriodStats = function() {
-    $scope.showPeriodStats = !$scope.showPeriodStats;
-    $scope.showPrescriptionStats = false;
-    $scope.showWeightStats = false;
+    $http({
+      method: 'GET',
+      url: '/getUserPeriods',
+    }).success(function(response) {
+      $scope.numPeriods = response.data.length;
+
+      $scope.showPeriodStats = !$scope.showPeriodStats;
+      $scope.showPrescriptionStats = false;
+      $scope.showWeightStats = false;
+
+    });
   }
 
+
   $scope.getPrescriptionStats = function() {
-    $scope.showPeriodStats = false;
-    $scope.showPrescriptionStats = !$scope.showPrescriptionStats;
-    $scope.showWeightStats = false;
+    $http({
+      method: 'GET',
+      url: '/getUserPrescriptions',
+    }).success(function(response) {
+      $scope.numPrescriptions = response.data.length;
+
+      $scope.showPeriodStats = false;
+      $scope.showPrescriptionStats = !$scope.showPrescriptionStats;
+      $scope.showWeightStats = false;
+
+    });
   }
+
 
   $scope.getWeightStats = function() {
     $scope.showPeriodStats = false;
     $scope.showPrescriptionStats = false;
     $scope.showWeightStats = !$scope.showWeightStats;
   }
-
-
 
 
 });
