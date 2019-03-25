@@ -58,6 +58,7 @@ module.exports = function(app) {
   });
 
   app.post('/deletePrescription', function(req, res) {
+    //TODO: ALSO DELETE ASSOCIATED SYMPTOMS
     var id = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
     Prescription.deleteOne({'prescription.prescriptionId': id}, function(err) {
       if(err)
@@ -81,5 +82,14 @@ module.exports = function(app) {
         throw err;
       res.send({success: true});
     })
+  });
+  
+  app.get('/getPrescriptionSymptomsById', function(req, res) {
+    //console.log(req);
+    //console.log(req.query.id);
+    PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': req.query.id}, function(err, symptoms) {
+      //console.log(symptoms);
+      res.send({success: true, data: symptoms});
+    });
   });
 };
