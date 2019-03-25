@@ -21,7 +21,45 @@
               My period history
             </div>
             <div class="panel-body">
-              Information goes here
+              <div ng-show="hasUserPeriods">
+
+                <button type="button" class="btn btn-light" ng-repeat="period in userPeriods" ng-click="getPeriodSymptoms(period.period.periodId, period.period.startDate)">
+                  Period on:
+                  <span class="badge badge-primary">{{period.period.startDate}} </span>
+                </button>
+                <div ng-show="periodSymptoms">
+                  <h5>Symptoms for period starting on {{periodStart}}</h5>
+                  <div ng-repeat="sympt in periodSymptoms">
+                    <strong>Symptom recorded on: {{sympt.periodSymptom.date}}</strong>
+                    <div class="symptoms">
+                      <div class="sypmtom">
+                        Spotting: {{sympt.periodSymptom.cramps}}
+                      </div>
+                      <div class="sypmtom">
+                        Nausea: {{sympt.periodSymptom.nausea}}
+                      </div>
+                      <div class="sypmtom">
+                        Headache: {{sympt.periodSymptom.headache}}
+                      </div>
+                      <div class="sypmtom">
+                        Flow: {{sympt.periodSymptom.flow}}
+                      </div>
+                      <div class="sypmtom">
+                        Lower Back Pain: {{sympt.periodSymptom.backPain}}
+                      </div>
+                      <div class="sypmtom">
+                        Bloating: {{sympt.periodSymptom.bloating}}
+                      </div>
+                      <div class="sypmtom">
+                        Notes: {{sympt.periodSymptom.notes}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-show="!hasUserPeriods">
+                No period history for user
+              </div>
             </div>
           </div>
         </div>
@@ -31,7 +69,44 @@
               My prescription history
             </div>
             <div class="panel-body">
-              Information goes here
+              <div ng-show="hasUserPrescriptions">
+
+                <button type="button" class="btn btn-light"
+                  ng-repeat="prescription in userPrescriptions" ng-click="getPrescriptionSymptoms(prescription.prescription.prescriptionId, prescription.prescription.name)">
+                  {{prescription.prescription.name}}
+                  <span class="badge badge-primary">{{prescription.prescription.startDate}} </span>
+                </button>
+                <div ng-show="prescriptionSymptoms">
+                  <h5>Symptoms for {{prescriptionName}}</h5>
+                  <div ng-repeat="sympt in prescriptionSymptoms">
+                    <strong>Symptom recorded on: {{sympt.prescriptionSymptom.date}}</strong>
+                    <div class="symptoms">
+                      <div class="sypmtom">
+                        Spotting: {{sympt.prescriptionSymptom.spotting}}
+                      </div>
+                      <div class="sypmtom">
+                        Nausea: {{sympt.prescriptionSymptom.nausea}}
+                      </div>
+                      <div class="sypmtom">
+                        Headache: {{sympt.prescriptionSymptom.headache}}
+                      </div>
+                      <div class="sypmtom">
+                        Sore Breasts: {{sympt.prescriptionSymptom.soreBreasts}}
+                      </div>
+                      <div class="sypmtom">
+                        Mood Swings: {{sympt.prescriptionSymptom.moodSwings}}
+                      </div>
+                      <div class="sypmtom">
+                        Notes: {{sympt.prescriptionSymptom.notes}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-show="!hasUserPrescriptions">
+                No prescription history for user
+              </div>
+
             </div>
           </div>
         </div>
@@ -41,7 +116,12 @@
               My stats
             </div>
             <div class="panel-body">
-              My stats go here
+              <div ng-show="hasUserStats">
+                User stats coming soon...
+              </div>
+              <div ng-show="!hasUserStats">
+                No stats recorded for user
+              </div>
             </div>
           </div>
         </div>

@@ -6,16 +6,16 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.userIsOnPeriod = false;
   $scope.alertSuccess = false;
   $scope.editingPrescription = false;
-  $scope.symptomSpotting = 0;
-  $scope.symptomNausea = 0;
-  $scope.symptomHeadache = 0; 
-  $scope.symptomSoreBreasts = 0;
-  $scope.symptomMoodSwings = 0;
+  $scope.symptomSpotting = "None";
+  $scope.symptomNausea = "None";
+  $scope.symptomHeadache = "None"; 
+  $scope.symptomSoreBreasts = "None";
+  $scope.symptomMoodSwings = "None";
   $scope.symptomDate = "";
-  $scope.symptomCramps = 0;
-  $scope.symptomFlow = 0;
-  $scope.symptomBackPain = 0;
-  $scope.symptomBloating = 0;
+  $scope.symptomCramps = "None";
+  $scope.symptomFlow = "None";
+  $scope.symptomBackPain = "None";
+  $scope.symptomBloating = "None";
   
   $scope.logout = function() {
     $http({
@@ -192,12 +192,12 @@ app.controller('controller', function ($scope, $http, $window) {
       $("#periodSymptomModal").modal('hide');
       $("#alertSuccess").alert();
       $scope.symptomDate = "";
-      $scope.symptomCramps = 0;
-      $scope.symptomNausea = 0;
-      $scope.symptomHeadache = 0;
-      $scope.symptomFlow = 0;
-      $scope.symptomBackPain = 0;
-      $scope.symptomBloating = 0;
+      $scope.symptomCramps = "None";
+      $scope.symptomNausea = "None";
+      $scope.symptomHeadache = "None";
+      $scope.symptomFlow = "None";
+      $scope.symptomBackPain = "None";
+      $scope.symptomBloating = "None";
       $scope.notes = "";
       $scope.alertSuccess = true;
       $scope.successMessage = "Symptoms saved successfully";
@@ -282,11 +282,11 @@ app.controller('controller', function ($scope, $http, $window) {
       $("#prescriptionSymptomModal").modal('hide');
       $scope.prescriptionStart = "";
       $scope.symptomDate = "";
-      $scope.symptomSpotting = 0;
-      $scope.symptomNausea = 0;
-      $scope.symptomHeadache = 0; 
-      $scope.symptomSoreBreasts = 0;
-      $scope.symptomMoodSwings = 0;
+      $scope.symptomSpotting = "None";
+      $scope.symptomNausea = "None";
+      $scope.symptomHeadache = "None"; 
+      $scope.symptomSoreBreasts = "None";
+      $scope.symptomMoodSwings = "None";
       $scope.notes = "";
       $scope.alertSuccess = true;
       $scope.successMessage = "Prescription symptoms added successfully";
@@ -334,5 +334,5 @@ function convertDate(date) {
   var day = date.getDate();
   var month = date.getMonth() + 1;
   var year = date.getFullYear();
-  return year + "/" + month + "/" + day;
+  return month + "/" + day + "/" + year;
 }
