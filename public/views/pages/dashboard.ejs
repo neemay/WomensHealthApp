@@ -20,13 +20,17 @@
             <div class="dashboard-panel">
               <h3>My Period</h3>
               <div ng-show="userIsOnPeriod">
-                It has been {{daysSince}} day(s) since your period started.
+                <p>
+                  It has been {{daysSince}} day(s) since your period started.
+                </p>
                 <a href="/profile#endPeriodModal"><button class="btn btn-primary">Record end of period</button></a>
                 <a href="/profile#periodSymptomModal"><button class="btn btn-primary">Add period symptoms</button></a>
               </div>
               <div ng-show="!userIsOnPeriod">
-                <span ng-show="!noPeriod">It has been {{daysSince}} day(s) since your last period.</span>
-                <span ng-show="noPeriod">You do not have any period history yet.</span>
+                <p>
+                  <span ng-show="!noPeriod">It has been {{daysSince}} day(s) since your last period.</span>
+                  <span ng-show="noPeriod">You do not have any period history yet.</span>
+                </p>
                 <a href="/profile#startPeriodModal"><button class="btn btn-primary">Record start of period</button></a>
               </div>
             </div>
