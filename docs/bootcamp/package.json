@@ -1,14 +1,14 @@
 {
-  "name": "bootcamp",
-  "version": "1.0.0",
-  "description": "Web Development Bootcamp Project",
-  "main": "bootcamp.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  'name': 'bootcamp',
+  'version': '1.0.0',
+  'description': 'Web Development Bootcamp Project',
+  'main': 'bootcamp.js',
+  'scripts': {
+    'test': 'echo \'Error: no test specified\' && exit 1'
   },
-  "author": "Yarden Ne'eman",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.4"
+  'author': 'Yarden Ne'eman',
+  'license': 'ISC',
+  'dependencies': {
+    'express': '^4.16.4'
   }
 }

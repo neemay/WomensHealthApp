@@ -1,4 +1,4 @@
-var app = angular.module("obie", []);
+var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) { 
   $scope.isDashboard = true;
   $scope.isProfile = false;

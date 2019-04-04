@@ -11,7 +11,7 @@ module.exports = function(app) {
   app.post('/addPrescription', function(req, res) {
     var newPrescription = new Prescription();
     newPrescription.prescription.email = req.user.user.email;
-    newPrescription.prescription.prescriptionId = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
+    newPrescription.prescription.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
     newPrescription.prescription.name = req.body.name;
     newPrescription.prescription.refills = req.body.refills;
     newPrescription.prescription.expiration = req.body.expiration;
@@ -42,7 +42,7 @@ module.exports = function(app) {
 
 
   app.post('/updatePrescription', function(req, res) {
-    var id = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
+    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
     //console.log(id);
     Prescription.findOne({'prescription.prescriptionId': id}, function(err, prescription) {
       //console.log(prescription);
@@ -59,7 +59,7 @@ module.exports = function(app) {
 
   app.post('/deletePrescription', function(req, res) {
     //TODO: ALSO DELETE ASSOCIATED SYMPTOMS
-    var id = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
+    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
     Prescription.deleteOne({'prescription.prescriptionId': id}, function(err) {
       if(err)
         throw err;
@@ -69,7 +69,7 @@ module.exports = function(app) {
 
   app.post('/addPrescriptionSymptom', function(req, res) {
     var newSymptom = new PrescriptionSymptom();
-    newSymptom.prescriptionSymptom.prescriptionId = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
+    newSymptom.prescriptionSymptom.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
     newSymptom.prescriptionSymptom.date = req.body.date;
     newSymptom.prescriptionSymptom.spotting = req.body.spotting;
     newSymptom.prescriptionSymptom.nausea = req.body.nausea;
