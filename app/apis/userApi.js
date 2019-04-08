@@ -2,6 +2,8 @@
 
 //include any mongodb models here
 var User = require('../../app/models/user');
+var nodemailer = require('nodemailer');
+var emailcreds = require('../../email-creds.json');
 
 module.exports = function(app) {
   //Function to get the current user's preferred name
@@ -34,58 +36,20 @@ module.exports = function(app) {
     });
   });
 
-  app.get('/getReminderBirthControlDaily', function(req, res) {
+  app.get('/getReminderSettings', function(req, res) {
       if(!req.user) {
         res.send({success: false});
       }
       User.findOne({'user.email': req.user.user.email}, function(err, user) {
         if(err)
           throw err;
-      res.send({success: true, reminderBirthControlDaily: user.user.reminderBirthControlDaily});
-    });
-  });
-
-  app.get('/getReminderBirthControlRefill', function(req, res) {
-      if(!req.user) {
-        res.send({success: false});
-      }
-      User.findOne({'user.email': req.user.user.email}, function(err, user) {
-        if(err)
-          throw err;
-      res.send({success: true, reminderBirthControlRefill: user.user.reminderBirthControlRefill});
-    });
-  });
-
-  app.get('/getReminderBirthControlRenewal', function(req, res) {
-      if(!req.user) {
-        res.send({success: false});
-      }
-      User.findOne({'user.email': req.user.user.email}, function(err, user) {
-        if(err)
-          throw err;
-      res.send({success: true, reminderBirthControlRenewal: user.user.reminderBirthControlRenewal});
-    });
-  });
-
-  app.get('/getReminderYearlyAppointment', function(req, res) {
-      if(!req.user) {
-        res.send({success: false});
-      }
-      User.findOne({'user.email': req.user.user.email}, function(err, user) {
-        if(err)
-          throw err;
-      res.send({success: true, reminderYearlyAppointment: user.user.reminderYearlyAppointment});
-    });
-  });
-
-  app.get('/getReminderYearlyAppointmentMonth', function(req, res) {
-      if(!req.user) {
-        res.send({success: false});
-      }
-      User.findOne({'user.email': req.user.user.email}, function(err, user) {
-        if(err)
-          throw err;
-      res.send({success: true, reminderYearlyAppointmentMonth: user.user.reminderYearlyAppointmentMonth});
+      res.send({success: true, 
+                reminderBirthControlDaily: user.user.reminderBirthControlDaily,
+                reminderBirthControlRefill: user.user.reminderBirthControlRefill,
+                reminderBirthControlRenewal: user.user.reminderBirthControlRenewal,
+                reminderYearlyAppointment: user.user.reminderYearlyAppointment,
+                reminderYearlyAppointmentMonth: user.user.reminderYearlyAppointmentMonth
+      });
     });
   });
 
@@ -101,13 +65,6 @@ module.exports = function(app) {
       user.user.reminderBirthControlRenewal = req.body.reminderBirthControlRenewal;
       user.user.reminderYearlyAppointment = req.body.reminderYearlyAppointment;
       user.user.reminderYearlyAppointmentMonth = req.body.reminderYearlyAppointmentMonth;
-
-      //console.log(req.body.reminderBirthControlDaily);
-      //console.log(req.body.reminderBirthControlRefill);
-      //console.log(req.body.reminderBirthControlRenewal);
-      //console.log(req.body.reminderYearlyAppointment);
-      //console.log(req.body.reminderYearlyAppointmentMonth);
-
       user.save();
       res.send({success: true});
     });

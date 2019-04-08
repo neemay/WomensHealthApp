@@ -53,36 +53,12 @@ app.controller('controller', function ($scope, $http, $window) {
 
     $http({
       method: 'GET',
-      url: '/getReminderBirthControlDaily',
+      url: '/getReminderSettings',
     }).success(function(response) {
       $scope.bcDaily = response.reminderBirthControlDaily;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderBirthControlRefill',
-    }).success(function(response) {
       $scope.bcRefill = response.reminderBirthControlRefill;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderBirthControlRenewal',
-    }).success(function(response) {
       $scope.bcRenewal = response.reminderBirthControlRenewal;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderYearlyAppointment',
-    }).success(function(response) {
       $scope.apptReminder = response.reminderYearlyAppointment;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderYearlyAppointmentMonth',
-    }).success(function(response) {
       $scope.apptReminderMonth = response.reminderYearlyAppointmentMonth;
     });
     
