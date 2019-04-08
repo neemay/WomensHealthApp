@@ -10,19 +10,25 @@ var flash = require('connect-flash');
 var cookieParser = require('cookie-parser');
 //database connection
 var configDB = require('./config/database.js');
-mongoose.connect(configDB.url);
+mongoose.connect(configDB.url, { useNewUrlParser: true });
 
 
 //express setup
 app.set('view engine', 'ejs'); //set up ejs for templating
 app.set('views', path.join(__dirname, '/public/views')); //set path for views folder
 app.use(express.static(__dirname + '/public')); //set path for static files
-app.use(bodyParser());
+//app.use(bodyParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 
 //passport setup
 require('./config/passport')(passport);
-app.use(session({secret: 'softwaredesignanddocumentation'}));
+app.use(session({
+  secret: 'softwaredesignanddocumentation',
+  resave: false, 
+  saveUninitialized: false 
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
