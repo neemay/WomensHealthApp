@@ -8,6 +8,8 @@ var prescriptionSchema = mongoose.Schema({
     prescriptionId: String,
     name: String,
     refills: String,
+    daysSupply: String,
+    refillDate: String,
     expiration: String,
     startDate: String,
     status: String,

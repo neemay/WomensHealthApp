@@ -85,6 +85,10 @@ app.controller('controller', function ($scope, $http, $window) {
     }
 
     $scope.startPeriod = new Date();
+    $scope.endPeriod = new Date();
+    $scope.newPrescriptionStart = new Date();
+    $scope.newPrescriptionExpiration = new Date();
+    $scope.newPrescriptionRefillDate = new Date();
   }
 
   $scope.recordStartPeriod = function() {
@@ -121,12 +125,13 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.userPrescriptions = response.data;
       $scope.prescriptionName = response.data["0"].prescription.name;
-      console.log(response.data["0"].prescription.startDate);
       $scope.prescriptionStart = new Date(response.data["0"].prescription.startDate);
       $scope.prescriptionRefills = parseInt(response.data["0"].prescription.refills);
       $scope.prescriptionExpiration = new Date(response.data["0"].prescription.expiration);
       $scope.prescriptionStatus = response.data["0"].prescription.status;
       $scope.prescriptionNotes = response.data["0"].prescription.notes;
+      $scope.prescriptionDaysSupply = parseInt(response.data["0"].prescription.daysSupply);
+      $scope.prescriptionRefillDate = new Date(response.data["0"].prescription.refillDate);
     });
   }
 
@@ -138,6 +143,8 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.prescriptionStart = new Date(presc.prescription.startDate);
         $scope.prescriptionStatus = presc.prescription.status;
         $scope.prescriptionNotes = presc.prescription.notes;
+        $scope.prescriptionDaysSupply = parseInt(presc.prescription.daysSupply);
+        $scope.prescriptionRefillDate = new Date(prec.prescription.refillDate);
       }
     });
   }
@@ -189,6 +196,8 @@ app.controller('controller', function ($scope, $http, $window) {
       data: {
         name: $scope.newPrescriptionName,
         refills: $scope.newPrescriptionRefills,
+        daysSupply: $scope.newPrescriptionDaysSupply,
+        refillDate: convertDate($scope.newPrescriptionRefillDate),
         expiration: convertDate($scope.newPrescriptionExpiration),
         startDate: convertDate($scope.newPrescriptionStart),
         status: $scope.newPrescriptionStatus,
@@ -196,14 +205,17 @@ app.controller('controller', function ($scope, $http, $window) {
       }
     }).success(function(response) {
       $("#addPrescriptionModal").modal('hide');
-      $scope.newPrescriptionName = "OTHER",
-      $scope.newPrescriptionRefills = "",
-      $scope.newPrescriptionExpiration = "",
-      $scope.newPrescriptionStart = "",
-      $scope.newPrescriptionStatus = "Active",
-      $scope.newPrescriptionNotes = ""
+      $scope.newPrescriptionName = "OTHER";
+      $scope.newPrescriptionRefills = "";
+      $scope.newPrescriptionExpiration = new Date();
+      $scope.newPrescriptionStart = new Date();
+      $scope.newPrescriptionStatus = "Active";
+      $scope.newPrescriptionNotes = "";
+      $scope.newPrescriptionDaysSupply = "";
+      $scope.newPrescriptionRefillDate = new Date();
       $scope.alertSuccess = "true";
       $scope.successMessage = "Prescription saved successfully";
+      
     });
   }
 
@@ -214,6 +226,8 @@ app.controller('controller', function ($scope, $http, $window) {
       data: {
         name: $scope.prescriptionName,
         refills: $scope.prescriptionRefills,
+        daysSupply: $scope.prescriptionDaysSupply,
+        refillDate: $scope.prescriptionRefillDate,
         expiration: convertDate($scope.prescriptionExpiration),
         startDate: convertDate($scope.prescriptionStart),
         status: $scope.prescriptionStatus,

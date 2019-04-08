@@ -14,6 +14,8 @@ module.exports = function(app) {
     newPrescription.prescription.prescriptionId = req.user.user.email + ":" + req.body.name.replace(/ /g, "").trim() + ":" + req.body.startDate;
     newPrescription.prescription.name = req.body.name;
     newPrescription.prescription.refills = req.body.refills;
+    newPrescription.prescription.daysSupply = req.body.daysSupply;
+    newPrescription.prescription.refillDate = req.body.refillDate;
     newPrescription.prescription.expiration = req.body.expiration;
     newPrescription.prescription.startDate = req.body.startDate;
     newPrescription.prescription.status = req.body.status;
@@ -49,6 +51,8 @@ module.exports = function(app) {
       if(err)
         throw err;
       prescription.prescription.refills = req.body.refills;
+      prescription.prescription.daysSupply = req.body.daysSupply;
+      prescription.prescription.refillDate = req.body.refillDate;
       prescription.prescription.expiration = req.body.expiration;
       prescription.prescription.status = req.body.status;
       prescription.prescription.notes = req.body.notes;
