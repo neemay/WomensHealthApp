@@ -321,9 +321,9 @@
               </div>
               <div class="form-group">
                 <label>Prescription Status:</label>
-                <select class="form-control">
-                  <option ng-model="newPrescriptionStatus" ng-value=true>Active</option>
-                  <option ng-model="newPrescriptionStatus" ng-value=false>Inactive</option>
+                <select ng-model="newPrescriptionStatus"  class="form-control">
+                  <option ng-value="Active">Active</option>
+                  <option ng-value="Inactive">Inactive</option>
                 </select>
               </div>
               <div class="form-group">

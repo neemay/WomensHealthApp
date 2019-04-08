@@ -10,7 +10,7 @@ var prescriptionSchema = mongoose.Schema({
     refills: String,
     expiration: String,
     startDate: String,
-    status: Boolean,
+    status: String,
     notes: String
   }
 });

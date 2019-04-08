@@ -2,6 +2,7 @@
 
 //include any mongodb models here
 var User = require('../../app/models/user');
+var Prescription = require('../../app/models/prescription');
 var nodemailer = require('nodemailer');
 var emailcreds = require('../../email-creds.json');
 var CronJob = require('cron').CronJob;
@@ -84,8 +85,10 @@ module.exports = function(app) {
 function sendReminderEmails() {
   //var date = new Date();
   //date.setSeconds(date.getSeconds()+10);
+  sendBCRenewalEmails()
   const job = new CronJob('00 38 21 * * *', function() {
       sendBCDailyEmails();
+//      sendBCRenewalEmails();
   });
   job.start();
 };
@@ -108,3 +111,37 @@ function sendBCDailyEmails() {
     });
   });
 };
+
+function sendBCRenewalEmails() {
+  User.find({'user.reminderBirthControlRenewal': true}, function(err, users) {
+    if(err)
+      throw err;
+    users.map(user => {
+      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': "Active"}, function(err, prescription) {
+        console.log("test");
+        if(prescription) {
+          //console.log(prescription.expiration);
+          var date = new Date(prescription.prescription.expiration);
+          var today = new Date();
+          today.setHours(0,0,0,0);
+          //console.log(date);
+          //console.log(today);
+          console.log(Math.round((date-today)/(1000*60*60*24)));
+          //Reminder will only be sent two weeks before expiration date
+          if(Math.round((date-today)/(1000*60*60*24)) == 14) {
+            console.log("Sending reminder email to: " + user.user.email);
+            transporter.sendMail({
+              from: emailcreds.user,
+              to: user.user.email,
+              subject: user.user.name + ', you have a notification from Obie!',
+              html: '<div>You prescription is expiring soon! Please follow up with your physician to renew your prescription.</div>'
+            }, function (err, info) {
+                if (err)
+                  throw err;
+            });
+          }
+        }
+      });
+    });
+  });
+}

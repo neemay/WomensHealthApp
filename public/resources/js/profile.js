@@ -68,6 +68,7 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.prescriptionList = response.data;
       $scope.newPrescriptionName = "OTHER";
+      $scope.newPrescriptionStatus = "Active";
     });
 
     if($window.location.hash == "#periodSymptomModal") {
@@ -181,6 +182,7 @@ app.controller('controller', function ($scope, $http, $window) {
   }
 
   $scope.addPrescription = function() {
+    console.log("test: "+ $scope.newPrescriptionStatus);
     $http({
       method: 'POST',
       url: '/addPrescription',
@@ -198,9 +200,9 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.newPrescriptionRefills = "",
       $scope.newPrescriptionExpiration = "",
       $scope.newPrescriptionStart = "",
-      $scope.newPrescriptionStatus = "",
+      $scope.newPrescriptionStatus = "Active",
       $scope.newPrescriptionNotes = ""
-      $scope.alertSuccess = true;
+      $scope.alertSuccess = "true";
       $scope.successMessage = "Prescription saved successfully";
     });
   }
