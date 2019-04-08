@@ -85,12 +85,17 @@ module.exports = function(app) {
 function sendReminderEmails() {
   //var date = new Date();
   //date.setSeconds(date.getSeconds()+10);
-  sendBCRenewalEmails()
+  //sendYearlyEmails();
   const job = new CronJob('00 38 21 * * *', function() {
       sendBCDailyEmails();
-//      sendBCRenewalEmails();
+      sendBCRenewalEmails();
+  });
+  //Send the yearly reminder emails at midnight on the first of the month
+  const yearly = new CronJob('00 10 23 7 * *', function() {
+    sendYearlyEmails();
   });
   job.start();
+  yearly.start();
 };
 
 function sendBCDailyEmails() {
@@ -144,4 +149,29 @@ function sendBCRenewalEmails() {
       });
     });
   });
-}
+};
+
+function sendYearlyEmails() {
+  User.find({'user.reminderYearlyAppointment': true}, function(err, users) {
+    if(err)
+      throw err;
+    users.map(user => {
+      var day = new Date();
+      var month = day.getMonth() + 1;
+      console.log(month);
+      console.log(user.user.reminderYearlyAppointmentMonth);
+      if(month == user.user.reminderYearlyAppointmentMonth) {
+        console.log("Sending reminder email to: " + user.user.email);
+        transporter.sendMail({
+          from: emailcreds.user,
+          to: user.user.email,
+          subject: user.user.name + ', you have a notification from Obie!',
+          html: '<div>This is your reminder to schedule your yearly appointment at the OBGYN.</div>'
+        }, function (err, info) {
+            if (err)
+              throw err;
+        });
+      }
+    });
+  });
+};
