@@ -227,7 +227,7 @@ app.controller('controller', function ($scope, $http, $window) {
         name: $scope.prescriptionName,
         refills: $scope.prescriptionRefills,
         daysSupply: $scope.prescriptionDaysSupply,
-        refillDate: $scope.prescriptionRefillDate,
+        refillDate: convertDate($scope.prescriptionRefillDate),
         expiration: convertDate($scope.prescriptionExpiration),
         startDate: convertDate($scope.prescriptionStart),
         status: $scope.prescriptionStatus,

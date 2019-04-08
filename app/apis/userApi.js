@@ -83,15 +83,13 @@ module.exports = function(app) {
 };
 
 function sendReminderEmails() {
-  //var date = new Date();
-  //date.setSeconds(date.getSeconds()+10);
-  //sendYearlyEmails();
   const job = new CronJob('00 38 21 * * *', function() {
-      sendBCDailyEmails();
-      sendBCRenewalEmails();
+    sendBCDailyEmails();
+    sendBCRenewalEmails();
+    sendBCRefillEmails();
   });
   //Send the yearly reminder emails at midnight on the first of the month
-  const yearly = new CronJob('00 10 23 7 * *', function() {
+  const yearly = new CronJob('00 30 14 7 * *', function() {
     sendYearlyEmails();
   });
   job.start();
@@ -175,3 +173,34 @@ function sendYearlyEmails() {
     });
   });
 };
+
+function sendBCRefillEmails() {
+  User.find({'user.reminderBirthControlRefill': true}, function(err, users) {
+    if(err)
+      throw err;
+    users.map(user => {
+      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': "Active"}, function(err, prescription) {
+        if(prescription) {
+          var date = new Date(prescription.prescription.refillDate);
+          //Take the last refill date, add the number of days the user is supplied
+          //This is the date we want to warn 2 weeks before
+          date.setDate(date.getDate() + parseInt(prescription.prescription.daysSupply));
+          var today = new Date();
+          today.setHours(0,0,0,0);
+          if(Math.round((date-today)/(1000*60*60*24)) == 14) {
+            console.log("Sending reminder email to: " + user.user.email);
+            transporter.sendMail({
+              from: emailcreds.user,
+              to: user.user.email,
+              subject: user.user.name + ', you have a notification from Obie!',
+              html: '<div>Looks like you need to refill your prescription soon! Please follow up with your pharmacy to renew your prescription.</div>'
+            }, function (err, info) {
+                if (err)
+                  throw err;
+            });
+          }
+        }
+      });
+    });
+  });
+}
