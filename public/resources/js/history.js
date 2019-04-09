@@ -1,4 +1,4 @@
-var app = angular.module("obie", []);
+var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) {
   $scope.isDashboard = false;
   $scope.isProfile = false;
@@ -8,13 +8,9 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.hasUserStats = true;
   $scope.hasPrescriptionSymptoms = false;
   $scope.hasPeriodSymptoms = false;
-
-
   $scope.showPeriodStats = false;
   $scope.showPrescriptionStats = false;
   $scope.showWeightStats = false;
-
-
   $scope.numPeriods = 0;
   $scope.numPrescriptions = 0;
 
@@ -23,10 +19,10 @@ app.controller('controller', function ($scope, $http, $window) {
     $http({
       method: 'GET',
       url: '/logout'
-    }).success(function(response) {
+    }).success(function() {
       $window.location.href = '/';
     });
-  }
+  };
 
   $scope.init = function() {
     $http({
@@ -59,7 +55,7 @@ app.controller('controller', function ($scope, $http, $window) {
       }
     });
 
-  }
+  };
 
   $scope.getPrescriptionSymptoms = function(id, name) {
     $http({
@@ -78,7 +74,7 @@ app.controller('controller', function ($scope, $http, $window) {
       }
 
     });
-  }
+  };
 
   $scope.getPeriodSymptoms = function(id, startDate) {
     //console.log(id);
@@ -97,7 +93,7 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.hasPeriodSymptoms = false;
       }
     });
-  }
+  };
 
 
 
@@ -113,7 +109,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.showWeightStats = false;
 
     });
-  }
+  };
 
 
   $scope.getPrescriptionStats = function() {
@@ -128,14 +124,13 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.showWeightStats = false;
 
     });
-  }
-
+  };
 
   $scope.getWeightStats = function() {
     $scope.showPeriodStats = false;
     $scope.showPrescriptionStats = false;
     $scope.showWeightStats = !$scope.showWeightStats;
-  }
+  };
 
 
 });
