@@ -160,24 +160,21 @@
             </div>
             <div class="panel-body">
               <div class="btn-group" role="group" aria-label="StatType">
-                <button type="button" class="btn btn-outline-primary" ng-click="getPeriodStats()">Period</button>
-                <button type="button" class="btn btn-outline-primary" ng-click="getPrescriptionStats()">Prescription</button>
+                <button type="button" class="btn btn-outline-primary" ng-click="getGeneralStats()">General</button>
                 <button type="button" class="btn btn-outline-primary" ng-click="getWeightStats()">Weight</button>
               </div>
-              <div ng-show="showPeriodStats">
+              <div ng-show="showGeneralStats">
                 <p>
                   <strong>Total number of periods:</strong> {{numPeriods}}
                 </p>
-                <p> More period stats coming soon...</p>
-              </div>
-              <div ng-show="showPrescriptionStats">
                 <p>
                   <strong>Total number of prescriptions:</strong> {{numPrescriptions}}
                 </p>
-                <p> More prescription stats coming soon...</p>
               </div>
               <div ng-show="showWeightStats">
-                Weight stats coming soon...
+                <div id="chart-container">
+                  <canvas id="weightStats"></canvas>
+                </div>
               </div>
 
             </div>
@@ -188,5 +185,6 @@
 
     <% include ../templates/footer.ejs %>
     <script src="resources/js/history.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
   </body>
 </html>

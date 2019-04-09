@@ -107,6 +107,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $("#startPeriodModal").modal();
     }
 
+    $scope.weightDate = new Date();
     $scope.startPeriod = new Date();
   }
 
@@ -325,6 +326,23 @@ $scope.changeName = function() {
      $scope.successMessage = "Reminder settings updated successfully";
    });
   }
+ 
+ $scope.addWeight = function() {
+   $http({
+     method: 'POST',
+     url: '/addWeight',
+     data: {
+       recordDate: convertDate($scope.weightDate),
+       weightVal: $scope.weightVal
+     }
+    }).success(function(response) {
+      $("#addWeightModal").modal('hide');
+      $scope.alertSuccess = true;
+      $scope.successMessage = "Weight added successfully";
+      $scope.weightVal = "";
+      $scope.weightDate = new Date();
+    });
+ }
 
 });
 

@@ -3,11 +3,11 @@
 var mongoose = require('mongoose');
 
 var weightSchema = mongoose.Schema({
-  period: {
+  weight: {
     email: String,
     recordDate: String,
     weightVal: String,
   }
 });
 
-module.exports = mongoose.model('Period', periodSchema);
+module.exports = mongoose.model('Weight', weightSchema);

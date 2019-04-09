@@ -1,4 +1,4 @@
-// app/apis/periodApi.js
+// app/apis/weightApi.js
 
 //include any mongodb models here
 var Weight = require('../../app/models/weight');
@@ -8,17 +8,26 @@ module.exports = function(app) {
 
   //Function to add the start date for a user's period
   app.post('/addWeight', function(req, res) {
-    var newWeight = new Weight();
-    newWeight.weight.email = req.user.user.email;
-    newWeight.weight.recordDate = req.body.recordDate;
-    newWeight.weight.weightVal = req.body.weightVal;
-    newWeight.save(function(err) {
-      if(err)
-        throw err;
-      console.log("Added weight with value " + req.body.weightVal + "from date" + req.body.recordDate);
-      res.send({success: true});
+    Weight.findOne({'weight.email': req.user.user.email, 'weight.recordDate': req.body.recordDate}, function(err, weight) {
+      if(weight) {
+        weight.weight.weightVal = req.body.weightVal;
+        weight.save();
+        console.log("Updated weight for " + req.user.user.email);
+        res.send({success: true});
+      }
+      else {
+        var newWeight = new Weight();
+        newWeight.weight.email = req.user.user.email;
+        newWeight.weight.recordDate = req.body.recordDate;
+        newWeight.weight.weightVal = req.body.weightVal;
+        newWeight.save(function(err) {
+          if(err)
+            throw err;
+          console.log("Added weight for " + req.user.user.email);
+          res.send({success: true});
+        }); 
+      }
     });
-
   });
 
   app.get('/getUserWeights', function(req, res) {
