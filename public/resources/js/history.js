@@ -8,8 +8,7 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.hasUserStats = true;
   $scope.hasPrescriptionSymptoms = false;
   $scope.hasPeriodSymptoms = false;
-  $scope.showPeriodStats = false;
-  $scope.showPrescriptionStats = false;
+  $scope.showGeneralStats = true;
   $scope.showWeightStats = false;
   $scope.numPeriods = 0;
   $scope.numPrescriptions = 0;
@@ -93,6 +92,13 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.hasPeriodSymptoms = false;
       }
     });
+  }
+   
+  $scope.getGeneralStats = function() {
+    $scope.numPeriods = $scope.userPeriods.length;
+    $scope.numPrescription = $scope.userPrescriptions.length;
+    $scope.showGeneralStats = !$scope.showPeriodStats;
+    $scope.showWeightStats = false;
   };
 
 
@@ -111,26 +117,72 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
-
-  $scope.getPrescriptionStats = function() {
+  $scope.getWeightStats = function() {
     $http({
       method: 'GET',
-      url: '/getUserPrescriptions',
+      url: '/getUserWeights'
     }).success(function(response) {
-      $scope.numPrescriptions = response.data.length;
-
-      $scope.showPeriodStats = false;
-      $scope.showPrescriptionStats = !$scope.showPrescriptionStats;
-      $scope.showWeightStats = false;
-
+      var data = response.data;
+      var dates = [];
+      //var weights = [];
+      var chartData = [];
+      var maxWeight = 0;
+      data.forEach(function(weight) {
+        if(parseInt(weight.weight.weightVal) > maxWeight) {
+          maxWeight = parseInt(weight.weight.weightVal);
+        }
+        chartData.push({
+          t: new Date(weight.weight.recordDate),
+          y: parseInt(weight.weight.weightVal)
+        });
+        dates.push(new Date(weight.weight.recordDate).toLocaleDateString());
+      });
+      //console.log(chartData);
+      //console.log(weights);
+      maxWeight = maxWeight + 10;
+      //Create the visualization
+      var ctx = $("#weightStats");
+      var chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: dates,
+          datasets: [{
+            data: chartData,
+            borderColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgba(75, 192, 192, 0.1)",
+            pointRadius: 5,
+            pointHoverRadius: 5,
+            pointBackgroundColor: "rgb(75, 192, 192)" 
+          }]
+        },
+        options: {
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: "Date Recorded"
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: "Weight (lbs)"
+              },
+              ticks: {
+                suggestedMin: 50,
+                suggestedMax: maxWeight,
+                stepSize: 10
+              }
+            }]
+          }
+        }
+      });
+      
+      $scope.showGeneralStats = false;
+      $scope.showWeightStats = !$scope.showWeightStats;
     });
   };
-
-  $scope.getWeightStats = function() {
-    $scope.showPeriodStats = false;
-    $scope.showPrescriptionStats = false;
-    $scope.showWeightStats = !$scope.showWeightStats;
-  };
-
-
 });

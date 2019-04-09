@@ -82,13 +82,15 @@
             </div>
             <div class="panel-body">
               <strong>My period</strong>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#startPeriodModal" ng-show="!userIsOnPeriod">Record start of period</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-show="userIsOnPeriod">Record end of period</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-show="userIsOnPeriod">Add period symptoms</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#startPeriodModal" ng-show="!userIsOnPeriod">Record start of period</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-show="userIsOnPeriod">Record end of period</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-show="userIsOnPeriod">Add period symptoms</button>
               <strong>My perscription</strong>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()">Update a prescription</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal" ng-click="getUserPrescriptions()">Add prescription symptoms</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()">Update a prescription</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal" ng-click="getUserPrescriptions()">Add prescription symptoms</button>
+              <strong>My statistics</strong>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#addWeightModal">Add weight</button>
             </div>
           </div>
         </div>
@@ -512,6 +514,33 @@
                 <textarea ng-model="notes" class="form-control"></textarea>
               </div>
              <button type="submit" class="btn btn-primary" ng-click="recordPrescriptionSymptoms()">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  Record weight modal  -->
+    <div class="modal fade" id="addWeightModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Add weight</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>If you enter multiple weights for the same date, only the most recent will be saved.</p>
+            <form class="form-container">
+              <div class="form-group">
+                <label>Enter Date</label>
+                <input type="date" class="form-control" ng-model="weightDate">
+              </div>
+              <div class="form-group">
+                <label>Enter Weight (lbs)</label>
+                <input type="number" class="form-control" ng-model="weightVal">
+              </div>
+             <button type="submit" class="btn btn-primary" ng-click="addWeight()">Submit</button>
             </form>
           </div>
         </div>

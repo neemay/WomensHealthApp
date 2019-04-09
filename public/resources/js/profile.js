@@ -84,6 +84,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $('#startPeriodModal').modal();
     }
 
+    $scope.weightDate = new Date();
     $scope.startPeriod = new Date();
     $scope.endPeriod = new Date();
     $scope.newPrescriptionStart = new Date();
@@ -285,6 +286,40 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+ $scope.updateReminders = function() {
+   $http({
+     method: 'POST',
+     url: '/setReminders',
+     data: {
+       reminderBirthControlDaily: $scope.bcDaily,
+       reminderBirthControlRefill: $scope.bcRefill,
+       reminderBirthControlRenewal: $scope.bcRenewal,
+       reminderYearlyAppointment: $scope.apptReminder,
+       reminderYearlyAppointmentMonth: $scope.apptReminderMonth
+     }
+   }).success(function(response) {
+     $scope.alertSuccess = true;
+     $scope.successMessage = "Reminder settings updated successfully";
+   });
+  }
+ 
+ $scope.addWeight = function() {
+   $http({
+     method: 'POST',
+     url: '/addWeight',
+     data: {
+       recordDate: convertDate($scope.weightDate),
+       weightVal: $scope.weightVal
+     }
+    }).success(function(response) {
+      $("#addWeightModal").modal('hide');
+      $scope.alertSuccess = true;
+      $scope.successMessage = "Weight added successfully";
+      $scope.weightVal = "";
+      $scope.weightDate = new Date();
+    });
+ }
+
   $scope.changeName = function() {
     $http({
       method: 'POST',
@@ -299,24 +334,6 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.successMessage = 'Name changed successfully';
     });
   };
-
-  $scope.updateReminders = function() {
-    $http({
-      method: 'POST',
-      url: '/setReminders',
-      data: {
-        reminderBirthControlDaily: $scope.bcDaily,
-        reminderBirthControlRefill: $scope.bcRefill,
-        reminderBirthControlRenewal: $scope.bcRenewal,
-        reminderYearlyAppointment: $scope.apptReminder,
-        reminderYearlyAppointmentMonth: $scope.apptReminderMonth
-      }
-    }).success(function() {
-      $scope.alertSuccess = true;
-      $scope.successMessage = 'Reminder settings updated successfully';
-    });
-  };
-});
 
 //Function to convert the date object to a string with only
 //the current date in YYYY/MM/DD format
