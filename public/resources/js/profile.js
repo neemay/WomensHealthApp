@@ -1,4 +1,4 @@
-var app = angular.module("obie", []);
+var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) {
   $scope.isDashboard = false;
   $scope.isProfile = true;
@@ -6,25 +6,25 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.userIsOnPeriod = false;
   $scope.alertSuccess = false;
   $scope.editingPrescription = false;
-  $scope.symptomSpotting = "None";
-  $scope.symptomNausea = "None";
-  $scope.symptomHeadache = "None"; 
-  $scope.symptomSoreBreasts = "None";
-  $scope.symptomMoodSwings = "None";
-  $scope.symptomDate = "";
-  $scope.symptomCramps = "None";
-  $scope.symptomFlow = "None";
-  $scope.symptomBackPain = "None";
-  $scope.symptomBloating = "None";
+  $scope.symptomSpotting = 'None';
+  $scope.symptomNausea = 'None';
+  $scope.symptomHeadache = 'None'; 
+  $scope.symptomSoreBreasts = 'None';
+  $scope.symptomMoodSwings = 'None';
+  $scope.symptomDate = '';
+  $scope.symptomCramps = 'None';
+  $scope.symptomFlow = 'None';
+  $scope.symptomBackPain = 'None';
+  $scope.symptomBloating = 'None';
   
   $scope.logout = function() {
     $http({
       method: 'GET',
       url: '/logout'
-    }).success(function(response) {
+    }).success(function() {
       $window.location.href = '/';
     });
-  }
+  };
 
   $scope.init = function() {
     $http({
@@ -53,36 +53,12 @@ app.controller('controller', function ($scope, $http, $window) {
 
     $http({
       method: 'GET',
-      url: '/getReminderBirthControlDaily',
+      url: '/getReminderSettings',
     }).success(function(response) {
       $scope.bcDaily = response.reminderBirthControlDaily;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderBirthControlRefill',
-    }).success(function(response) {
       $scope.bcRefill = response.reminderBirthControlRefill;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderBirthControlRenewal',
-    }).success(function(response) {
       $scope.bcRenewal = response.reminderBirthControlRenewal;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderYearlyAppointment',
-    }).success(function(response) {
       $scope.apptReminder = response.reminderYearlyAppointment;
-    });
-
-    $http({
-      method: 'GET',
-      url: '/getReminderYearlyAppointmentMonth',
-    }).success(function(response) {
       $scope.apptReminderMonth = response.reminderYearlyAppointmentMonth;
     });
     
@@ -91,25 +67,30 @@ app.controller('controller', function ($scope, $http, $window) {
       url: '/getPrescriptionList'
     }).success(function(response) {
       $scope.prescriptionList = response.data;
-      $scope.newPrescriptionName = "OTHER";
+      $scope.newPrescriptionName = 'OTHER';
+      $scope.newPrescriptionStatus = 'Active';
     });
 
-    if($window.location.hash == "#periodSymptomModal") {
-      $("#periodSymptomModal").modal();
+    if($window.location.hash == '#periodSymptomModal') {
+      $('#periodSymptomModal').modal();
     }
-    else if($window.location.hash == "#prescriptionSymptomModal") {
-      $("#prescriptionSymptomModal").modal();
+    else if($window.location.hash == '#prescriptionSymptomModal') {
+      $('#prescriptionSymptomModal').modal();
     }
-    else if($window.location.hash == "#endPeriodModal") {
-      $("#endPeriodModal").modal();
+    else if($window.location.hash == '#endPeriodModal') {
+      $('#endPeriodModal').modal();
     }
-    else if($window.location.hash == "#startPeriodModal") {
-      $("#startPeriodModal").modal();
+    else if($window.location.hash == '#startPeriodModal') {
+      $('#startPeriodModal').modal();
     }
 
     $scope.weightDate = new Date();
     $scope.startPeriod = new Date();
-  }
+    $scope.endPeriod = new Date();
+    $scope.newPrescriptionStart = new Date();
+    $scope.newPrescriptionExpiration = new Date();
+    $scope.newPrescriptionRefillDate = new Date();
+  };
 
   $scope.recordStartPeriod = function() {
     $http({
@@ -118,11 +99,11 @@ app.controller('controller', function ($scope, $http, $window) {
       data: {
         startDate: convertDate($scope.startPeriod)
       }
-    }).success(function(response) {
-      $("#startPeriodModal").modal("hide");
+    }).success(function() {
+      $('#startPeriodModal').modal('hide');
       $scope.userIsOnPeriod = true;
     });
-  }
+  };
 
   $scope.recordEndPeriod = function() {
     $http({
@@ -131,11 +112,11 @@ app.controller('controller', function ($scope, $http, $window) {
       data: {
         endDate: convertDate($scope.endPeriod)
       }
-    }).success(function(response) {
-      $("#endPeriodModal").modal("hide");
+    }).success(function() {
+      $('#endPeriodModal').modal('hide');
       $scope.userIsOnPeriod = false;
     });
-  }
+  };
 
   $scope.getUserPrescriptions = function() {
     $scope.editingPrescription = true;
@@ -144,15 +125,16 @@ app.controller('controller', function ($scope, $http, $window) {
       url: '/getUserPrescriptions'
     }).success(function(response) {
       $scope.userPrescriptions = response.data;
-      $scope.prescriptionName = response.data["0"].prescription.name;
-      console.log(response.data["0"].prescription.startDate);
-      $scope.prescriptionStart = new Date(response.data["0"].prescription.startDate);
-      $scope.prescriptionRefills = parseInt(response.data["0"].prescription.refills);
-      $scope.prescriptionExpiration = new Date(response.data["0"].prescription.expiration);
-      $scope.prescriptionStatus = response.data["0"].prescription.status;
-      $scope.prescriptionNotes = response.data["0"].prescription.notes;
+      $scope.prescriptionName = response.data['0'].prescription.name;
+      $scope.prescriptionStart = new Date(response.data['0'].prescription.startDate);
+      $scope.prescriptionRefills = parseInt(response.data['0'].prescription.refills);
+      $scope.prescriptionExpiration = new Date(response.data['0'].prescription.expiration);
+      $scope.prescriptionStatus = response.data['0'].prescription.status;
+      $scope.prescriptionNotes = response.data['0'].prescription.notes;
+      $scope.prescriptionDaysSupply = parseInt(response.data['0'].prescription.daysSupply);
+      $scope.prescriptionRefillDate = new Date(response.data['0'].prescription.refillDate);
     });
-  }
+  };
 
   $scope.loadPrescription = function() {
     $scope.userPrescriptions.forEach(function(presc) {
@@ -162,9 +144,11 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.prescriptionStart = new Date(presc.prescription.startDate);
         $scope.prescriptionStatus = presc.prescription.status;
         $scope.prescriptionNotes = presc.prescription.notes;
+        $scope.prescriptionDaysSupply = parseInt(presc.prescription.daysSupply);
+        $scope.prescriptionRefillDate = new Date(presc.prescription.refillDate);
       }
     });
-  }
+  };
   
   $scope.loadPrescriptionDate = function() {
     $scope.userPrescriptions.forEach(function(presc) {
@@ -172,7 +156,7 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.prescriptionStart = new Date(presc.prescription.startDate);
       }
     });
-  }
+  };
   
   $scope.recordPeriodSymptoms = function() {
     $http({
@@ -189,46 +173,52 @@ app.controller('controller', function ($scope, $http, $window) {
         bloating: $scope.symptomBloating,
         notes: $scope.notes
       }
-    }).success(function(response) {
-      $("#periodSymptomModal").modal('hide');
-      $("#alertSuccess").alert();
-      $scope.symptomDate = "";
-      $scope.symptomCramps = "None";
-      $scope.symptomNausea = "None";
-      $scope.symptomHeadache = "None";
-      $scope.symptomFlow = "None";
-      $scope.symptomBackPain = "None";
-      $scope.symptomBloating = "None";
-      $scope.notes = "";
+    }).success(function() {
+      $('#periodSymptomModal').modal('hide');
+      $('#alertSuccess').alert();
+      $scope.symptomDate = '';
+      $scope.symptomCramps = 'None';
+      $scope.symptomNausea = 'None';
+      $scope.symptomHeadache = 'None';
+      $scope.symptomFlow = 'None';
+      $scope.symptomBackPain = 'None';
+      $scope.symptomBloating = 'None';
+      $scope.notes = '';
       $scope.alertSuccess = true;
-      $scope.successMessage = "Symptoms saved successfully";
+      $scope.successMessage = 'Symptoms saved successfully';
     });
-  }
+  };
 
   $scope.addPrescription = function() {
+    console.log('test: '+ $scope.newPrescriptionStatus);
     $http({
       method: 'POST',
       url: '/addPrescription',
       data: {
         name: $scope.newPrescriptionName,
         refills: $scope.newPrescriptionRefills,
+        daysSupply: $scope.newPrescriptionDaysSupply,
+        refillDate: convertDate($scope.newPrescriptionRefillDate),
         expiration: convertDate($scope.newPrescriptionExpiration),
         startDate: convertDate($scope.newPrescriptionStart),
         status: $scope.newPrescriptionStatus,
         notes: $scope.newPrescriptionNotes
       }
-    }).success(function(response) {
-      $("#addPrescriptionModal").modal('hide');
-      $scope.newPrescriptionName = "OTHER",
-      $scope.newPrescriptionRefills = "",
-      $scope.newPrescriptionExpiration = "",
-      $scope.newPrescriptionStart = "",
-      $scope.newPrescriptionStatus = "",
-      $scope.newPrescriptionNotes = ""
-      $scope.alertSuccess = true;
-      $scope.successMessage = "Prescription saved successfully";
+    }).success(function() {
+      $('#addPrescriptionModal').modal('hide');
+      $scope.newPrescriptionName = 'OTHER';
+      $scope.newPrescriptionRefills = '';
+      $scope.newPrescriptionExpiration = new Date();
+      $scope.newPrescriptionStart = new Date();
+      $scope.newPrescriptionStatus = 'Active';
+      $scope.newPrescriptionNotes = '';
+      $scope.newPrescriptionDaysSupply = '';
+      $scope.newPrescriptionRefillDate = new Date();
+      $scope.alertSuccess = 'true';
+      $scope.successMessage = 'Prescription saved successfully';
+      
     });
-  }
+  };
 
   $scope.updatePrescription = function() {
     $http({
@@ -237,17 +227,19 @@ app.controller('controller', function ($scope, $http, $window) {
       data: {
         name: $scope.prescriptionName,
         refills: $scope.prescriptionRefills,
+        daysSupply: $scope.prescriptionDaysSupply,
+        refillDate: convertDate($scope.prescriptionRefillDate),
         expiration: convertDate($scope.prescriptionExpiration),
         startDate: convertDate($scope.prescriptionStart),
         status: $scope.prescriptionStatus,
         notes: $scope.prescriptionNotes
       }
-    }).success(function(response) {
-      $("#updatePrescriptionModal").modal('hide');
+    }).success(function() {
+      $('#updatePrescriptionModal').modal('hide');
       $scope.alertSuccess = true;
-      $scope.successMessage = "Prescription updated successfully";
+      $scope.successMessage = 'Prescription updated successfully';
     });
-  }
+  };
   
   $scope.deletePrescription = function() {
     $http({
@@ -257,12 +249,12 @@ app.controller('controller', function ($scope, $http, $window) {
         name: $scope.prescriptionName,
         startDate: convertDate($scope.prescriptionStart)
       }
-    }).success(function(response) {
-      $("#updatePrescriptionModal").modal('hide');
+    }).success(function() {
+      $('#updatePrescriptionModal').modal('hide');
       $scope.alertSuccess = true;
-      $scope.successMessage = "Prescription deleted successfully";
+      $scope.successMessage = 'Prescription deleted successfully';
     });
-  }
+  };
   
   $scope.recordPrescriptionSymptoms = function() {
     $http({
@@ -279,36 +271,20 @@ app.controller('controller', function ($scope, $http, $window) {
         moodSwings: $scope.symptomMoodSwings,
         notes: $scope.notes
       }
-    }).success(function(response) {
-      $("#prescriptionSymptomModal").modal('hide');
-      $scope.prescriptionStart = "";
-      $scope.symptomDate = "";
-      $scope.symptomSpotting = "None";
-      $scope.symptomNausea = "None";
-      $scope.symptomHeadache = "None"; 
-      $scope.symptomSoreBreasts = "None";
-      $scope.symptomMoodSwings = "None";
-      $scope.notes = "";
+    }).success(function() {
+      $('#prescriptionSymptomModal').modal('hide');
+      $scope.prescriptionStart = '';
+      $scope.symptomDate = '';
+      $scope.symptomSpotting = 'None';
+      $scope.symptomNausea = 'None';
+      $scope.symptomHeadache = 'None'; 
+      $scope.symptomSoreBreasts = 'None';
+      $scope.symptomMoodSwings = 'None';
+      $scope.notes = '';
       $scope.alertSuccess = true;
-      $scope.successMessage = "Prescription symptoms added successfully";
+      $scope.successMessage = 'Prescription symptoms added successfully';
     });
-  }
-
-$scope.changeName = function() {
-  $http({
-    method: 'POST',
-    url: '/setName',
-    data: {
-      name: $scope.preferredName
-    }
-  }).success(function(response) {
-    console.log("test");
-    $("#nameModal").modal('hide');
-    $scope.alertSuccess = true;
-    $scope.userName = $scope.preferredName;
-    $scope.successMessage = "Name changed successfully";
-  });
- }
+  };
 
  $scope.updateReminders = function() {
    $http({
@@ -344,7 +320,20 @@ $scope.changeName = function() {
     });
  }
 
-});
+  $scope.changeName = function() {
+    $http({
+      method: 'POST',
+      url: '/setName',
+      data: {
+        name: $scope.preferredName
+      }
+    }).success(function() {
+      $('#nameModal').modal('hide');
+      $scope.alertSuccess = true;
+      $scope.userName = $scope.preferredName;
+      $scope.successMessage = 'Name changed successfully';
+    });
+  };
 
 //Function to convert the date object to a string with only
 //the current date in YYYY/MM/DD format
@@ -352,5 +341,5 @@ function convertDate(date) {
   var day = date.getDate();
   var month = date.getMonth() + 1;
   var year = date.getFullYear();
-  return month + "/" + day + "/" + year;
+  return month + '/' + day + '/' + year;
 }

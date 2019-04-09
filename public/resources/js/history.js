@@ -1,4 +1,4 @@
-var app = angular.module("obie", []);
+var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) {
   $scope.isDashboard = false;
   $scope.isProfile = false;
@@ -8,12 +8,8 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.hasUserStats = true;
   $scope.hasPrescriptionSymptoms = false;
   $scope.hasPeriodSymptoms = false;
-
-
   $scope.showGeneralStats = true;
   $scope.showWeightStats = false;
-
-
   $scope.numPeriods = 0;
   $scope.numPrescriptions = 0;
 
@@ -22,10 +18,10 @@ app.controller('controller', function ($scope, $http, $window) {
     $http({
       method: 'GET',
       url: '/logout'
-    }).success(function(response) {
+    }).success(function() {
       $window.location.href = '/';
     });
-  }
+  };
 
   $scope.init = function() {
     $http({
@@ -58,7 +54,7 @@ app.controller('controller', function ($scope, $http, $window) {
       }
     });
 
-  }
+  };
 
   $scope.getPrescriptionSymptoms = function(id, name) {
     $http({
@@ -77,7 +73,7 @@ app.controller('controller', function ($scope, $http, $window) {
       }
 
     });
-  }
+  };
 
   $scope.getPeriodSymptoms = function(id, startDate) {
     //console.log(id);
@@ -103,7 +99,23 @@ app.controller('controller', function ($scope, $http, $window) {
     $scope.numPrescription = $scope.userPrescriptions.length;
     $scope.showGeneralStats = !$scope.showPeriodStats;
     $scope.showWeightStats = false;
-  }
+  };
+
+
+
+  $scope.getPeriodStats = function() {
+    $http({
+      method: 'GET',
+      url: '/getUserPeriods',
+    }).success(function(response) {
+      $scope.numPeriods = response.data.length;
+
+      $scope.showPeriodStats = !$scope.showPeriodStats;
+      $scope.showPrescriptionStats = false;
+      $scope.showWeightStats = false;
+
+    });
+  };
 
   $scope.getWeightStats = function() {
     $http({
@@ -172,7 +184,5 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.showGeneralStats = false;
       $scope.showWeightStats = !$scope.showWeightStats;
     });
-  }
-
-
+  };
 });
