@@ -1,4 +1,4 @@
-var app = angular.module("obie", []);
+var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) { 
   $scope.isDashboard = true;
   $scope.isProfile = false;
@@ -10,10 +10,10 @@ app.controller('controller', function ($scope, $http, $window) {
     $http({
       method: 'GET',
       url: '/logout'
-    }).success(function(response) {
+    }).success(function() {
       $window.location.href = '/';
     });
-  }
+  };
   
   $scope.init = function() {
     $http({
@@ -23,7 +23,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userName = response.name;
     });
 	
-	$http({
+    $http({
       method: 'GET',
       url: '/getEmail',
     }).success(function(response) {
@@ -48,5 +48,5 @@ app.controller('controller', function ($scope, $http, $window) {
         }
       }
     });
-  }
+  };
 });

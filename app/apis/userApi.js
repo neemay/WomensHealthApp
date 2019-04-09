@@ -8,8 +8,8 @@ var emailcreds = require('../../email-creds.json');
 var CronJob = require('cron').CronJob;
 
 var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: emailcreds
+  service: 'gmail',
+  auth: emailcreds
 });
 
 module.exports = function(app) {
@@ -47,18 +47,18 @@ module.exports = function(app) {
   });
 
   app.get('/getReminderSettings', function(req, res) {
-      if(!req.user) {
-        res.send({success: false});
-      }
-      User.findOne({'user.email': req.user.user.email}, function(err, user) {
-        if(err)
-          throw err;
+    if(!req.user) {
+      res.send({success: false});
+    }
+    User.findOne({'user.email': req.user.user.email}, function(err, user) {
+      if(err)
+        throw err;
       res.send({success: true, 
-                reminderBirthControlDaily: user.user.reminderBirthControlDaily,
-                reminderBirthControlRefill: user.user.reminderBirthControlRefill,
-                reminderBirthControlRenewal: user.user.reminderBirthControlRenewal,
-                reminderYearlyAppointment: user.user.reminderYearlyAppointment,
-                reminderYearlyAppointmentMonth: user.user.reminderYearlyAppointmentMonth
+        reminderBirthControlDaily: user.user.reminderBirthControlDaily,
+        reminderBirthControlRefill: user.user.reminderBirthControlRefill,
+        reminderBirthControlRenewal: user.user.reminderBirthControlRenewal,
+        reminderYearlyAppointment: user.user.reminderYearlyAppointment,
+        reminderYearlyAppointmentMonth: user.user.reminderYearlyAppointmentMonth
       });
     });
   });
@@ -94,34 +94,34 @@ function sendReminderEmails() {
   });
   job.start();
   yearly.start();
-};
+}
 
 function sendBCDailyEmails() {
   User.find({'user.reminderBirthControlDaily': true}, function(err, users) {
     if(err)
       throw err;
     users.map(user => {
-      console.log("Sending reminder email to: " + user.user.email);
+      console.log('Sending reminder email to: ' + user.user.email);
       transporter.sendMail({
         from: emailcreds.user,
         to: user.user.email,
         subject: user.user.name + ', you have a notification from Obie!',
         html: '<div>Reminder to take your birth control today!</div>'
-      }, function (err, info) {
-          if (err)
-            throw err;
+      }, function (err) {
+        if (err)
+          throw err;
       });
     });
   });
-};
+}
 
 function sendBCRenewalEmails() {
   User.find({'user.reminderBirthControlRenewal': true}, function(err, users) {
     if(err)
       throw err;
     users.map(user => {
-      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': "Active"}, function(err, prescription) {
-        console.log("test");
+      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescription) {
+        console.log('test');
         if(prescription) {
           //console.log(prescription.expiration);
           var date = new Date(prescription.prescription.expiration);
@@ -132,22 +132,22 @@ function sendBCRenewalEmails() {
           console.log(Math.round((date-today)/(1000*60*60*24)));
           //Reminder will only be sent two weeks before expiration date
           if(Math.round((date-today)/(1000*60*60*24)) == 14) {
-            console.log("Sending reminder email to: " + user.user.email);
+            console.log('Sending reminder email to: ' + user.user.email);
             transporter.sendMail({
               from: emailcreds.user,
               to: user.user.email,
               subject: user.user.name + ', you have a notification from Obie!',
               html: '<div>You prescription is expiring soon! Please follow up with your physician to renew your prescription.</div>'
-            }, function (err, info) {
-                if (err)
-                  throw err;
+            }, function (err) {
+              if (err)
+                throw err;
             });
           }
         }
       });
     });
   });
-};
+}
 
 function sendYearlyEmails() {
   User.find({'user.reminderYearlyAppointment': true}, function(err, users) {
@@ -159,27 +159,27 @@ function sendYearlyEmails() {
       console.log(month);
       console.log(user.user.reminderYearlyAppointmentMonth);
       if(month == user.user.reminderYearlyAppointmentMonth) {
-        console.log("Sending reminder email to: " + user.user.email);
+        console.log('Sending reminder email to: ' + user.user.email);
         transporter.sendMail({
           from: emailcreds.user,
           to: user.user.email,
           subject: user.user.name + ', you have a notification from Obie!',
           html: '<div>This is your reminder to schedule your yearly appointment at the OBGYN.</div>'
-        }, function (err, info) {
-            if (err)
-              throw err;
+        }, function (err) {
+          if (err)
+            throw err;
         });
       }
     });
   });
-};
+}
 
 function sendBCRefillEmails() {
   User.find({'user.reminderBirthControlRefill': true}, function(err, users) {
     if(err)
       throw err;
     users.map(user => {
-      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': "Active"}, function(err, prescription) {
+      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescription) {
         if(prescription) {
           var date = new Date(prescription.prescription.refillDate);
           //Take the last refill date, add the number of days the user is supplied
@@ -188,15 +188,15 @@ function sendBCRefillEmails() {
           var today = new Date();
           today.setHours(0,0,0,0);
           if(Math.round((date-today)/(1000*60*60*24)) == 14) {
-            console.log("Sending reminder email to: " + user.user.email);
+            console.log('Sending reminder email to: ' + user.user.email);
             transporter.sendMail({
               from: emailcreds.user,
               to: user.user.email,
               subject: user.user.name + ', you have a notification from Obie!',
               html: '<div>Looks like you need to refill your prescription soon! Please follow up with your pharmacy to renew your prescription.</div>'
-            }, function (err, info) {
-                if (err)
-                  throw err;
+            }, function (err) {
+              if (err)
+                throw err;
             });
           }
         }

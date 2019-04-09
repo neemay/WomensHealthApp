@@ -26,7 +26,7 @@ module.exports = function(passport) {
           return done(err);
         
         if(user) {
-          console.log("Email already exists");
+          console.log('Email already exists');
           return done(null, false, req.flash('signupMessage', 'That email is already taken'));
         }
         else {
@@ -39,7 +39,7 @@ module.exports = function(passport) {
           newUser.save(function(err) {
             if(err)
               throw err;
-            console.log("Registered new user");
+            console.log('Registered new user');
             return done(null, newUser);
           });
         }
@@ -49,25 +49,22 @@ module.exports = function(passport) {
   
   //Login function
   passport.use('local-login', new UserStrategy({
-      usernameField : 'email',
-      passwordField : 'password',
-      passReqToCallback : true
+    usernameField : 'email',
+    passwordField : 'password',
+    passReqToCallback : true
   },
   function(req, email, password, done) {
-      User.findOne({ 'user.email' :  email }, function(err, user) {
-          if (err)
-              return done(err);
-
-          if (!user)
-              return done(null, false, req.flash('loginMessage', 'No user found.'));
-
-          // if the user is found but the password is wrong
-          if (!user.validPassword(password))
-              return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
-
-          // all is well, return successful user
-          return done(null, user);
-      });
+    User.findOne({ 'user.email' :  email }, function(err, user) {
+      if (err)
+        return done(err);
+      if (!user)
+        return done(null, false, req.flash('loginMessage', 'No user found.'));
+      // if the user is found but the password is wrong
+      if (!user.validPassword(password))
+        return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+      // all is well, return successful user
+      return done(null, user);
+    });
   }));
   
 };

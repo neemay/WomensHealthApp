@@ -24,6 +24,7 @@
     "cron": "^1.7.0",
     "csvtojson": "^2.0.8",
     "ejs": "^2.6.1",
+    "eslint": "^5.16.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "mongoose": "^5.4.14",

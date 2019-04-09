@@ -1,4 +1,4 @@
-var app = angular.module("obie", []);
+var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) { 
   //Scope variable initialization
   $scope.isDashboard = false;
@@ -19,8 +19,7 @@ app.controller('controller', function ($scope, $http, $window) {
           email: $scope.createEmail,
           password: $scope.createPassword
         }
-      }).success(function(response) {
-        console.log("success");
+      }).success(function() {
         $window.location.href = '/dashboard';
       });
     }  
@@ -34,18 +33,17 @@ app.controller('controller', function ($scope, $http, $window) {
         email: $scope.email,
         password: $scope.password
       }
-    }).success(function(response) {
-      console.log("success");
+    }).success(function() {
       $window.location.href = '/dashboard';
     });
-  }
+  };
   
   $scope.init = function() {
-    if($window.location.hash == "#login") {
-      $("#loginModal").modal();
+    if($window.location.hash == '#login') {
+      $('#loginModal').modal();
     }
-    else if($window.location.hash == "#signup") {
-      $("#signupModal").modal();
+    else if($window.location.hash == '#signup') {
+      $('#signupModal').modal();
     }
-  }
+  };
 });
