@@ -301,7 +301,7 @@ app.controller('controller', function ($scope, $http, $window) {
      $scope.alertSuccess = true;
      $scope.successMessage = "Reminder settings updated successfully";
    });
-  }
+  };
  
  $scope.addWeight = function() {
    $http({
@@ -318,7 +318,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.weightVal = "";
       $scope.weightDate = new Date();
     });
- }
+ };
 
   $scope.changeName = function() {
     $http({
@@ -334,6 +334,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.successMessage = 'Name changed successfully';
     });
   };
+});
 
 //Function to convert the date object to a string with only
 //the current date in YYYY/MM/DD format
