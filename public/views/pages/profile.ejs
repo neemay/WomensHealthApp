@@ -10,10 +10,16 @@
     <!-- Insert Body here -->
     <div class="container-fluid ng-cloak">
       <div class="alert alert-success alert-dismissable fade show" role="alert" id="alertSuccess" ng-show="alertSuccess">
-        {{successMessage}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <button type="button" class="close" ng-click="dismissSuccess()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
+        {{successMessage}}
+      </div>
+      <div class="alert alert-danger alert-dismissable fade show" role="alert" id="alertError" ng-show="alertError">
+        <button type="button" class="close" ng-click="dismissError()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {{errorMessage}}
       </div>
       <div class="offset-md-2 col-md-8 page-header">
         <h2>{{userName}}'s Profile</h2>
@@ -34,7 +40,7 @@
               <h5>My perscription</h5>
               <div class="btn-container">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()">Update a prescription</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()" ng-disabled="!userPrescriptions">Update a prescription</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal" ng-click="getUserPrescriptions()">Add prescription symptoms</button>
               </div>
               <h5>My statistics</h5>
@@ -69,21 +75,21 @@
                   <input type="checkbox" class="custom-control-input" id="apptReminder" ng-model="apptReminder">
                   <label class="custom-control-label" for="apptReminder">
                   Remind me to make an appointment every
-                    <select ng-model="apptReminderMonth">
-                      <option value=1>January</option>
-                      <option value=2>February</option>
-                      <option value=3>March</option>
-                      <option value=4>April</option>
-                      <option value=5>May</option>
-                      <option value=6>June</option>
-                      <option value=7>July</option>
-                      <option value=8>August</option>
-                      <option value=9>September</option>
-                      <option value=10>October</option>
-                      <option value=11>November</option>
-                      <option value=12>December</option>
-                    </select>
                   </label>
+                  <select ng-model="apptReminderMonth">
+                    <option value=1>January</option>
+                    <option value=2>February</option>
+                    <option value=3>March</option>
+                    <option value=4>April</option>
+                    <option value=5>May</option>
+                    <option value=6>June</option>
+                    <option value=7>July</option>
+                    <option value=8>August</option>
+                    <option value=9>September</option>
+                    <option value=10>October</option>
+                    <option value=11>November</option>
+                    <option value=12>December</option>
+                  </select>
                 </div>
               </div>
               <div class="float-container">
@@ -406,7 +412,7 @@
                 <textarea class="form-control" ng-model="prescriptionNotes" placeholder="Generic name, alternate names, etc."></textarea>
               </div>
               <button type="submit" class="btn btn-primary btn-inline" ng-click="updatePrescription()">Submit</button>
-              <button type="submit" class="btn btn-danger btn-inline" ng-click="deletePrescription()">Delete</button>
+              <button type="submit" class="btn btn-danger btn-inline" ng-click="confirmDelete()">Delete</button>
             </form>
           </div>
         </div>
@@ -552,6 +558,26 @@
               </div>
              <button type="submit" class="btn btn-primary" ng-click="addWeight()">Submit</button>
             </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  Confirm Delete Modal  -->
+    <div class="modal fade" id="confirmDeleteModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4>Are you sure?</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            If you delete this prescription then all associated symptoms will also be deleted. If you want to keep this prescription's associated symptoms, set this prescription's status to "inactive" instead.
+            <div class="mt-3">
+              <button ng-click="deletePrescription()" class="btn btn-inline btn-danger">Delete</button>
+              <button ng-click="nevermind()" class="btn btn-inline btn-secondary">Nevermind</button>
+            </div>
           </div>
         </div>
       </div>

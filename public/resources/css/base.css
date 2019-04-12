@@ -118,6 +118,11 @@ textarea {
   border-color: #418e8a!important;
 }
 
+.btn-primary:disabled {
+  background-color: #a4d6d3;
+  border-color: #a4d6d3;
+}
+
 .btn-outline-primary {
   color: #51bcb6;
   border-color: #51bcb6;
@@ -189,6 +194,10 @@ h5 {
 .container-fluid {
   padding-left: 30px;
   padding-right: 30px;
+}
+
+.modal { 
+  overflow: auto !important;
 }
 
 @media screen and (max-width: 600px) {

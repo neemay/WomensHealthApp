@@ -57,12 +57,15 @@ module.exports = function(app) {
   });
 
   app.post('/deletePrescription', function(req, res) {
-    //TODO: ALSO DELETE ASSOCIATED SYMPTOMS
     var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
     Prescription.deleteOne({'prescription.prescriptionId': id}, function(err) {
       if(err)
         throw err;
-      res.send({success: true});
+      PrescriptionSymptom.deleteMany({'prescriptionSymptom.prescriptionId': id}, function(err) {
+        if(err)
+          throw err;
+        res.send({success: true});
+      });
     });
   });
 

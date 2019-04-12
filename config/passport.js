@@ -35,6 +35,11 @@ module.exports = function(passport) {
           newUser.user.password = newUser.generateHash(password);
           newUser.user.name = req.body.name;
           newUser.user.isOnPeriod = false;
+          newUser.user.reminderBirthControlDaily = false;
+          newUser.user.reminderBirthControlRefill = false;
+          newUser.user.reminderBirthControlRenewal = false;
+          newUser.user.reminderYearlyAppointment = false;
+          newUser.user.reminderYearlyAppointmentMonth = "1";
           
           newUser.save(function(err) {
             if(err)
