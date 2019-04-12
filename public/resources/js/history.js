@@ -148,11 +148,11 @@ app.controller('controller', function ($scope, $http, $window) {
           labels: dates,
           datasets: [{
             data: chartData,
-            borderColor: "rgb(75, 192, 192)",
-            backgroundColor: "rgba(75, 192, 192, 0.1)",
+            borderColor: "rgb(81, 188, 182)",
+            backgroundColor: "rgba(81, 188, 182, 0.1)",
             pointRadius: 5,
             pointHoverRadius: 5,
-            pointBackgroundColor: "rgb(75, 192, 192)" 
+            pointBackgroundColor: "rgb(81, 188, 182)" 
           }]
         },
         options: {

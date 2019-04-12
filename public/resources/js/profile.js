@@ -1,5 +1,6 @@
 var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) {
+  $scope.loading = true;
   $scope.isDashboard = false;
   $scope.isProfile = true;
   $scope.isHistory = false;
@@ -90,6 +91,7 @@ app.controller('controller', function ($scope, $http, $window) {
     $scope.newPrescriptionStart = new Date();
     $scope.newPrescriptionExpiration = new Date();
     $scope.newPrescriptionRefillDate = new Date();
+    $scope.loading = false;
   };
 
   $scope.recordStartPeriod = function() {
