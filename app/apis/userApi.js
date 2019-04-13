@@ -83,13 +83,13 @@ module.exports = function(app) {
 };
 
 function sendReminderEmails() {
-  const job = new CronJob('00 38 21 * * *', function() {
+  const job = new CronJob('00 00 09 * * *', function() {
     sendBCDailyEmails();
     sendBCRenewalEmails();
     sendBCRefillEmails();
   });
   //Send the yearly reminder emails at midnight on the first of the month
-  const yearly = new CronJob('00 30 14 7 * *', function() {
+  const yearly = new CronJob('00 00 09 1 * *', function() {
     sendYearlyEmails();
   });
   job.start();
