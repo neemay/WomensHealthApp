@@ -35,16 +35,19 @@ app.controller('controller', function ($scope, $http, $window) {
       url: '/isOnPeriod',
     }).success(function(response) {
       var today = new Date();
+      today.setHours(0,0,0,0);
       if(response.isOnPeriod) {
         $scope.userIsOnPeriod = true;
         var current = new Date(response.currentPeriod);
-        $scope.daysSince = Math.round(Math.abs(today - current)/(1000*60*60*24)) - 1;
+        current.setHours(0,0,0,0);
+        $scope.daysSince = Math.round(Math.abs(today - current)/(1000*60*60*24));
       }
       else {
         if(response.lastPeriod) {
           $scope.noPeriod = false;
           var last = new Date(response.lastPeriod);
-          $scope.daysSince = Math.round(Math.abs(today - last)/(1000*60*60*24)) - 1;
+          last.setHours(0,0,0,0);
+          $scope.daysSince = Math.round(Math.abs(today - last)/(1000*60*60*24));
         }
       }
     });
