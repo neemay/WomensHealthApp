@@ -7,22 +7,35 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.alertSuccess = false;
   $scope.alertError = false;
   $scope.editingPrescription = false;
-  $scope.symptomSpotting = 'None';
-  $scope.symptomNausea = 'None';
-  $scope.symptomHeadache = 'None'; 
-  $scope.symptomSoreBreasts = 'None';
-  $scope.symptomMoodSwings = 'None';
-  $scope.symptomDate = '';
-  $scope.symptomCramps = 'None';
-  $scope.symptomFlow = 'None';
-  $scope.symptomBackPain = 'None';
-  $scope.symptomBloating = 'None';
-  $scope.weightDate = new Date();
-  $scope.startPeriod = new Date();
-  $scope.endPeriod = new Date();
-  $scope.newPrescriptionStart = new Date();
-  $scope.newPrescriptionExpiration = new Date();
-  $scope.newPrescriptionRefillDate = new Date();
+  $scope.symptomSpottingPresc = 'None';
+  $scope.symptomNauseaPresc = 'None';
+  $scope.symptomHeadachePresc = 'None';
+  $scope.symptomSoreBreastsPresc = 'None';
+  $scope.symptomMoodSwingsPresc = 'None';
+  $scope.symptomCrampsPeriod = 'None';
+  $scope.symptomNauseaPeriod = 'None';
+  $scope.symptomHeadachePeriod = 'None';
+  $scope.symptomFlowPeriod = 'None';
+  $scope.symptomBackPainPeriod = 'None';
+  $scope.symptomBloatingPeriod = 'None';
+  $scope.weightError = '';
+  $scope.nameError = '';
+  $scope.newPrescriptionRefills = 1;
+  $scope.newPrescriptionDaysSupply = 28;
+  
+  //Initialize all of the dates
+  //Timezones mess with the max calendar dates,
+  //so force the time of today to be midnight
+  $scope.today = new Date();
+  $scope.today.setHours(0,0,0,0);
+  $scope.symptomDatePeriod = $scope.today;
+  $scope.symptomDatePresc = $scope.today;
+  $scope.weightDate = $scope.today;
+  $scope.startPeriod = $scope.today;
+  $scope.endPeriod = $scope.today;
+  $scope.newPrescriptionStart = $scope.today;
+  $scope.newPrescriptionExpiration = $scope.today;
+  $scope.newPrescriptionRefillDate = $scope.today;
   
   $scope.logout = function() {
     $http({
@@ -60,8 +73,18 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       console.log(response);
       $scope.userIsOnPeriod = response.isOnPeriod;
-      if(response.isOnPeriod)
+      if(response.isOnPeriod) {
         $scope.currentPeriod = response.currentPeriod;
+        $scope.minDateEnd = new Date($scope.currentPeriod);
+        $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
+        $scope.minDateEnd.setHours(0,0,0,0);
+      }
+      else {
+        $scope.lastPeriod = response.lastPeriod;
+        $scope.minDateStart = new Date($scope.lastPeriod);
+        $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
+        $scope.minDateStart.setHours(0,0,0,0);
+      }
     }).error(function() {
       $scope.alertError = true;
       $scope.errorMessage = "Something went wrong. Please try again later.";
@@ -106,10 +129,12 @@ app.controller('controller', function ($scope, $http, $window) {
     }
     else if($window.location.hash == '#startPeriodModal') {
       $('#startPeriodModal').modal();
-    }
+    }   
   };
 
   $scope.recordStartPeriod = function() {
+    if($scope.startPeriod == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPeriodStart',
@@ -127,6 +152,8 @@ app.controller('controller', function ($scope, $http, $window) {
   };
 
   $scope.recordEndPeriod = function() {
+    if($scope.endPeriod == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPeriodEnd',
@@ -190,30 +217,32 @@ app.controller('controller', function ($scope, $http, $window) {
   };
   
   $scope.recordPeriodSymptoms = function() {
+    if($scope.symptomDatePeriod == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPeriodSymptom',
       data: {
         periodStartDate: $scope.currentPeriod,
-        date: convertDate($scope.symptomDate),
-        cramps: $scope.symptomCramps,
-        nausea: $scope.symptomNausea,
-        headache: $scope.symptomHeadache,
-        flow: $scope.symptomFlow,
-        backPain: $scope.symptomBackPain,
-        bloating: $scope.symptomBloating,
-        notes: $scope.notes
+        date: convertDate($scope.symptomDatePeriod),
+        cramps: $scope.symptomCrampsPeriod,
+        nausea: $scope.symptomNauseaPeriod,
+        headache: $scope.symptomHeadachePeriod,
+        flow: $scope.symptomFlowPeriod,
+        backPain: $scope.symptomBackPainPeriod,
+        bloating: $scope.symptomBloatingPeriod,
+        notes: $scope.notesPeriod
       }
     }).success(function() {
       $('#periodSymptomModal').modal('hide');
-      $scope.symptomDate = '';
-      $scope.symptomCramps = 'None';
-      $scope.symptomNausea = 'None';
-      $scope.symptomHeadache = 'None';
-      $scope.symptomFlow = 'None';
-      $scope.symptomBackPain = 'None';
-      $scope.symptomBloating = 'None';
-      $scope.notes = '';
+      $scope.symptomDatePeriod = $scope.today;
+      $scope.symptomCrampsPeriod = 'None';
+      $scope.symptomNauseaPeriod = 'None';
+      $scope.symptomHeadachePeriod = 'None';
+      $scope.symptomFlowPeriod = 'None';
+      $scope.symptomBackPainPeriod = 'None';
+      $scope.symptomBloatingPeriod = 'None';
+      $scope.notesPeriod = '';
       $scope.alertSuccess = true;
       $scope.successMessage = 'Symptoms saved successfully';
     }).error(function() {
@@ -241,12 +270,12 @@ app.controller('controller', function ($scope, $http, $window) {
       $('#addPrescriptionModal').modal('hide');
       $scope.newPrescriptionName = 'OTHER';
       $scope.newPrescriptionRefills = '';
-      $scope.newPrescriptionExpiration = new Date();
-      $scope.newPrescriptionStart = new Date();
+      $scope.newPrescriptionExpiration = $scope.today;
+      $scope.newPrescriptionStart = $scope.today;
       $scope.newPrescriptionStatus = 'Active';
       $scope.newPrescriptionNotes = '';
       $scope.newPrescriptionDaysSupply = '';
-      $scope.newPrescriptionRefillDate = new Date();
+      $scope.newPrescriptionRefillDate = $scope.today;
       $scope.alertSuccess = 'true';
       $scope.successMessage = 'Prescription saved successfully';
       $scope.getUserPrescriptions();
@@ -313,30 +342,32 @@ app.controller('controller', function ($scope, $http, $window) {
   };
   
   $scope.recordPrescriptionSymptoms = function() {
+    if($scope.symptomDatePresc == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPrescriptionSymptom',
       data: {
         name: $scope.prescriptionName,
         startDate: convertDate($scope.prescriptionStart),
-        date: convertDate($scope.symptomDate),
-        spotting: $scope.symptomSpotting,
-        nausea: $scope.symptomNausea,
-        headache: $scope.symptomHeadache,
-        soreBreasts: $scope.symptomSoreBreasts,
-        moodSwings: $scope.symptomMoodSwings,
-        notes: $scope.notes
+        date: convertDate($scope.symptomDatePresc),
+        spotting: $scope.symptomSpottingPresc,
+        nausea: $scope.symptomNauseaPresc,
+        headache: $scope.symptomHeadachePresc,
+        soreBreasts: $scope.symptomSoreBreastsPresc,
+        moodSwings: $scope.symptomMoodSwingsPresc,
+        notes: $scope.notesPresc
       }
     }).success(function() {
       $('#prescriptionSymptomModal').modal('hide');
       $scope.prescriptionStart = '';
-      $scope.symptomDate = '';
-      $scope.symptomSpotting = 'None';
-      $scope.symptomNausea = 'None';
-      $scope.symptomHeadache = 'None'; 
-      $scope.symptomSoreBreasts = 'None';
-      $scope.symptomMoodSwings = 'None';
-      $scope.notes = '';
+      $scope.symptomDatePresc = $scope.today;
+      $scope.symptomSpottingPresc = 'None';
+      $scope.symptomNauseaPresc = 'None';
+      $scope.symptomHeadachePresc = 'None'; 
+      $scope.symptomSoreBreastsPresc = 'None';
+      $scope.symptomMoodSwingsPresc = 'None';
+      $scope.notesPresc = '';
       $scope.alertSuccess = true;
       $scope.successMessage = 'Prescription symptoms added successfully';
     }).error(function() {
@@ -367,6 +398,14 @@ app.controller('controller', function ($scope, $http, $window) {
   };
  
  $scope.addWeight = function() {
+   if($scope.weightVal == "") {
+     $scope.weightError = "Please enter a valid weight";
+     return;
+   }
+   else if($scope.weightVal < 0 || $scope.weightVal > 1500) {
+     $scope.weightError = "Please enter a weight between 0 and 1500 pounds.";
+     return;
+   }
    $http({
      method: 'POST',
      url: '/addWeight',
@@ -379,15 +418,20 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.alertSuccess = true;
       $scope.successMessage = "Weight added successfully";
       $scope.weightVal = "";
-      $scope.weightDate = new Date();
+      $scope.weightDate = $scope.today;
     }).error(function() {
      $("#addWeightModal").modal('hide');
       $scope.alertError = true;
       $scope.errorMessage = "Something went wrong. Please try again later.";
     });
+    $scope.weightError = "";
  };
 
   $scope.changeName = function() {
+    if($scope.preferredName == null || $scope.preferredName == "") {
+      $scope.nameError = "Please enter a name.";
+      return;
+    }
     $http({
       method: 'POST',
       url: '/setName',
@@ -404,6 +448,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.alertError = true;
       $scope.errorMessage = "Something went wrong. Please try again later.";
     });
+    $scope.nameError = "";
   };
   
   $scope.dismissSuccess = function() {
