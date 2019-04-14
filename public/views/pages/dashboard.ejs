@@ -40,6 +40,12 @@
           <div class="panel">
             <div class="dashboard-panel">
               <h3>My Birth Control</h3>
+              <div ng-show="activePrescriptions">
+                You currently have the following active prescriptions:
+                <div ng-repeat="presc in activePrescriptions">
+                  {{presc.prescription.name}}
+                </div>
+              </div>
               <a href="/profile#prescriptionSymptomModal" class="btn-link"><button class="btn btn-primary">Add birth control symptoms</button></a>
             </div>
           </div>

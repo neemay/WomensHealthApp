@@ -18,21 +18,21 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.init = function() {
     $http({
       method: 'GET',
-      url: '/getUserName',
+      url: '/getUserName'
     }).success(function(response) {
       $scope.userName = response.name;
     });
 	
     $http({
       method: 'GET',
-      url: '/getEmail',
+      url: '/getEmail'
     }).success(function(response) {
       $scope.email = response.email;
     });
     
     $http({
       method: 'GET',
-      url: '/isOnPeriod',
+      url: '/isOnPeriod'
     }).success(function(response) {
       var today = new Date();
       today.setHours(0,0,0,0);
@@ -50,6 +50,13 @@ app.controller('controller', function ($scope, $http, $window) {
           $scope.daysSince = Math.round(Math.abs(today - last)/(1000*60*60*24));
         }
       }
+    });
+    
+    $http({
+      method: 'GET',
+      url: '/getActiveUserPrescriptions'
+    }).success(function(response) {
+      $scope.activePrescriptions = response.data;
     });
   };
 });

@@ -37,7 +37,7 @@
                 <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-show="userIsOnPeriod">Record end of period</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-show="userIsOnPeriod">Add period symptoms</button>
               </div>
-              <h5>My perscription</h5>
+              <h5>My prescription</h5>
               <div class="btn-container">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()" ng-disabled="!userPrescriptions">Update a prescription</button>
@@ -384,11 +384,6 @@
             <form class="form-container">
               <div class="form-group">
                 <label>Prescription Name:</label>
-<!--
-                <select ng-model="prescriptionIndex" class="form-control" ng-change="loadPrescription()">
-                  <option ng-repeat="prescription in userPrescriptions" ng-value="$index">{{prescription.prescription.name}}</option>
-                </select>
--->
                 <select ng-model="prescription" class="form-control" ng-change="loadPrescription()" ng-options='presc as (presc.prescription.name + " - " + presc.prescription.status) for presc in userPrescriptions track by presc.prescription.prescriptionId'>
                 </select>
               </div>

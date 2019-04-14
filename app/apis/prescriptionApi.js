@@ -38,6 +38,12 @@ module.exports = function(app) {
       res.send({success: true, data: prescriptions});
     });
   });
+  
+  app.get('/getActiveUserPrescriptions', function(req, res) {
+    Prescription.find({'prescription.email': req.user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
+      res.send({success: true, data: prescriptions});
+    });
+  });
 
 
   app.post('/updatePrescription', function(req, res) {
