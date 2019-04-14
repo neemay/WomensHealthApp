@@ -41,8 +41,7 @@ module.exports = function(app) {
 
 
   app.post('/updatePrescription', function(req, res) {
-    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
-    Prescription.findOne({'prescription.prescriptionId': id}, function(err, prescription) {
+    Prescription.findOne({'prescription.prescriptionId': req.body.id}, function(err, prescription) {
       if(err)
         throw err;
       prescription.prescription.refills = req.body.refills;
@@ -57,11 +56,10 @@ module.exports = function(app) {
   });
 
   app.post('/deletePrescription', function(req, res) {
-    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
-    Prescription.deleteOne({'prescription.prescriptionId': id}, function(err) {
+    Prescription.deleteOne({'prescription.prescriptionId': req.body.id}, function(err) {
       if(err)
         throw err;
-      PrescriptionSymptom.deleteMany({'prescriptionSymptom.prescriptionId': id}, function(err) {
+      PrescriptionSymptom.deleteMany({'prescriptionSymptom.prescriptionId': req.body.id}, function(err) {
         if(err)
           throw err;
         res.send({success: true});
@@ -70,8 +68,7 @@ module.exports = function(app) {
   });
 
   app.post('/addPrescriptionSymptom', function(req, res) {
-    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
-    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': id}, function(err, symptom) {
+    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': req.body.id}, function(err, symptom) {
       if(symptom) {
         symptom.prescriptionSymptom.date = req.body.date;
         symptom.prescriptionSymptom.spotting = req.body.spotting;
@@ -85,7 +82,7 @@ module.exports = function(app) {
       }
       else {
         var newSymptom = new PrescriptionSymptom();
-        newSymptom.prescriptionSymptom.prescriptionId = id;
+        newSymptom.prescriptionSymptom.prescriptionId = req.body.id;
         newSymptom.prescriptionSymptom.date = req.body.date;
         newSymptom.prescriptionSymptom.spotting = req.body.spotting;
         newSymptom.prescriptionSymptom.nausea = req.body.nausea;

@@ -20,8 +20,10 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.symptomBloatingPeriod = 'None';
   $scope.weightError = '';
   $scope.nameError = '';
+  $scope.newPrescError = '';
   $scope.newPrescriptionRefills = 1;
   $scope.newPrescriptionDaysSupply = 28;
+  //$scope.prescription = '';
   
   //Initialize all of the dates
   //Timezones mess with the max calendar dates,
@@ -180,6 +182,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userPrescriptions = null;
       if(response.data.length > 0) {
         $scope.userPrescriptions = response.data;
+        $scope.prescription = $scope.userPrescriptions[0];
         $scope.prescriptionName = response.data['0'].prescription.name;
         $scope.prescriptionStart = new Date(response.data['0'].prescription.startDate);
         $scope.prescriptionRefills = parseInt(response.data['0'].prescription.refills);
@@ -197,7 +200,8 @@ app.controller('controller', function ($scope, $http, $window) {
 
   $scope.loadPrescription = function() {
     $scope.userPrescriptions.forEach(function(presc) {
-      if($scope.prescriptionName == presc.prescription.name) {
+      if($scope.prescription.prescription.prescriptionId == presc.prescription.prescriptionId) {
+        $scope.prescriptionName = presc.prescription.name;
         $scope.prescriptionRefills = parseInt(presc.prescription.refills);
         $scope.prescriptionExpiration = new Date(presc.prescription.expiration);
         $scope.prescriptionStart = new Date(presc.prescription.startDate);
@@ -211,7 +215,7 @@ app.controller('controller', function ($scope, $http, $window) {
   
   $scope.loadPrescriptionDate = function() {
     $scope.userPrescriptions.forEach(function(presc) {
-      if($scope.prescriptionName == presc.prescription.name) {
+      if($scope.prescription.prescription.prescriptionId == presc.prescription.prescriptionId) {
         $scope.prescriptionStart = new Date(presc.prescription.startDate);
       }
     });
@@ -254,6 +258,23 @@ app.controller('controller', function ($scope, $http, $window) {
   };
 
   $scope.addPrescription = function() {
+    var exists = false;
+    $scope.userPrescriptions.forEach(function(presc) {
+      if(presc.prescription.status == "Active") {
+        if($scope.newPrescriptionName == presc.prescription.name) {
+          $scope.newPrescError = "You already have an active prescription of this kind. Please edit the active prescription directly or set its status to inactive before adding a new prescription.";
+          exists = true;
+        }
+      }
+      else {
+        if($scope.newPrescriptionName == presc.prescription.name && convertDate($scope.newPrescriptionStart) == presc.prescription.startDate) {
+          $scope.newPrescError = "You cannot add a prescription with the same name and start date as an already existing prescription.";
+          exists = true;
+        }
+      }
+    });
+    if(exists)
+      return;
     $http({
       method: 'POST',
       url: '/addPrescription',
@@ -270,19 +291,21 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#addPrescriptionModal').modal('hide');
       $scope.newPrescriptionName = 'OTHER';
-      $scope.newPrescriptionRefills = '';
+      $scope.newPrescriptionRefills = 1;
       $scope.newPrescriptionExpiration = $scope.today;
       $scope.newPrescriptionStart = $scope.today;
       $scope.newPrescriptionStatus = 'Active';
       $scope.newPrescriptionNotes = '';
-      $scope.newPrescriptionDaysSupply = '';
+      $scope.newPrescriptionDaysSupply = 28;
       $scope.newPrescriptionRefillDate = $scope.today;
       $scope.alertSuccess = 'true';
       $scope.successMessage = 'Prescription saved successfully';
+      $scope.newPrescError = '';
       $scope.getUserPrescriptions();
     }).error(function() {
       $('#addPrescriptionModal').modal('hide');
       $scope.alertError = true;
+      $scope.newPrescError = "";
       $scope.errorMessage = "Something went wrong. Please try again later.";
     });
   };
@@ -292,6 +315,7 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'POST',
       url: '/updatePrescription',
       data: {
+        id: $scope.prescription.prescription.prescriptionId,
         name: $scope.prescriptionName,
         refills: $scope.prescriptionRefills,
         daysSupply: $scope.prescriptionDaysSupply,
@@ -327,8 +351,7 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'POST',
       url: '/deletePrescription',
       data: {
-        name: $scope.prescriptionName,
-        startDate: convertDate($scope.prescriptionStart)
+        id: $scope.prescription.prescription.prescriptionId
       }
     }).success(function() {
       $('#confirmDeleteModal').modal('hide');
@@ -349,8 +372,7 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'POST',
       url: '/addPrescriptionSymptom',
       data: {
-        name: $scope.prescriptionName,
-        startDate: convertDate($scope.prescriptionStart),
+        id: $scope.prescription.prescription.prescriptionId,
         date: convertDate($scope.symptomDatePresc),
         spotting: $scope.symptomSpottingPresc,
         nausea: $scope.symptomNauseaPresc,

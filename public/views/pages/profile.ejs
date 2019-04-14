@@ -361,6 +361,9 @@
                 <label>Notes: </label>
                 <textarea class="form-control" ng-model="newPrescriptionNotes" placeholder="Generic name, alternate names, etc."></textarea>
               </div>
+              <div class="alert alert-danger fade show" role="alert" ng-show="newPrescError">
+                {{newPrescError}}
+              </div>
               <button type="submit" class="btn btn-primary" ng-click="addPrescription()">Submit</button>
             </form>
           </div>
@@ -381,8 +384,12 @@
             <form class="form-container">
               <div class="form-group">
                 <label>Prescription Name:</label>
-                <select ng-model="prescriptionName" class="form-control" ng-change="loadPrescription()">
-                  <option ng-repeat="prescription in userPrescriptions" ng-value="prescription.prescription.id">{{prescription.prescription.name}}</option>
+<!--
+                <select ng-model="prescriptionIndex" class="form-control" ng-change="loadPrescription()">
+                  <option ng-repeat="prescription in userPrescriptions" ng-value="$index">{{prescription.prescription.name}}</option>
+                </select>
+-->
+                <select ng-model="prescription" class="form-control" ng-change="loadPrescription()" ng-options='presc as (presc.prescription.name + " - " + presc.prescription.status) for presc in userPrescriptions track by presc.prescription.prescriptionId'>
                 </select>
               </div>
               <div class="form-group">
@@ -407,9 +414,9 @@
               </div>
               <div class="form-group">
                 <label>Prescription Status:</label>
-                <select class="form-control">
-                  <option ng-model="prescriptionStatus" ng-value=true>Active</option>
-                  <option ng-model="prescriptionStatus" ng-value=false>Inactive</option>
+                <select class="form-control" ng-model="prescriptionStatus">
+                  <option ng-value="Active">Active</option>
+                  <option ng-value="Inactive">Inactive</option>
                 </select>
               </div>
               <div class="form-group">
