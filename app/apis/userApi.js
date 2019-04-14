@@ -83,13 +83,13 @@ module.exports = function(app) {
 };
 
 function sendReminderEmails() {
-  const job = new CronJob('00 38 21 * * *', function() {
+  const job = new CronJob('00 00 09 * * *', function() {
     sendBCDailyEmails();
     sendBCRenewalEmails();
     sendBCRefillEmails();
   });
   //Send the yearly reminder emails at midnight on the first of the month
-  const yearly = new CronJob('00 30 14 7 * *', function() {
+  const yearly = new CronJob('00 00 09 1 * *', function() {
     sendYearlyEmails();
   });
   job.start();
@@ -179,8 +179,8 @@ function sendBCRefillEmails() {
     if(err)
       throw err;
     users.map(user => {
-      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescription) {
-        if(prescription) {
+      Prescription.find({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
+        prescriptions.map(prescription =>  {
           var date = new Date(prescription.prescription.refillDate);
           //Take the last refill date, add the number of days the user is supplied
           //This is the date we want to warn 2 weeks before
@@ -193,13 +193,13 @@ function sendBCRefillEmails() {
               from: emailcreds.user,
               to: user.user.email,
               subject: user.user.name + ', you have a notification from Obie!',
-              html: '<div>Looks like you need to refill your prescription soon! Please follow up with your pharmacy to renew your prescription.</div>'
+              html: '<div>Looks like you need to refill your prescription soon! Please follow up with your pharmacy to renew your prescription for ' + prescription.prescription.name + '.</div>'
             }, function (err) {
               if (err)
                 throw err;
             });
           }
-        }
+        });
       });
     });
   });

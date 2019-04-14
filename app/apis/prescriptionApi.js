@@ -38,11 +38,16 @@ module.exports = function(app) {
       res.send({success: true, data: prescriptions});
     });
   });
+  
+  app.get('/getActiveUserPrescriptions', function(req, res) {
+    Prescription.find({'prescription.email': req.user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
+      res.send({success: true, data: prescriptions});
+    });
+  });
 
 
   app.post('/updatePrescription', function(req, res) {
-    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
-    Prescription.findOne({'prescription.prescriptionId': id}, function(err, prescription) {
+    Prescription.findOne({'prescription.prescriptionId': req.body.id}, function(err, prescription) {
       if(err)
         throw err;
       prescription.prescription.refills = req.body.refills;
@@ -57,29 +62,46 @@ module.exports = function(app) {
   });
 
   app.post('/deletePrescription', function(req, res) {
-    //TODO: ALSO DELETE ASSOCIATED SYMPTOMS
-    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
-    Prescription.deleteOne({'prescription.prescriptionId': id}, function(err) {
+    Prescription.deleteOne({'prescription.prescriptionId': req.body.id}, function(err) {
       if(err)
         throw err;
-      res.send({success: true});
+      PrescriptionSymptom.deleteMany({'prescriptionSymptom.prescriptionId': req.body.id}, function(err) {
+        if(err)
+          throw err;
+        res.send({success: true});
+      });
     });
   });
 
   app.post('/addPrescriptionSymptom', function(req, res) {
-    var newSymptom = new PrescriptionSymptom();
-    newSymptom.prescriptionSymptom.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
-    newSymptom.prescriptionSymptom.date = req.body.date;
-    newSymptom.prescriptionSymptom.spotting = req.body.spotting;
-    newSymptom.prescriptionSymptom.nausea = req.body.nausea;
-    newSymptom.prescriptionSymptom.headache = req.body.headache;
-    newSymptom.prescriptionSymptom.soreBreasts = req.body.soreBreasts;
-    newSymptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
-    newSymptom.prescriptionSymptom.notes = req.body.notes;
-    newSymptom.save(function(err) {
-      if(err)
-        throw err;
-      res.send({success: true});
+    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': req.body.id}, function(err, symptom) {
+      if(symptom) {
+        symptom.prescriptionSymptom.date = req.body.date;
+        symptom.prescriptionSymptom.spotting = req.body.spotting;
+        symptom.prescriptionSymptom.nausea = req.body.nausea;
+        symptom.prescriptionSymptom.headache = req.body.headache;
+        symptom.prescriptionSymptom.soreBreasts = req.body.soreBreasts;
+        symptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
+        symptom.prescriptionSymptom.notes = req.body.notes;
+        symptom.save();
+        res.send({success: true});
+      }
+      else {
+        var newSymptom = new PrescriptionSymptom();
+        newSymptom.prescriptionSymptom.prescriptionId = req.body.id;
+        newSymptom.prescriptionSymptom.date = req.body.date;
+        newSymptom.prescriptionSymptom.spotting = req.body.spotting;
+        newSymptom.prescriptionSymptom.nausea = req.body.nausea;
+        newSymptom.prescriptionSymptom.headache = req.body.headache;
+        newSymptom.prescriptionSymptom.soreBreasts = req.body.soreBreasts;
+        newSymptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
+        newSymptom.prescriptionSymptom.notes = req.body.notes;
+        newSymptom.save(function(err) {
+          if(err)
+            throw err;
+          res.send({success: true});
+        });
+      }
     });
   });
   

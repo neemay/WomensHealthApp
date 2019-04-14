@@ -72,22 +72,38 @@ module.exports = function(app) {
 
   //Function to add period symptoms
   app.post('/addPeriodSymptom', function(req, res) {
-    var newSymptom = new PeriodSymptom();
-    newSymptom.periodSymptom.periodId = req.user.user.email + ':' + req.body.periodStartDate.substr(0, 10);
-    newSymptom.periodSymptom.date = req.body.date;
-    newSymptom.periodSymptom.cramps = req.body.cramps;
-    newSymptom.periodSymptom.nausea = req.body.nausea;
-    newSymptom.periodSymptom.headache = req.body.headache;
-    newSymptom.periodSymptom.flow = req.body.flow;
-    newSymptom.periodSymptom.backPain = req.body.backPain;
-    newSymptom.periodSymptom.bloating = req.body.bloating;
-    newSymptom.periodSymptom.notes = req.body.notes;
-    newSymptom.save(function(err) {
-      if(err)
-        throw err;
-      res.send({success: true});
+    var id = req.user.user.email + ':' + req.body.periodStartDate;
+    PeriodSymptom.findOne({'periodSymptom.periodId': id}, function(err, symptom) {
+      if(symptom) {
+        symptom.periodSymptom.date = req.body.date;
+        symptom.periodSymptom.cramps = req.body.cramps;
+        symptom.periodSymptom.nausea = req.body.nausea;
+        symptom.periodSymptom.headache = req.body.headache;
+        symptom.periodSymptom.flow = req.body.flow;
+        symptom.periodSymptom.backPain = req.body.backPain;
+        symptom.periodSymptom.bloating = req.body.bloating;
+        symptom.periodSymptom.notes = req.body.notes;
+        symptom.save();
+        res.send({success: true});
+      }
+      else {
+        var newSymptom = new PeriodSymptom();
+        newSymptom.periodSymptom.periodId = id;
+        newSymptom.periodSymptom.date = req.body.date;
+        newSymptom.periodSymptom.cramps = req.body.cramps;
+        newSymptom.periodSymptom.nausea = req.body.nausea;
+        newSymptom.periodSymptom.headache = req.body.headache;
+        newSymptom.periodSymptom.flow = req.body.flow;
+        newSymptom.periodSymptom.backPain = req.body.backPain;
+        newSymptom.periodSymptom.bloating = req.body.bloating;
+        newSymptom.periodSymptom.notes = req.body.notes;
+        newSymptom.save(function(err) {
+          if(err)
+            throw err;
+          res.send({success: true});
+        });
+      }
     });
-
   });
 
   app.get('/getUserPeriods', function(req, res) {

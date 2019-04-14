@@ -10,9 +10,9 @@
 
 
     <!-- Insert Body here -->
-    <div class="container-fluid">
+    <div class="container-fluid ng-cloak">
       <div class="offset-md-2 col-md-8 secondary-page-header">
-        <h2>Welcome {{userName}}</h2>
+        <h2>Welcome, {{userName}}</h2>
       </div>
       <div class="row dashboard-panel-container">
         <div class="offset-sm-1 col-sm-10 offset-md-2 col-md-4 offset-lg-2 col-lg-4">
@@ -23,15 +23,15 @@
                 <p>
                   It has been {{daysSince}} day(s) since your period started.
                 </p>
-                <a href="/profile#endPeriodModal"><button class="btn btn-primary">Record end of period</button></a>
-                <a href="/profile#periodSymptomModal"><button class="btn btn-primary">Add period symptoms</button></a>
+                <a href="/profile#endPeriodModal" class="btn-link"><button class="btn btn-primary">Record end of period</button></a>
+                <a href="/profile#periodSymptomModal" class="btn-link"><button class="btn btn-primary">Add period symptoms</button></a>
               </div>
               <div ng-show="!userIsOnPeriod">
                 <p>
                   <span ng-show="!noPeriod">It has been {{daysSince}} day(s) since your last period.</span>
                   <span ng-show="noPeriod">You do not have any period history yet.</span>
                 </p>
-                <a href="/profile#startPeriodModal"><button class="btn btn-primary">Record start of period</button></a>
+                <a href="/profile#startPeriodModal" class="btn-link"><button class="btn btn-primary">Record start of period</button></a>
               </div>
             </div>
           </div>
@@ -40,7 +40,13 @@
           <div class="panel">
             <div class="dashboard-panel">
               <h3>My Birth Control</h3>
-              <a href="/profile#prescriptionSymptomModal"><button class="btn btn-primary">Add birth control symptoms</button></a>
+              <div ng-show="activePrescriptions">
+                You currently have the following active prescriptions:
+                <div ng-repeat="presc in activePrescriptions">
+                  {{presc.prescription.name}}
+                </div>
+              </div>
+              <a href="/profile#prescriptionSymptomModal" class="btn-link"><button class="btn btn-primary">Add birth control symptoms</button></a>
             </div>
           </div>
         </div>

@@ -2,7 +2,6 @@
 
 //include any mongodb models here
 var Weight = require('../../app/models/weight');
-var User = require('../../app/models/user');
 
 module.exports = function(app) {
 
@@ -12,7 +11,7 @@ module.exports = function(app) {
       if(weight) {
         weight.weight.weightVal = req.body.weightVal;
         weight.save();
-        console.log("Updated weight for " + req.user.user.email);
+        console.log('Updated weight for ' + req.user.user.email);
         res.send({success: true});
       }
       else {
@@ -23,7 +22,7 @@ module.exports = function(app) {
         newWeight.save(function(err) {
           if(err)
             throw err;
-          console.log("Added weight for " + req.user.user.email);
+          console.log('Added weight for ' + req.user.user.email);
           res.send({success: true});
         }); 
       }

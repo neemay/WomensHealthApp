@@ -17,7 +17,7 @@ body {
 }
 
 .jumbotron{
-  margin-top: 150px;
+  margin-top: 50px;
   text-align:center;
 }
 
@@ -60,6 +60,8 @@ body {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   padding: 10px 20px;
+  font-weight: bold;
+  font-size: 1.25rem;
 }
 
 .panel-body {
@@ -100,4 +102,107 @@ textarea {
 .btn-inline {
   display: inline;
   margin-right: 10px;
+}
+
+.logo-nav {
+  width: 100px;
+}
+
+.btn-primary {
+  background-color: #51bcb6;
+  border-color: #51bcb6;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-outline-primary:hover {
+  background-color: #418e8a!important;
+  border-color: #418e8a!important;
+}
+
+.btn-primary:disabled {
+  background-color: #a4d6d3;
+  border-color: #a4d6d3;
+}
+
+.btn-outline-primary {
+  color: #51bcb6;
+  border-color: #51bcb6;
+}
+
+.btn-primary:focus, .btn-outline-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(81,188,182,.5);
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+  background-color: #51bcb6;
+  border-color: #418e8a;
+}
+
+.btn-link {
+  text-decoration: none!important;
+}
+
+#log-out {
+  width: 85px;
+}
+
+#save-preferences {
+  float: right;
+}
+
+.float-container {
+  height: 38px;
+}
+
+h5 {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.reminder-group {
+  margin-bottom: 15px;
+}
+
+.btn-container {
+  margin-bottom: 20px;
+}
+
+.badge {
+  background-color: #51bcb6;
+}
+
+#my-actions .btn, #my-information .btn {
+  width: 100%;
+}
+
+.logo {
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  max-width: 500px;
+}
+
+.dashboard-panel {
+  text-align: center;
+  font-size: 18px;
+  min-height: 220px;
+}
+
+.dashboard-panel .btn {
+  width: 100%;
+}
+
+.container-fluid {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.modal { 
+  overflow: auto !important;
+}
+
+@media screen and (max-width: 600px) {
+  #save-preferences {
+    float: none;
+    width: 100%;
+  }
 }

@@ -5,17 +5,39 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.isHistory = false;
   $scope.userIsOnPeriod = false;
   $scope.alertSuccess = false;
+  $scope.alertError = false;
   $scope.editingPrescription = false;
-  $scope.symptomSpotting = 'None';
-  $scope.symptomNausea = 'None';
-  $scope.symptomHeadache = 'None'; 
-  $scope.symptomSoreBreasts = 'None';
-  $scope.symptomMoodSwings = 'None';
-  $scope.symptomDate = '';
-  $scope.symptomCramps = 'None';
-  $scope.symptomFlow = 'None';
-  $scope.symptomBackPain = 'None';
-  $scope.symptomBloating = 'None';
+  $scope.symptomSpottingPresc = 'None';
+  $scope.symptomNauseaPresc = 'None';
+  $scope.symptomHeadachePresc = 'None';
+  $scope.symptomSoreBreastsPresc = 'None';
+  $scope.symptomMoodSwingsPresc = 'None';
+  $scope.symptomCrampsPeriod = 'None';
+  $scope.symptomNauseaPeriod = 'None';
+  $scope.symptomHeadachePeriod = 'None';
+  $scope.symptomFlowPeriod = 'None';
+  $scope.symptomBackPainPeriod = 'None';
+  $scope.symptomBloatingPeriod = 'None';
+  $scope.weightError = '';
+  $scope.nameError = '';
+  $scope.newPrescError = '';
+  $scope.newPrescriptionRefills = 1;
+  $scope.newPrescriptionDaysSupply = 28;
+  //$scope.prescription = '';
+  
+  //Initialize all of the dates
+  //Timezones mess with the max calendar dates,
+  //so force the time of today to be midnight
+  $scope.today = new Date();
+  $scope.today.setHours(0,0,0,0);
+  $scope.symptomDatePeriod = $scope.today;
+  $scope.symptomDatePresc = $scope.today;
+  $scope.weightDate = $scope.today;
+  $scope.startPeriod = $scope.today;
+  $scope.endPeriod = $scope.today;
+  $scope.newPrescriptionStart = $scope.today;
+  $scope.newPrescriptionExpiration = $scope.today;
+  $scope.newPrescriptionRefillDate = $scope.today;
   
   $scope.logout = function() {
     $http({
@@ -32,6 +54,9 @@ app.controller('controller', function ($scope, $http, $window) {
       url: '/getUserName',
     }).success(function(response) {
       $scope.userName = response.name;
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
     $http({
@@ -39,6 +64,9 @@ app.controller('controller', function ($scope, $http, $window) {
       url: '/getEmail',
     }).success(function(response) {
       $scope.email = response.email;
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
     $http({
@@ -47,8 +75,21 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       console.log(response);
       $scope.userIsOnPeriod = response.isOnPeriod;
-      if(response.isOnPeriod)
+      if(response.isOnPeriod) {
         $scope.currentPeriod = response.currentPeriod;
+        $scope.minDateEnd = new Date($scope.currentPeriod);
+        $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
+        $scope.minDateEnd.setHours(0,0,0,0);
+      }
+      else {
+        $scope.lastPeriod = response.lastPeriod;
+        $scope.minDateStart = new Date($scope.lastPeriod);
+        $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
+        $scope.minDateStart.setHours(0,0,0,0);
+      }
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
     $http({
@@ -60,7 +101,12 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.bcRenewal = response.reminderBirthControlRenewal;
       $scope.apptReminder = response.reminderYearlyAppointment;
       $scope.apptReminderMonth = response.reminderYearlyAppointmentMonth;
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
+    
+    $scope.getUserPrescriptions();
     
     $http({
       method: 'GET',
@@ -69,6 +115,9 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.prescriptionList = response.data;
       $scope.newPrescriptionName = 'OTHER';
       $scope.newPrescriptionStatus = 'Active';
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
     if($window.location.hash == '#periodSymptomModal') {
@@ -82,17 +131,12 @@ app.controller('controller', function ($scope, $http, $window) {
     }
     else if($window.location.hash == '#startPeriodModal') {
       $('#startPeriodModal').modal();
-    }
-
-    $scope.weightDate = new Date();
-    $scope.startPeriod = new Date();
-    $scope.endPeriod = new Date();
-    $scope.newPrescriptionStart = new Date();
-    $scope.newPrescriptionExpiration = new Date();
-    $scope.newPrescriptionRefillDate = new Date();
+    }   
   };
 
   $scope.recordStartPeriod = function() {
+    if($scope.startPeriod == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPeriodStart',
@@ -102,10 +146,17 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#startPeriodModal').modal('hide');
       $scope.userIsOnPeriod = true;
+      $scope.currentPeriod = convertDate($scope.startPeriod);
+    }).error(function() {
+      $('#startPeriodModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
   };
 
   $scope.recordEndPeriod = function() {
+    if($scope.endPeriod == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPeriodEnd',
@@ -115,6 +166,10 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#endPeriodModal').modal('hide');
       $scope.userIsOnPeriod = false;
+    }).error(function() {
+      $('#endPeriodModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
   };
 
@@ -124,21 +179,29 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'GET',
       url: '/getUserPrescriptions'
     }).success(function(response) {
-      $scope.userPrescriptions = response.data;
-      $scope.prescriptionName = response.data['0'].prescription.name;
-      $scope.prescriptionStart = new Date(response.data['0'].prescription.startDate);
-      $scope.prescriptionRefills = parseInt(response.data['0'].prescription.refills);
-      $scope.prescriptionExpiration = new Date(response.data['0'].prescription.expiration);
-      $scope.prescriptionStatus = response.data['0'].prescription.status;
-      $scope.prescriptionNotes = response.data['0'].prescription.notes;
-      $scope.prescriptionDaysSupply = parseInt(response.data['0'].prescription.daysSupply);
-      $scope.prescriptionRefillDate = new Date(response.data['0'].prescription.refillDate);
+      $scope.userPrescriptions = null;
+      if(response.data.length > 0) {
+        $scope.userPrescriptions = response.data;
+        $scope.prescription = $scope.userPrescriptions[0];
+        $scope.prescriptionName = response.data['0'].prescription.name;
+        $scope.prescriptionStart = new Date(response.data['0'].prescription.startDate);
+        $scope.prescriptionRefills = parseInt(response.data['0'].prescription.refills);
+        $scope.prescriptionExpiration = new Date(response.data['0'].prescription.expiration);
+        $scope.prescriptionStatus = response.data['0'].prescription.status;
+        $scope.prescriptionNotes = response.data['0'].prescription.notes;
+        $scope.prescriptionDaysSupply = parseInt(response.data['0'].prescription.daysSupply);
+        $scope.prescriptionRefillDate = new Date(response.data['0'].prescription.refillDate);
+      }
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
   };
 
   $scope.loadPrescription = function() {
     $scope.userPrescriptions.forEach(function(presc) {
-      if($scope.prescriptionName == presc.prescription.name) {
+      if($scope.prescription.prescription.prescriptionId == presc.prescription.prescriptionId) {
+        $scope.prescriptionName = presc.prescription.name;
         $scope.prescriptionRefills = parseInt(presc.prescription.refills);
         $scope.prescriptionExpiration = new Date(presc.prescription.expiration);
         $scope.prescriptionStart = new Date(presc.prescription.startDate);
@@ -152,45 +215,66 @@ app.controller('controller', function ($scope, $http, $window) {
   
   $scope.loadPrescriptionDate = function() {
     $scope.userPrescriptions.forEach(function(presc) {
-      if($scope.prescriptionName == presc.prescription.name) {
+      if($scope.prescription.prescription.prescriptionId == presc.prescription.prescriptionId) {
         $scope.prescriptionStart = new Date(presc.prescription.startDate);
       }
     });
   };
   
   $scope.recordPeriodSymptoms = function() {
+    if($scope.symptomDatePeriod == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPeriodSymptom',
       data: {
         periodStartDate: $scope.currentPeriod,
-        date: convertDate($scope.symptomDate),
-        cramps: $scope.symptomCramps,
-        nausea: $scope.symptomNausea,
-        headache: $scope.symptomHeadache,
-        flow: $scope.symptomFlow,
-        backPain: $scope.symptomBackPain,
-        bloating: $scope.symptomBloating,
-        notes: $scope.notes
+        date: convertDate($scope.symptomDatePeriod),
+        cramps: $scope.symptomCrampsPeriod,
+        nausea: $scope.symptomNauseaPeriod,
+        headache: $scope.symptomHeadachePeriod,
+        flow: $scope.symptomFlowPeriod,
+        backPain: $scope.symptomBackPainPeriod,
+        bloating: $scope.symptomBloatingPeriod,
+        notes: $scope.notesPeriod
       }
     }).success(function() {
       $('#periodSymptomModal').modal('hide');
-      $('#alertSuccess').alert();
-      $scope.symptomDate = '';
-      $scope.symptomCramps = 'None';
-      $scope.symptomNausea = 'None';
-      $scope.symptomHeadache = 'None';
-      $scope.symptomFlow = 'None';
-      $scope.symptomBackPain = 'None';
-      $scope.symptomBloating = 'None';
-      $scope.notes = '';
+      $scope.symptomDatePeriod = $scope.today;
+      $scope.symptomCrampsPeriod = 'None';
+      $scope.symptomNauseaPeriod = 'None';
+      $scope.symptomHeadachePeriod = 'None';
+      $scope.symptomFlowPeriod = 'None';
+      $scope.symptomBackPainPeriod = 'None';
+      $scope.symptomBloatingPeriod = 'None';
+      $scope.notesPeriod = '';
       $scope.alertSuccess = true;
       $scope.successMessage = 'Symptoms saved successfully';
+    }).error(function() {
+      $('#periodSymptomModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
   };
 
   $scope.addPrescription = function() {
-    console.log('test: '+ $scope.newPrescriptionStatus);
+    var exists = false;
+    $scope.userPrescriptions.forEach(function(presc) {
+      if(presc.prescription.status == 'Active') {
+        if($scope.newPrescriptionName == presc.prescription.name) {
+          $scope.newPrescError = 'You already have an active prescription of this kind. Please edit the active prescription directly or set its status to inactive before adding a new prescription.';
+          exists = true;
+        }
+      }
+      else {
+        if($scope.newPrescriptionName == presc.prescription.name && convertDate($scope.newPrescriptionStart) == presc.prescription.startDate) {
+          $scope.newPrescError = 'You cannot add a prescription with the same name and start date as an already existing prescription.';
+          exists = true;
+        }
+      }
+    });
+    if(exists)
+      return;
     $http({
       method: 'POST',
       url: '/addPrescription',
@@ -207,16 +291,22 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#addPrescriptionModal').modal('hide');
       $scope.newPrescriptionName = 'OTHER';
-      $scope.newPrescriptionRefills = '';
-      $scope.newPrescriptionExpiration = new Date();
-      $scope.newPrescriptionStart = new Date();
+      $scope.newPrescriptionRefills = 1;
+      $scope.newPrescriptionExpiration = $scope.today;
+      $scope.newPrescriptionStart = $scope.today;
       $scope.newPrescriptionStatus = 'Active';
       $scope.newPrescriptionNotes = '';
-      $scope.newPrescriptionDaysSupply = '';
-      $scope.newPrescriptionRefillDate = new Date();
+      $scope.newPrescriptionDaysSupply = 28;
+      $scope.newPrescriptionRefillDate = $scope.today;
       $scope.alertSuccess = 'true';
       $scope.successMessage = 'Prescription saved successfully';
-      
+      $scope.newPrescError = '';
+      $scope.getUserPrescriptions();
+    }).error(function() {
+      $('#addPrescriptionModal').modal('hide');
+      $scope.alertError = true;
+      $scope.newPrescError = '';
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
   };
 
@@ -225,6 +315,7 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'POST',
       url: '/updatePrescription',
       data: {
+        id: $scope.prescription.prescription.prescriptionId,
         name: $scope.prescriptionName,
         refills: $scope.prescriptionRefills,
         daysSupply: $scope.prescriptionDaysSupply,
@@ -238,7 +329,21 @@ app.controller('controller', function ($scope, $http, $window) {
       $('#updatePrescriptionModal').modal('hide');
       $scope.alertSuccess = true;
       $scope.successMessage = 'Prescription updated successfully';
+    }).error(function() {
+      $('#updatePrescriptionModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
+  };
+  
+  $scope.confirmDelete = function() {
+    $('#updatePrescriptionModal').modal('hide');
+    $('#confirmDeleteModal').modal('show');
+  };
+  
+  $scope.nevermind = function() {
+    $('#confirmDeleteModal').modal('hide');
+    $('#updatePrescriptionModal').modal('show');
   };
   
   $scope.deletePrescription = function() {
@@ -246,81 +351,110 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'POST',
       url: '/deletePrescription',
       data: {
-        name: $scope.prescriptionName,
-        startDate: convertDate($scope.prescriptionStart)
+        id: $scope.prescription.prescription.prescriptionId
       }
     }).success(function() {
-      $('#updatePrescriptionModal').modal('hide');
+      $('#confirmDeleteModal').modal('hide');
       $scope.alertSuccess = true;
       $scope.successMessage = 'Prescription deleted successfully';
+      $scope.getUserPrescriptions();
+    }).error(function() {
+      $('#confirmDeleteModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
   };
   
   $scope.recordPrescriptionSymptoms = function() {
+    if($scope.symptomDatePresc == null)
+      return;
     $http({
       method: 'POST',
       url: '/addPrescriptionSymptom',
       data: {
-        name: $scope.prescriptionName,
-        startDate: convertDate($scope.prescriptionStart),
-        date: convertDate($scope.symptomDate),
-        spotting: $scope.symptomSpotting,
-        nausea: $scope.symptomNausea,
-        headache: $scope.symptomHeadache,
-        soreBreasts: $scope.symptomSoreBreasts,
-        moodSwings: $scope.symptomMoodSwings,
-        notes: $scope.notes
+        id: $scope.prescription.prescription.prescriptionId,
+        date: convertDate($scope.symptomDatePresc),
+        spotting: $scope.symptomSpottingPresc,
+        nausea: $scope.symptomNauseaPresc,
+        headache: $scope.symptomHeadachePresc,
+        soreBreasts: $scope.symptomSoreBreastsPresc,
+        moodSwings: $scope.symptomMoodSwingsPresc,
+        notes: $scope.notesPresc
       }
     }).success(function() {
       $('#prescriptionSymptomModal').modal('hide');
       $scope.prescriptionStart = '';
-      $scope.symptomDate = '';
-      $scope.symptomSpotting = 'None';
-      $scope.symptomNausea = 'None';
-      $scope.symptomHeadache = 'None'; 
-      $scope.symptomSoreBreasts = 'None';
-      $scope.symptomMoodSwings = 'None';
-      $scope.notes = '';
+      $scope.symptomDatePresc = $scope.today;
+      $scope.symptomSpottingPresc = 'None';
+      $scope.symptomNauseaPresc = 'None';
+      $scope.symptomHeadachePresc = 'None'; 
+      $scope.symptomSoreBreastsPresc = 'None';
+      $scope.symptomMoodSwingsPresc = 'None';
+      $scope.notesPresc = '';
       $scope.alertSuccess = true;
       $scope.successMessage = 'Prescription symptoms added successfully';
+    }).error(function() {
+      $('#prescriptionSymptomModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
   };
 
- $scope.updateReminders = function() {
-   $http({
-     method: 'POST',
-     url: '/setReminders',
-     data: {
-       reminderBirthControlDaily: $scope.bcDaily,
-       reminderBirthControlRefill: $scope.bcRefill,
-       reminderBirthControlRenewal: $scope.bcRenewal,
-       reminderYearlyAppointment: $scope.apptReminder,
-       reminderYearlyAppointmentMonth: $scope.apptReminderMonth
-     }
-   }).success(function(response) {
-     $scope.alertSuccess = true;
-     $scope.successMessage = "Reminder settings updated successfully";
-   });
+  $scope.updateReminders = function() {
+    $http({
+      method: 'POST',
+      url: '/setReminders',
+      data: {
+        reminderBirthControlDaily: $scope.bcDaily,
+        reminderBirthControlRefill: $scope.bcRefill,
+        reminderBirthControlRenewal: $scope.bcRenewal,
+        reminderYearlyAppointment: $scope.apptReminder,
+        reminderYearlyAppointmentMonth: $scope.apptReminderMonth
+      }
+    }).success(function() {
+      $scope.alertSuccess = true;
+      $scope.successMessage = 'Reminder settings updated successfully';
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
+    });
   };
  
- $scope.addWeight = function() {
-   $http({
-     method: 'POST',
-     url: '/addWeight',
-     data: {
-       recordDate: convertDate($scope.weightDate),
-       weightVal: $scope.weightVal
-     }
-    }).success(function(response) {
-      $("#addWeightModal").modal('hide');
+  $scope.addWeight = function() {
+    if($scope.weightVal == '') {
+      $scope.weightError = 'Please enter a valid weight';
+      return;
+    }
+    else if($scope.weightVal < 50 || $scope.weightVal > 900) {
+      $scope.weightError = 'Please enter a weight between 50 and 900 pounds.';
+      return;
+    }
+    $http({
+      method: 'POST',
+      url: '/addWeight',
+      data: {
+        recordDate: convertDate($scope.weightDate),
+        weightVal: $scope.weightVal
+      }
+    }).success(function() {
+      $('#addWeightModal').modal('hide');
       $scope.alertSuccess = true;
-      $scope.successMessage = "Weight added successfully";
-      $scope.weightVal = "";
-      $scope.weightDate = new Date();
+      $scope.successMessage = 'Weight added successfully';
+      $scope.weightVal = '';
+      $scope.weightDate = $scope.today;
+    }).error(function() {
+      $('#addWeightModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
- };
+    $scope.weightError = '';
+  };
 
   $scope.changeName = function() {
+    if($scope.preferredName == null || $scope.preferredName == '') {
+      $scope.nameError = 'Please enter a name.';
+      return;
+    }
     $http({
       method: 'POST',
       url: '/setName',
@@ -332,7 +466,20 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.alertSuccess = true;
       $scope.userName = $scope.preferredName;
       $scope.successMessage = 'Name changed successfully';
+    }).error(function() {
+      $('#nameModal').modal('hide');
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
+    $scope.nameError = '';
+  };
+  
+  $scope.dismissSuccess = function() {
+    $scope.alertSuccess = false;
+  };
+  
+  $scope.dismissError = function() {
+    $scope.alertError = false;
   };
 });
 
