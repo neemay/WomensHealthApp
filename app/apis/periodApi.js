@@ -88,7 +88,7 @@ module.exports = function(app) {
       }
       else {
         var newSymptom = new PeriodSymptom();
-        newSymptom.periodSymptom.periodId = id
+        newSymptom.periodSymptom.periodId = id;
         newSymptom.periodSymptom.date = req.body.date;
         newSymptom.periodSymptom.cramps = req.body.cramps;
         newSymptom.periodSymptom.nausea = req.body.nausea;

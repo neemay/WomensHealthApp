@@ -39,7 +39,7 @@ module.exports = function(passport) {
           newUser.user.reminderBirthControlRefill = false;
           newUser.user.reminderBirthControlRenewal = false;
           newUser.user.reminderYearlyAppointment = false;
-          newUser.user.reminderYearlyAppointmentMonth = "1";
+          newUser.user.reminderYearlyAppointmentMonth = '1';
           
           newUser.save(function(err) {
             if(err)
