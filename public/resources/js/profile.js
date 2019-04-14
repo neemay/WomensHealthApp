@@ -144,6 +144,7 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#startPeriodModal').modal('hide');
       $scope.userIsOnPeriod = true;
+      $scope.currentPeriod = convertDate($scope.startPeriod);
     }).error(function() {
       $('#startPeriodModal').modal('hide');
       $scope.alertError = true;
@@ -402,8 +403,8 @@ app.controller('controller', function ($scope, $http, $window) {
      $scope.weightError = "Please enter a valid weight";
      return;
    }
-   else if($scope.weightVal < 0 || $scope.weightVal > 1500) {
-     $scope.weightError = "Please enter a weight between 0 and 1500 pounds.";
+   else if($scope.weightVal < 50 || $scope.weightVal > 900) {
+     $scope.weightError = "Please enter a weight between 50 and 900 pounds.";
      return;
    }
    $http({

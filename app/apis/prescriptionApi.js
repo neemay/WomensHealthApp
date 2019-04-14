@@ -70,19 +70,35 @@ module.exports = function(app) {
   });
 
   app.post('/addPrescriptionSymptom', function(req, res) {
-    var newSymptom = new PrescriptionSymptom();
-    newSymptom.prescriptionSymptom.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
-    newSymptom.prescriptionSymptom.date = req.body.date;
-    newSymptom.prescriptionSymptom.spotting = req.body.spotting;
-    newSymptom.prescriptionSymptom.nausea = req.body.nausea;
-    newSymptom.prescriptionSymptom.headache = req.body.headache;
-    newSymptom.prescriptionSymptom.soreBreasts = req.body.soreBreasts;
-    newSymptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
-    newSymptom.prescriptionSymptom.notes = req.body.notes;
-    newSymptom.save(function(err) {
-      if(err)
-        throw err;
-      res.send({success: true});
+    var id = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
+    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': id}, function(err, symptom) {
+      if(symptom) {
+        symptom.prescriptionSymptom.date = req.body.date;
+        symptom.prescriptionSymptom.spotting = req.body.spotting;
+        symptom.prescriptionSymptom.nausea = req.body.nausea;
+        symptom.prescriptionSymptom.headache = req.body.headache;
+        symptom.prescriptionSymptom.soreBreasts = req.body.soreBreasts;
+        symptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
+        symptom.prescriptionSymptom.notes = req.body.notes;
+        symptom.save();
+        res.send({success: true});
+      }
+      else {
+        var newSymptom = new PrescriptionSymptom();
+        newSymptom.prescriptionSymptom.prescriptionId = id;
+        newSymptom.prescriptionSymptom.date = req.body.date;
+        newSymptom.prescriptionSymptom.spotting = req.body.spotting;
+        newSymptom.prescriptionSymptom.nausea = req.body.nausea;
+        newSymptom.prescriptionSymptom.headache = req.body.headache;
+        newSymptom.prescriptionSymptom.soreBreasts = req.body.soreBreasts;
+        newSymptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
+        newSymptom.prescriptionSymptom.notes = req.body.notes;
+        newSymptom.save(function(err) {
+          if(err)
+            throw err;
+          res.send({success: true});
+        });
+      }
     });
   });
   
