@@ -497,8 +497,8 @@ app.controller('controller', function ($scope, $http, $window) {
 //Function to convert the date object to a string with only
 //the current date in YYYY/MM/DD format
 function convertDate(date) {
-  var day = ("0" + date.getDate()).slice(-2);
-  var month = ("0" + (date.getMonth() + 1)).slice(-2);
+  var day = ('0' + date.getDate()).slice(-2);
+  var month = ('0' + (date.getMonth() + 1)).slice(-2);
   var year = date.getFullYear();
   return month + '/' + day + '/' + year;
 }
