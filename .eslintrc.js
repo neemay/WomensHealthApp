@@ -18,8 +18,7 @@ module.exports = {
     "rules": {
         "indent": [
             "error",
-            2,
-            { "FunctionDeclaration": {"parameters": "first"} }
+            2
         ],
         "linebreak-style": [
             "error",
