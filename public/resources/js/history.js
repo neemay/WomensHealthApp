@@ -1,4 +1,5 @@
 var app = angular.module('obie', []);
+//Filter to extract the prescription name from the prescriptionId
 app.filter('prescFromId', function() {
   return function(x) {
     console.log(x);
@@ -10,6 +11,7 @@ app.filter('prescFromId', function() {
     return x.replace(/-/g, ' ');
   };
 });
+//Filter to extract the period start date from the periodId
 app.filter('periodFromId', function() {
   return function(x) {
     console.log(x);
@@ -18,6 +20,7 @@ app.filter('periodFromId', function() {
   };
 });
 app.controller('controller', function ($scope, $http, $window) {
+  //Initialize scope variables
   $scope.isDashboard = false;
   $scope.isProfile = false;
   $scope.isHistory = true;
@@ -35,7 +38,7 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.today = new Date();
   $scope.searchDate = $scope.today;
 
-
+  //Function to call the logout endpoint
   $scope.logout = function() {
     $http({
       method: 'GET',
@@ -45,7 +48,9 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Initialization function
   $scope.init = function() {
+    //Get the user's name
     $http({
       method: 'GET',
       url: '/getUserName',
@@ -53,7 +58,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userName = response.name;
     });
 
-
+    //Get the user's periods
     $http({
       method: 'GET',
       url: '/getUserPeriods'
@@ -65,7 +70,7 @@ app.controller('controller', function ($scope, $http, $window) {
       }
     });
 
-
+    //Get the user's prescriptions
     $http({
       method: 'GET',
       url: '/getUserPrescriptions'
@@ -79,6 +84,7 @@ app.controller('controller', function ($scope, $http, $window) {
     $('#generalStatsBtn').button('toggle');
   };
 
+  //Function to get the prescription symptoms by prescription id
   $scope.getPrescriptionSymptoms = function(id, name) {
     $http({
       method: 'GET',
@@ -98,6 +104,7 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to get the period symptoms by period id
   $scope.getPeriodSymptoms = function(id, startDate) {
     $http({
       method: 'GET',
@@ -116,7 +123,10 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
    
+  //Function to get any symptoms for a given date
+  //Symptoms for both periods and prescriptions are returned
   $scope.searchSymptoms = function() {
+    //Get the period symptoms by date
     $http({
       method: 'GET',
       url: '/getPeriodSymptomsByDate',
@@ -133,6 +143,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $('#dateModal').modal('show');
     });
     
+    //Get the prescription symptoms by date
     $http({
       method: 'GET',
       url: '/getPrescriptionSymptomsByDate',
@@ -151,6 +162,7 @@ app.controller('controller', function ($scope, $http, $window) {
     
   };
   
+  //Function to display the general statistics
   $scope.getGeneralStats = function() {
     $scope.numPeriods = $scope.userPeriods.length;
     $scope.numPrescriptions = $scope.userPrescriptions.length;
@@ -160,6 +172,8 @@ app.controller('controller', function ($scope, $http, $window) {
     $('#weightStatsBtn').button('toggle');
   };
 
+  //Function to get the weight information and display the chart
+  //Chart is generated using the open source javascript framework Chartjs
   $scope.getWeightStats = function() {
     $http({
       method: 'GET',
@@ -167,7 +181,6 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       var data = response.data;
       var dates = [];
-      //var weights = [];
       var chartData = [];
       var maxWeight = 0;
       data.forEach(function(weight) {
@@ -180,9 +193,8 @@ app.controller('controller', function ($scope, $http, $window) {
         });
         dates.push(new Date(weight.weight.recordDate).toLocaleDateString());
       });
-      //console.log(chartData);
-      //console.log(weights);
       maxWeight = maxWeight + 10;
+      
       //Create the visualization
       var ctx = $('#weightStats');
       var chart = new Chart(ctx, {
@@ -223,7 +235,6 @@ app.controller('controller', function ($scope, $http, $window) {
           }
         }
       });
-      
       $scope.showGeneralStats = false;
       $scope.showWeightStats = !$scope.showWeightStats;
       $('#generalStatsBtn').button('toggle');
@@ -233,7 +244,7 @@ app.controller('controller', function ($scope, $http, $window) {
 });
 
 //Function to convert the date object to a string with only
-//the current date in YYYY/MM/DD format
+//the current date in MM/DD/YYYY format
 function convertDate(date) {
   var day = ('0' + date.getDate()).slice(-2);
   var month = ('0' + (date.getMonth() + 1)).slice(-2);

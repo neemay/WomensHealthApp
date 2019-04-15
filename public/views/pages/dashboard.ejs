@@ -1,15 +1,11 @@
+<!-- Dashboard -->
 <!DOCTYPE html>
 <html lang="en" ng-app="obie">
   <head>
       <% include ../templates/head.ejs %>
   </head>
-
   <body ng-controller="controller" ng-init="init()">
-
     <% include ../templates/header.ejs %>
-
-
-    <!-- Insert Body here -->
     <div class="container-fluid ng-cloak">
       <div class="offset-md-2 col-md-8 secondary-page-header">
         <h2>Welcome, {{userName}}</h2>
@@ -53,7 +49,6 @@
         </div>
       </div>
 	</div>
-
     <% include ../templates/footer.ejs %>
     <script src="resources/js/dashboard.js"></script>
   </body>

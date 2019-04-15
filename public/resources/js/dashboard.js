@@ -1,5 +1,6 @@
 var app = angular.module('obie', []);
-app.controller('controller', function ($scope, $http, $window) { 
+app.controller('controller', function ($scope, $http, $window) {
+  //Initialize scope variables
   $scope.isDashboard = true;
   $scope.isProfile = false;
   $scope.isHistory = false;
@@ -7,6 +8,7 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.noPeriod = true;
   $scope.activePrescriptions = '';
   
+  //Function to call the logout endpoint
   $scope.logout = function() {
     $http({
       method: 'GET',
@@ -16,7 +18,9 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
   
+  //Initialization function
   $scope.init = function() {
+    //Get the user's name
     $http({
       method: 'GET',
       url: '/getUserName'
@@ -24,6 +28,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userName = response.name;
     });
 	
+    //Get the user's email
     $http({
       method: 'GET',
       url: '/getEmail'
@@ -31,6 +36,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.email = response.email;
     });
     
+    //Get the user's period status
     $http({
       method: 'GET',
       url: '/isOnPeriod'
@@ -53,6 +59,7 @@ app.controller('controller', function ($scope, $http, $window) {
       }
     });
     
+    //Get the user's active prescriptions
     $http({
       method: 'GET',
       url: '/getActiveUserPrescriptions'

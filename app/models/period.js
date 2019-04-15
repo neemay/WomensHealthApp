@@ -1,4 +1,5 @@
 // app/modules/period.js
+//Database model for the period object
 
 var mongoose = require('mongoose');
 

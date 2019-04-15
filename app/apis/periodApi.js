@@ -1,12 +1,16 @@
 // app/apis/periodApi.js
+// This file contains the api functions related to periods
 
-//include any mongodb models here
+//Models referenced by this file
 var Period = require('../../app/models/period');
 var User = require('../../app/models/user');
 var PeriodSymptom = require('../../app/models/periodSymptom');
 
 module.exports = function(app) {
-
+  //Endpoint: isOnPeriod
+  //Returns whether or not the user is on their period
+  //If the user is on their period, return the start date of the current period
+  //If the user is not on their period, return the end date of the most recent period
   app.get('/isOnPeriod', function(req, res) {
     var isOnPeriod = false;
     var currentPeriod = null;
@@ -36,7 +40,9 @@ module.exports = function(app) {
     });
   });
 
-  //Function to add the start date for a user's period
+  //Endpoint: addPeriodStart
+  //Creates a new period object for this user with the given start date and a null end date
+  //Updates the user's isOnPeriod state to true
   app.post('/addPeriodStart', function(req, res) {
     var newPeriod = new Period();
     newPeriod.period.periodId = req.user.user.email + ':' + req.body.startDate;
@@ -55,7 +61,9 @@ module.exports = function(app) {
 
   });
 
-  //Function to add the end date for a user's period
+  //Endpoint: addPeriodEnd
+  //Finds the period for this user that has a null end date and set its end date
+  //Updates the user's isOnPeriod state to false
   app.post('/addPeriodEnd', function(req, res) {
     Period.findOne({'period.email': req.user.user.email, 'period.endDate': null}, function(err, period) {
       if(err)
@@ -70,7 +78,9 @@ module.exports = function(app) {
     });
   });
 
-  //Function to add period symptoms
+  //Endpoint: addPeriodSymptom
+  //Adds a symptom object for this period using the id email:startDate
+  //If a period symptom already exists with this id and date, the current symptom gets updates
   app.post('/addPeriodSymptom', function(req, res) {
     var id = req.user.user.email + ':' + req.body.periodStartDate;
     PeriodSymptom.findOne({'periodSymptom.periodId': id, 'periodSymptom.date': req.body.date}, function(err, symptom) {
@@ -106,23 +116,28 @@ module.exports = function(app) {
     });
   });
 
+  //Endpoint: getUserPeriods
+  //Returns all of the periods for a given user
   app.get('/getUserPeriods', function(req, res) {
     Period.find({'period.email': req.user.user.email}, function(err, periods) {
       res.send({success: true, data: periods});
     });
   });
   
+  //Endpoint: getPeriodSymptomsById
+  //Returns all of the symptoms for a period given the periodId
   app.get('/getPeriodSymptomsById', function(req, res) {
     PeriodSymptom.find({'periodSymptom.periodId': req.query.id}, function(err, symptoms) {
       res.send({success: true, data: symptoms});
     });
   });
   
+  //Endpoint: getPeriodSymptomsByDate
+  //Returns all of the symptoms for a given period for this user given the date
   app.get('/getPeriodSymptomsByDate', function(req, res) {
     var pattern = '.*' + req.user.user.email + '.*';
     PeriodSymptom.find({'periodSymptom.periodId': {$regex: pattern}, 'periodSymptom.date': req.query.date}, function(err, symptoms) {
       res.send({success: true, data: symptoms});
     });
   });
-
 };

@@ -1,15 +1,11 @@
+<!-- History -->
 <!DOCTYPE html>
 <html lang="en" ng-app="obie">
   <head>
       <% include ../templates/head.ejs %>
   </head>
-
   <body ng-controller="controller" ng-init="init()">
-
     <% include ../templates/header.ejs %>
-
-
-    <!-- Insert Body here -->
 	<div class="container-fluid ng-cloak">
       <div class="offset-md-2 col-md-8 page-header">
         <h2>{{userName}}'s History</h2>
@@ -31,14 +27,10 @@
             </div>
             <div class="panel-body scroll">
               <div ng-show="hasUserPeriods">
-
                 <button type="button" class="btn btn-light" ng-repeat="period in userPeriods" ng-click="getPeriodSymptoms(period.period.periodId, period.period.startDate)" data-toggle="modal" data-target="#periodModal">
                   Period on:
                   <span class="badge badge-primary">{{period.period.startDate}} - {{period.period.endDate}} </span>
                 </button>
-
-                
-
               </div>
               <div ng-show="!hasUserPeriods">
                 No period history for user
@@ -53,7 +45,6 @@
             </div>
             <div class="panel-body scroll">
               <div ng-show="hasUserPrescriptions">
-
                 <button type="button" class="btn btn-light"
                   ng-repeat="prescription in userPrescriptions" ng-click="getPrescriptionSymptoms(prescription.prescription.prescriptionId, prescription.prescription.name)" data-toggle="modal" data-target="#prescriptionModal">
                   {{prescription.prescription.name}}
@@ -63,7 +54,6 @@
               <div ng-show="!hasUserPrescriptions">
                 No prescription history for user
               </div>
-
             </div>
           </div>
         </div>
@@ -90,7 +80,6 @@
                   <canvas id="weightStats"></canvas>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

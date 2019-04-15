@@ -1,3 +1,4 @@
+// Settings and rules for ESLint, an open source node package for linting code
 module.exports = {
     "env": {
         "browser": true,
@@ -17,7 +18,8 @@ module.exports = {
     "rules": {
         "indent": [
             "error",
-            2
+            2,
+            { "FunctionDeclaration": {"parameters": "first"} }
         ],
         "linebreak-style": [
             "error",
