@@ -10,7 +10,7 @@ module.exports = function(app) {
   app.post('/addPrescription', function(req, res) {
     var newPrescription = new Prescription();
     newPrescription.prescription.email = req.user.user.email;
-    newPrescription.prescription.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
+    newPrescription.prescription.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '-').trim() + ':' + req.body.startDate;
     newPrescription.prescription.name = req.body.name;
     newPrescription.prescription.refills = req.body.refills;
     newPrescription.prescription.daysSupply = req.body.daysSupply;
@@ -74,7 +74,7 @@ module.exports = function(app) {
   });
 
   app.post('/addPrescriptionSymptom', function(req, res) {
-    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': req.body.id}, function(err, symptom) {
+    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': req.body.id, 'prescriptionSymptom.date': req.body.date}, function(err, symptom) {
       if(symptom) {
         symptom.prescriptionSymptom.date = req.body.date;
         symptom.prescriptionSymptom.spotting = req.body.spotting;
@@ -106,10 +106,14 @@ module.exports = function(app) {
   });
   
   app.get('/getPrescriptionSymptomsById', function(req, res) {
-    //console.log(req);
-    //console.log(req.query.id);
     PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': req.query.id}, function(err, symptoms) {
-      //console.log(symptoms);
+      res.send({success: true, data: symptoms});
+    });
+  });
+  
+  app.get('/getPrescriptionSymptomsByDate', function(req, res) {
+    var pattern = '.*' + req.user.user.email + '.*';
+    PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': {$regex: pattern}, 'prescriptionSymptom.date': req.query.date}, function(err, symptoms) {
       res.send({success: true, data: symptoms});
     });
   });

@@ -5,6 +5,7 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.isHistory = false;
   $scope.userIsOnPeriod = false;
   $scope.noPeriod = true;
+  $scope.activePrescriptions = '';
   
   $scope.logout = function() {
     $http({
@@ -56,7 +57,8 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'GET',
       url: '/getActiveUserPrescriptions'
     }).success(function(response) {
-      $scope.activePrescriptions = response.data;
+      if(response.data.length > 0)
+        $scope.activePrescriptions = response.data;
     });
   };
 });

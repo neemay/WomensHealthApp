@@ -76,11 +76,6 @@ body {
   display: block;
 }
 
-.btn-index {
-  margin-right: 10px;
-  display:inline
-}
-
 .btn-group-label {
   margin-right: 15px;
   float: left;
@@ -128,8 +123,13 @@ textarea {
   border-color: #51bcb6;
 }
 
+.btn-outline-primary:not(:disabled):not(.disabled).active {
+  background-color: #51bcb6!important;
+  border-color: #51bcb6!important
+}
+
 .btn-primary:focus, .btn-outline-primary:focus {
-  box-shadow: 0 0 0 0.2rem rgba(81,188,182,.5);
+  box-shadow: 0 0 0 0.2rem rgba(81,188,182,.5)!important;
 }
 
 .custom-control-input:checked~.custom-control-label::before {
@@ -200,9 +200,55 @@ h5 {
   overflow: auto !important;
 }
 
+.scroll {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.search .form-group {
+  width: 500px;
+  margin: auto;
+}
+
+.search .form-control {
+  width: 200px;
+  display: inline-block;
+}
+
+.search .btn {
+  margin-top: 5px;
+}
+
 @media screen and (max-width: 600px) {
   #save-preferences {
     float: none;
     width: 100%;
+  }
+  
+  .secondary-page-header{
+    margin-top: 50px;
+  }
+  
+  .jumbotron{
+    margin-top: 20px;
+  }
+  
+  .scroll {
+    max-height: none;
+  }
+  
+  .search .form-group {
+    width: auto;
+    text-align: center;
+  }
+
+  .search .form-control {
+    display: block;
+    margin: auto;
+    width: 100%;
+  }
+
+  .search .btn {
+    margin-top: 5px;
   }
 }

@@ -19,7 +19,7 @@ module.exports = function(app) {
         throw err;
       isOnPeriod = user.user.isOnPeriod;
       if(isOnPeriod) { //return the start date of the current period
-        Period.findOne({'period.endDate': null}, function(err, period) {
+        Period.findOne({'period.email': user.user.email, 'period.endDate': null}, function(err, period) {
           if(period)
             currentPeriod = period.period.startDate;
           res.send({success: true, isOnPeriod: isOnPeriod, currentPeriod: currentPeriod});
@@ -57,7 +57,7 @@ module.exports = function(app) {
 
   //Function to add the end date for a user's period
   app.post('/addPeriodEnd', function(req, res) {
-    Period.findOne({'period.endDate': null}, function(err, period) {
+    Period.findOne({'period.email': req.user.user.email, 'period.endDate': null}, function(err, period) {
       if(err)
         throw err;
       period.period.endDate = req.body.endDate;
@@ -73,7 +73,7 @@ module.exports = function(app) {
   //Function to add period symptoms
   app.post('/addPeriodSymptom', function(req, res) {
     var id = req.user.user.email + ':' + req.body.periodStartDate;
-    PeriodSymptom.findOne({'periodSymptom.periodId': id}, function(err, symptom) {
+    PeriodSymptom.findOne({'periodSymptom.periodId': id, 'periodSymptom.date': req.body.date}, function(err, symptom) {
       if(symptom) {
         symptom.periodSymptom.date = req.body.date;
         symptom.periodSymptom.cramps = req.body.cramps;
@@ -114,6 +114,13 @@ module.exports = function(app) {
   
   app.get('/getPeriodSymptomsById', function(req, res) {
     PeriodSymptom.find({'periodSymptom.periodId': req.query.id}, function(err, symptoms) {
+      res.send({success: true, data: symptoms});
+    });
+  });
+  
+  app.get('/getPeriodSymptomsByDate', function(req, res) {
+    var pattern = '.*' + req.user.user.email + '.*';
+    PeriodSymptom.find({'periodSymptom.periodId': {$regex: pattern}, 'periodSymptom.date': req.query.date}, function(err, symptoms) {
       res.send({success: true, data: symptoms});
     });
   });

@@ -23,7 +23,6 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.newPrescError = '';
   $scope.newPrescriptionRefills = 1;
   $scope.newPrescriptionDaysSupply = 28;
-  //$scope.prescription = '';
   
   //Initialize all of the dates
   //Timezones mess with the max calendar dates,
@@ -147,6 +146,10 @@ app.controller('controller', function ($scope, $http, $window) {
       $('#startPeriodModal').modal('hide');
       $scope.userIsOnPeriod = true;
       $scope.currentPeriod = convertDate($scope.startPeriod);
+      $scope.minDateEnd = new Date($scope.currentPeriod);
+      $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
+      $scope.minDateEnd.setHours(0,0,0,0);
+      $scope.startPeriod = $scope.today;
     }).error(function() {
       $('#startPeriodModal').modal('hide');
       $scope.alertError = true;
@@ -166,6 +169,11 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#endPeriodModal').modal('hide');
       $scope.userIsOnPeriod = false;
+      $scope.lastPeriod = convertDate($scope.endPeriod);
+      $scope.minDateStart = new Date($scope.lastPeriod);
+      $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
+      $scope.minDateStart.setHours(0,0,0,0);
+      $scope.endPeriod = $scope.today;
     }).error(function() {
       $('#endPeriodModal').modal('hide');
       $scope.alertError = true;
@@ -183,6 +191,7 @@ app.controller('controller', function ($scope, $http, $window) {
       if(response.data.length > 0) {
         $scope.userPrescriptions = response.data;
         $scope.prescription = $scope.userPrescriptions[0];
+        $scope.prescriptionSympt = $scope.userPrescriptions[0];
         $scope.prescriptionName = response.data['0'].prescription.name;
         $scope.prescriptionStart = new Date(response.data['0'].prescription.startDate);
         $scope.prescriptionRefills = parseInt(response.data['0'].prescription.refills);
@@ -259,20 +268,22 @@ app.controller('controller', function ($scope, $http, $window) {
 
   $scope.addPrescription = function() {
     var exists = false;
-    $scope.userPrescriptions.forEach(function(presc) {
-      if(presc.prescription.status == 'Active') {
-        if($scope.newPrescriptionName == presc.prescription.name) {
-          $scope.newPrescError = 'You already have an active prescription of this kind. Please edit the active prescription directly or set its status to inactive before adding a new prescription.';
-          exists = true;
+    if($scope.userPrescriptions) {
+      $scope.userPrescriptions.forEach(function(presc) {
+        if(presc.prescription.status == 'Active') {
+          if($scope.newPrescriptionName == presc.prescription.name) {
+            $scope.newPrescError = 'You already have an active prescription of this kind. Please edit the active prescription directly or set its status to inactive before adding a new prescription.';
+            exists = true;
+          }
         }
-      }
-      else {
-        if($scope.newPrescriptionName == presc.prescription.name && convertDate($scope.newPrescriptionStart) == presc.prescription.startDate) {
-          $scope.newPrescError = 'You cannot add a prescription with the same name and start date as an already existing prescription.';
-          exists = true;
+        else {
+          if($scope.newPrescriptionName == presc.prescription.name && convertDate($scope.newPrescriptionStart) == presc.prescription.startDate) {
+            $scope.newPrescError = 'You cannot add a prescription with the same name and start date as an already existing prescription.';
+            exists = true;
+          }
         }
-      }
-    });
+      });
+    }
     if(exists)
       return;
     $http({
@@ -372,7 +383,7 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'POST',
       url: '/addPrescriptionSymptom',
       data: {
-        id: $scope.prescription.prescription.prescriptionId,
+        id: $scope.prescriptionSympt.prescription.prescriptionId,
         date: convertDate($scope.symptomDatePresc),
         spotting: $scope.symptomSpottingPresc,
         nausea: $scope.symptomNauseaPresc,
@@ -486,8 +497,8 @@ app.controller('controller', function ($scope, $http, $window) {
 //Function to convert the date object to a string with only
 //the current date in YYYY/MM/DD format
 function convertDate(date) {
-  var day = date.getDate();
-  var month = date.getMonth() + 1;
+  var day = ("0" + date.getDate()).slice(-2);
+  var month = ("0" + (date.getMonth() + 1)).slice(-2);
   var year = date.getFullYear();
   return month + '/' + day + '/' + year;
 }
