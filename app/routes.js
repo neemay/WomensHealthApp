@@ -1,4 +1,5 @@
 // app/routes.js
+//This file contains the main navigation endpoints for the application
 module.exports = function(app, passport) {
   //Index page
   app.get('/', function(req, res) {
@@ -20,17 +21,20 @@ module.exports = function(app, passport) {
     res.render('pages/history', { title: 'My History', user: req.user });
   });
   
+  //Logout
   app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
   });
   
+  //Login
   app.post('/login', passport.authenticate('local-login', {
     successRedirect : '/dashboard',
     failureRedirect : '/#login',
     failureFlash : true
   }));
   
+  //Signup
   app.post('/signup', passport.authenticate('local-signup', {
     successRedirect : '/dashboard',
     failureRedirect : '/#signup',
@@ -39,7 +43,7 @@ module.exports = function(app, passport) {
   
 };
 
-//route middleware to ensure user is logged in
+//Route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
   if(req.isAuthenticated())
     return next();

@@ -1,4 +1,5 @@
 // app/models/prescriptionSymptom.js
+//Database model for the prescription symptom object
 
 var mongoose = require('mongoose');
 

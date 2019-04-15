@@ -1,11 +1,10 @@
+<!-- Profile -->
 <!DOCTYPE html>
 <html lang="en" ng-app="obie">
   <head>
       <% include ../templates/head.ejs %>
   </head>
-
   <body ng-controller="controller" ng-init="init()">
-
     <% include ../templates/header.ejs %>
     <!-- Insert Body here -->
     <div class="container-fluid ng-cloak">
@@ -33,15 +32,15 @@
             <div class="panel-body">
               <h5>My period</h5>
               <div class="btn-container">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#startPeriodModal" ng-show="!userIsOnPeriod">Record start of period</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-show="userIsOnPeriod">Record end of period</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-show="userIsOnPeriod">Add period symptoms</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#startPeriodModal" ng-disabled="userIsOnPeriod">Record start of period</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-disabled="!userIsOnPeriod">Record end of period</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-disabled="!userIsOnPeriod">Add period symptoms</button>
               </div>
               <h5>My prescription</h5>
               <div class="btn-container">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()" ng-disabled="!userPrescriptions">Update a prescription</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal" ng-click="getUserPrescriptions()">Add prescription symptoms</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal" ng-click="getUserPrescriptions()" ng-disabled="!userPrescriptions">Add prescription symptoms</button>
               </div>
               <h5>My statistics</h5>
               <button class="btn btn-primary" data-toggle="modal" data-target="#addWeightModal">Add weight</button>
@@ -149,7 +148,7 @@
           </div>
           <div class="modal-body">
             <form class="form-container">
-              <div class="mb-2">Your last recorded period started on {{lastPeriod}}.</div>
+              <div class="mb-2" ng-show="lastPeriod">Your last recorded period ended on {{lastPeriod}}.</div>
               <div class="form-group">
                 <label>Enter Start Date</label>
                 <input type="date" class="form-control" id="startPeriod" ng-model="startPeriod" min="{{minDateStart | date: 'yyyy-MM-dd'}}" max="{{today | date: 'yyyy-MM-dd'}}">
@@ -439,8 +438,7 @@
             <form class="form-container">
               <div class="form-group">
                 <label>Prescription Name:</label>
-                <select ng-model="prescriptionName" class="form-control" ng-change="loadPrescriptionDate()">
-                  <option ng-repeat="prescription in userPrescriptions" ng-value="prescription.prescription.id">{{prescription.prescription.name}}</option>
+                <select ng-model="prescriptionSympt" class="form-control" ng-change="loadPrescription()" ng-options='presc as (presc.prescription.name + " - " + presc.prescription.status) for presc in userPrescriptions track by presc.prescription.prescriptionId'>
                 </select>
               </div>
               <div class="form-group">

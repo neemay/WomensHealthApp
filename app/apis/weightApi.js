@@ -1,11 +1,13 @@
 // app/apis/weightApi.js
+// This file contains the api functions related to weight
 
-//include any mongodb models here
+//Models referenced by this file
 var Weight = require('../../app/models/weight');
 
 module.exports = function(app) {
-
-  //Function to add the start date for a user's period
+  //Endpoint: addWeight
+  //Stores the user's weight for a given date
+  //If the user has already stored a weight for this date, overwrite it with the new value
   app.post('/addWeight', function(req, res) {
     Weight.findOne({'weight.email': req.user.user.email, 'weight.recordDate': req.body.recordDate}, function(err, weight) {
       if(weight) {
@@ -29,6 +31,8 @@ module.exports = function(app) {
     });
   });
 
+  //Endpoint: getUserWeights
+  //Returns the weights stored for this user
   app.get('/getUserWeights', function(req, res) {
     Weight.find({'weight.email': req.user.user.email}, function(err, weights) {
       res.send({success: true, data: weights});

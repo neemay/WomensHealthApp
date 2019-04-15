@@ -1,16 +1,18 @@
 // app/apis/prescriptionApi.js
+// This file contains the api functions related to prescriptions
 
-//include any mongodb models here
+//Models referenced by this file
 var Prescription = require('../models/prescription');
 var PrescriptionSymptom = require('../models/prescriptionSymptom');
 var csv=require('csvtojson');
 
 module.exports = function(app) {
-  //Function to add a prescription
+  //Endpoint: addPrescription
+  //Adds a new prescription for a user with the given fields using the id email:prescription-name:startDate
   app.post('/addPrescription', function(req, res) {
     var newPrescription = new Prescription();
     newPrescription.prescription.email = req.user.user.email;
-    newPrescription.prescription.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '').trim() + ':' + req.body.startDate;
+    newPrescription.prescription.prescriptionId = req.user.user.email + ':' + req.body.name.replace(/ /g, '-').trim() + ':' + req.body.startDate;
     newPrescription.prescription.name = req.body.name;
     newPrescription.prescription.refills = req.body.refills;
     newPrescription.prescription.daysSupply = req.body.daysSupply;
@@ -26,6 +28,8 @@ module.exports = function(app) {
     });
   });
 
+  //Endpoint: getPrescriptionList
+  //Returns the list of prescriptions that are stored in the prescription-names CSV file as a json object
   app.get('/getPrescriptionList', function(req, res) {
     csv().fromFile('./public/resources/prescription-names.csv')
       .then((jsonObj)=>{
@@ -33,19 +37,24 @@ module.exports = function(app) {
       });
   });
 
+  //Endpoint: getUserPrescriptions
+  //Returns the list of prescriptions for this user
   app.get('/getUserPrescriptions', function(req, res) {
     Prescription.find({'prescription.email': req.user.user.email}, function(err, prescriptions) {
       res.send({success: true, data: prescriptions});
     });
   });
   
+  //Endpoint: getUserPrescriptions
+  //Returns the list of active prescriptions for this user
   app.get('/getActiveUserPrescriptions', function(req, res) {
     Prescription.find({'prescription.email': req.user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
       res.send({success: true, data: prescriptions});
     });
   });
 
-
+  //Endpoint: updatePrescription
+  //Updates the fields for this prescription given its id
   app.post('/updatePrescription', function(req, res) {
     Prescription.findOne({'prescription.prescriptionId': req.body.id}, function(err, prescription) {
       if(err)
@@ -61,6 +70,9 @@ module.exports = function(app) {
     });
   });
 
+  //Endpoint: deletePrescription
+  //Deletes a prescription given its id
+  //Also deletes and symptoms associated with this prescription
   app.post('/deletePrescription', function(req, res) {
     Prescription.deleteOne({'prescription.prescriptionId': req.body.id}, function(err) {
       if(err)
@@ -73,8 +85,11 @@ module.exports = function(app) {
     });
   });
 
+  //Endpoint: addPrescriptionSymptoms
+  //Adds a symptom object for this prescription
+  //If a prescription symptom already exists with this id and date, the current symptom gets updates
   app.post('/addPrescriptionSymptom', function(req, res) {
-    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': req.body.id}, function(err, symptom) {
+    PrescriptionSymptom.findOne({'prescriptionSymptom.prescriptionId': req.body.id, 'prescriptionSymptom.date': req.body.date}, function(err, symptom) {
       if(symptom) {
         symptom.prescriptionSymptom.date = req.body.date;
         symptom.prescriptionSymptom.spotting = req.body.spotting;
@@ -105,11 +120,19 @@ module.exports = function(app) {
     });
   });
   
+  //Endpoint: getPrescriptionSymptomsById
+  //Returns the prescription symptoms for this user given the prescription id
   app.get('/getPrescriptionSymptomsById', function(req, res) {
-    //console.log(req);
-    //console.log(req.query.id);
     PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': req.query.id}, function(err, symptoms) {
-      //console.log(symptoms);
+      res.send({success: true, data: symptoms});
+    });
+  });
+  
+  //Endpoint: getPrescriptionSymptomsByDate
+  //Returns the prescription symptoms for this user given the date
+  app.get('/getPrescriptionSymptomsByDate', function(req, res) {
+    var pattern = '.*' + req.user.user.email + '.*';
+    PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': {$regex: pattern}, 'prescriptionSymptom.date': req.query.date}, function(err, symptoms) {
       res.send({success: true, data: symptoms});
     });
   });

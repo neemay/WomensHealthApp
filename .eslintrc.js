@@ -1,3 +1,4 @@
+// Settings and rules for ESLint, an open source node package for linting code
 module.exports = {
     "env": {
         "browser": true,

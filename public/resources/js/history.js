@@ -1,5 +1,26 @@
 var app = angular.module('obie', []);
+//Filter to extract the prescription name from the prescriptionId
+app.filter('prescFromId', function() {
+  return function(x) {
+    console.log(x);
+    var index = x.indexOf(':') + 1;
+    x = x.substr(index);
+    index = x.indexOf(':');
+    x = x.substr(0, index);
+    console.log(x);
+    return x.replace(/-/g, ' ');
+  };
+});
+//Filter to extract the period start date from the periodId
+app.filter('periodFromId', function() {
+  return function(x) {
+    console.log(x);
+    var index = x.indexOf(':') + 1;
+    return x.substr(index);
+  };
+});
 app.controller('controller', function ($scope, $http, $window) {
+  //Initialize scope variables
   $scope.isDashboard = false;
   $scope.isProfile = false;
   $scope.isHistory = true;
@@ -7,13 +28,17 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.hasUserPrescriptions = false;
   $scope.hasUserStats = true;
   $scope.hasPrescriptionSymptoms = false;
+  $scope.hasPeriodSymptomsDate = false;
+  $scope.hasPrescriptionSymptomsDate = false;
   $scope.hasPeriodSymptoms = false;
   $scope.showGeneralStats = true;
   $scope.showWeightStats = false;
   $scope.numPeriods = 0;
   $scope.numPrescriptions = 0;
+  $scope.today = new Date();
+  $scope.searchDate = $scope.today;
 
-
+  //Function to call the logout endpoint
   $scope.logout = function() {
     $http({
       method: 'GET',
@@ -23,7 +48,9 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Initialization function
   $scope.init = function() {
+    //Get the user's name
     $http({
       method: 'GET',
       url: '/getUserName',
@@ -31,31 +58,33 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userName = response.name;
     });
 
-
+    //Get the user's periods
     $http({
       method: 'GET',
       url: '/getUserPeriods'
     }).success(function(response) {
       $scope.userPeriods = response.data;
+      $scope.numPeriods = $scope.userPeriods.length;
       if(response.data.length > 0){
         $scope.hasUserPeriods = true;
       }
-      //$scope.hasUserPeriods = true;
     });
 
-
+    //Get the user's prescriptions
     $http({
       method: 'GET',
       url: '/getUserPrescriptions'
     }).success(function(response) {
       $scope.userPrescriptions = response.data;
-      if(response.data.length){
+      $scope.numPrescriptions = $scope.userPrescriptions.length;
+      if(response.data.length > 0){
         $scope.hasUserPrescriptions = true;
       }
     });
-
+    $('#generalStatsBtn').button('toggle');
   };
 
+  //Function to get the prescription symptoms by prescription id
   $scope.getPrescriptionSymptoms = function(id, name) {
     $http({
       method: 'GET',
@@ -75,8 +104,8 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to get the period symptoms by period id
   $scope.getPeriodSymptoms = function(id, startDate) {
-    //console.log(id);
     $http({
       method: 'GET',
       url: '/getPeriodSymptomsById',
@@ -94,29 +123,57 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
    
-  $scope.getGeneralStats = function() {
-    $scope.numPeriods = $scope.userPeriods.length;
-    $scope.numPrescription = $scope.userPrescriptions.length;
-    $scope.showGeneralStats = !$scope.showPeriodStats;
-    $scope.showWeightStats = false;
-  };
-
-
-
-  $scope.getPeriodStats = function() {
+  //Function to get any symptoms for a given date
+  //Symptoms for both periods and prescriptions are returned
+  $scope.searchSymptoms = function() {
+    //Get the period symptoms by date
     $http({
       method: 'GET',
-      url: '/getUserPeriods',
+      url: '/getPeriodSymptomsByDate',
+      params: {
+        date: convertDate($scope.searchDate)
+      }
     }).success(function(response) {
-      $scope.numPeriods = response.data.length;
-
-      $scope.showPeriodStats = !$scope.showPeriodStats;
-      $scope.showPrescriptionStats = false;
-      $scope.showWeightStats = false;
-
+      if(response.data.length > 0) {
+        $scope.periodSymptomsDate = response.data;
+        $scope.hasPeriodSymptomsDate = true;
+      }
+      else
+        $scope.hasPeriodSymptomsDate = false;
+      $('#dateModal').modal('show');
     });
+    
+    //Get the prescription symptoms by date
+    $http({
+      method: 'GET',
+      url: '/getPrescriptionSymptomsByDate',
+      params: {
+        date: convertDate($scope.searchDate)
+      }
+    }).success(function(response) {
+      if(response.data.length > 0) {
+        $scope.prescriptionSymptomsDate = response.data;
+        $scope.hasPrescriptionSymptomsDate = true;
+      }
+      else
+        $scope.hasPrescriptionSymptomsDate = false;
+      $('#dateModal').modal('show');
+    });
+    
+  };
+  
+  //Function to display the general statistics
+  $scope.getGeneralStats = function() {
+    $scope.numPeriods = $scope.userPeriods.length;
+    $scope.numPrescriptions = $scope.userPrescriptions.length;
+    $scope.showGeneralStats = !$scope.showPeriodStats;
+    $scope.showWeightStats = false;
+    $('#generalStatsBtn').button('toggle');
+    $('#weightStatsBtn').button('toggle');
   };
 
+  //Function to get the weight information and display the chart
+  //Chart is generated using the open source javascript framework Chartjs
   $scope.getWeightStats = function() {
     $http({
       method: 'GET',
@@ -124,7 +181,6 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       var data = response.data;
       var dates = [];
-      //var weights = [];
       var chartData = [];
       var maxWeight = 0;
       data.forEach(function(weight) {
@@ -137,9 +193,8 @@ app.controller('controller', function ($scope, $http, $window) {
         });
         dates.push(new Date(weight.weight.recordDate).toLocaleDateString());
       });
-      //console.log(chartData);
-      //console.log(weights);
       maxWeight = maxWeight + 10;
+      
       //Create the visualization
       var ctx = $('#weightStats');
       var chart = new Chart(ctx, {
@@ -180,9 +235,19 @@ app.controller('controller', function ($scope, $http, $window) {
           }
         }
       });
-      
       $scope.showGeneralStats = false;
       $scope.showWeightStats = !$scope.showWeightStats;
+      $('#generalStatsBtn').button('toggle');
+      $('#weightStatsBtn').button('toggle');
     });
   };
 });
+
+//Function to convert the date object to a string with only
+//the current date in MM/DD/YYYY format
+function convertDate(date) {
+  var day = ('0' + date.getDate()).slice(-2);
+  var month = ('0' + (date.getMonth() + 1)).slice(-2);
+  var year = date.getFullYear();
+  return month + '/' + day + '/' + year;
+}

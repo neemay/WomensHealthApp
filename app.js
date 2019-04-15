@@ -1,3 +1,5 @@
+//This file contains the code for the server to run
+//Necessary node modules
 var express = require('express');
 var path = require('path');
 var app = express();
@@ -8,21 +10,21 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
 var cookieParser = require('cookie-parser');
-//database connection
+//Database connection string
 var configDB = require('./config/database.js');
+//Establish connection with mongo database
 mongoose.connect(configDB.url, { useNewUrlParser: true });
 
 
-//express setup
+//Express setup
 app.set('view engine', 'ejs'); //set up ejs for templating
 app.set('views', path.join(__dirname, '/public/views')); //set path for views folder
 app.use(express.static(__dirname + '/public')); //set path for static files
-//app.use(bodyParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-//passport setup
+//Passport setup
 require('./config/passport')(passport);
 app.use(session({
   secret: 'softwaredesignanddocumentation',
@@ -33,7 +35,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-//routes
+//Routes
 require('./app/routes.js')(app, passport);
 
 //API functions
@@ -42,4 +44,4 @@ require('./app/apis/prescriptionApi.js')(app);
 require('./app/apis/userApi.js')(app);
 require('./app/apis/weightApi.js')(app);
 
-app.listen(port, () => console.log('Server listening on port 3000.'));
+app.listen(port, () => console.log('Server listening on port ' + port));

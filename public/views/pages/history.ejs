@@ -1,18 +1,23 @@
+<!-- History -->
 <!DOCTYPE html>
 <html lang="en" ng-app="obie">
   <head>
       <% include ../templates/head.ejs %>
   </head>
-
   <body ng-controller="controller" ng-init="init()">
-
     <% include ../templates/header.ejs %>
-
-
-    <!-- Insert Body here -->
 	<div class="container-fluid ng-cloak">
       <div class="offset-md-2 col-md-8 page-header">
         <h2>{{userName}}'s History</h2>
+      </div>
+      <div class="search">
+        <form>
+          <div class="form-group">
+            <label class="inline">Search symptoms by date:</label>
+            <input type="date" class="form-control" ng-model="searchDate">
+            <button type="submit" class="btn btn-primary btn-inline" ng-click="searchSymptoms()">Search</button>
+          </div>
+        </form>
       </div>
       <div class="row panel-container">
         <div class="offset-sm-1 col-sm-10 offset-md-1 col-md-5 offset-lg-1 col-lg-5">
@@ -20,63 +25,12 @@
             <div class="panel-header">
               My period history
             </div>
-            <div class="panel-body">
+            <div class="panel-body scroll">
               <div ng-show="hasUserPeriods">
-
                 <button type="button" class="btn btn-light" ng-repeat="period in userPeriods" ng-click="getPeriodSymptoms(period.period.periodId, period.period.startDate)" data-toggle="modal" data-target="#periodModal">
                   Period on:
-                  <span class="badge badge-primary">{{period.period.startDate}} </span>
+                  <span class="badge badge-primary">{{period.period.startDate}} - {{period.period.endDate}} </span>
                 </button>
-
-                <div class="modal fade" id="periodModal" tabindex="-1" role="dialog" aria-labelledby="periodModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="periodModalLabel">Symptoms for period starting on {{periodStart}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <div ng-show="hasPeriodSymptoms">
-                          <div ng-repeat="sympt in periodSymptoms">
-                            <strong>Symptom recorded on: {{sympt.periodSymptom.date}}</strong>
-                            <div class="symptoms">
-                              <div class="sypmtom">
-                                Spotting: {{sympt.periodSymptom.cramps}}
-                              </div>
-                              <div class="sypmtom">
-                                Nausea: {{sympt.periodSymptom.nausea}}
-                              </div>
-                              <div class="sypmtom">
-                                Headache: {{sympt.periodSymptom.headache}}
-                              </div>
-                              <div class="sypmtom">
-                                Flow: {{sympt.periodSymptom.flow}}
-                              </div>
-                              <div class="sypmtom">
-                                Lower Back Pain: {{sympt.periodSymptom.backPain}}
-                              </div>
-                              <div class="sypmtom">
-                                Bloating: {{sympt.periodSymptom.bloating}}
-                              </div>
-                              <div class="sypmtom">
-                                Notes: {{sympt.periodSymptom.notes}}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div ng-show="!hasPeriodSymptoms">
-                          No symptoms recorded for this period.
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
               </div>
               <div ng-show="!hasUserPeriods">
                 No period history for user
@@ -89,67 +43,17 @@
             <div class="panel-header">
               My prescription history
             </div>
-            <div class="panel-body">
+            <div class="panel-body scroll">
               <div ng-show="hasUserPrescriptions">
-
                 <button type="button" class="btn btn-light"
                   ng-repeat="prescription in userPrescriptions" ng-click="getPrescriptionSymptoms(prescription.prescription.prescriptionId, prescription.prescription.name)" data-toggle="modal" data-target="#prescriptionModal">
                   {{prescription.prescription.name}}
-                  <span class="badge badge-primary">{{prescription.prescription.startDate}} </span>
+                  <span class="badge badge-primary">{{prescription.prescription.startDate}} - {{prescription.prescription.status}}</span>
                 </button>
-
-
-
-                <div class="modal fade" id="prescriptionModal" tabindex="-1" role="dialog" aria-labelledby="prescriptionModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="prescriptionModalLabel">Symptoms for {{prescriptionName}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <div ng-show="hasPrescriptionSymptoms">
-                          <div ng-repeat="sympt in prescriptionSymptoms">
-                            <strong>Symptom recorded on: {{sympt.prescriptionSymptom.date}}</strong>
-                            <div class="symptoms">
-                              <div class="sypmtom">
-                                Spotting: {{sympt.prescriptionSymptom.spotting}}
-                              </div>
-                              <div class="sypmtom">
-                                Nausea: {{sympt.prescriptionSymptom.nausea}}
-                              </div>
-                              <div class="sypmtom">
-                                Headache: {{sympt.prescriptionSymptom.headache}}
-                              </div>
-                              <div class="sypmtom">
-                                Sore Breasts: {{sympt.prescriptionSymptom.soreBreasts}}
-                              </div>
-                              <div class="sypmtom">
-                                Mood Swings: {{sympt.prescriptionSymptom.moodSwings}}
-                              </div>
-                              <div class="sypmtom">
-                                Notes: {{sympt.prescriptionSymptom.notes}}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div ng-show="!hasPrescriptionSymptoms">
-                          No symptoms recorded for this prescription
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
               <div ng-show="!hasUserPrescriptions">
                 No prescription history for user
               </div>
-
             </div>
           </div>
         </div>
@@ -160,8 +64,8 @@
             </div>
             <div class="panel-body">
               <div class="btn-group" role="group" aria-label="StatType">
-                <button type="button" class="btn btn-outline-primary" ng-click="getGeneralStats()">General</button>
-                <button type="button" class="btn btn-outline-primary" ng-click="getWeightStats()">Weight</button>
+                <button id="generalStatsBtn" type="button" class="btn btn-outline-primary" ng-click="getGeneralStats()">General</button>
+                <button id="weightStatsBtn" type="button" class="btn btn-outline-primary" ng-click="getWeightStats()">Weight</button>
               </div>
               <div ng-show="showGeneralStats">
                 <p>
@@ -176,13 +80,186 @@
                   <canvas id="weightStats"></canvas>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </div>
 	</div>
-
+    <!-- Modals -->
+    <!--  Period Symptoms Modal  -->
+    <div class="modal fade" id="periodModal" tabindex="-1" role="dialog" aria-labelledby="periodModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="periodModalLabel">Symptoms for period starting on {{periodStart}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div ng-show="hasPeriodSymptoms">
+              <div ng-repeat="sympt in periodSymptoms">
+                <strong>Symptom recorded on: {{sympt.periodSymptom.date}}</strong>
+                <div class="symptoms">
+                  <div class="sypmtom">
+                    Spotting: {{sympt.periodSymptom.cramps}}
+                  </div>
+                  <div class="sypmtom">
+                    Nausea: {{sympt.periodSymptom.nausea}}
+                  </div>
+                  <div class="sypmtom">
+                    Headache: {{sympt.periodSymptom.headache}}
+                  </div>
+                  <div class="sypmtom">
+                    Flow: {{sympt.periodSymptom.flow}}
+                  </div>
+                  <div class="sypmtom">
+                    Lower Back Pain: {{sympt.periodSymptom.backPain}}
+                  </div>
+                  <div class="sypmtom">
+                    Bloating: {{sympt.periodSymptom.bloating}}
+                  </div>
+                  <div class="sypmtom">
+                    Notes: {{sympt.periodSymptom.notes}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="!hasPeriodSymptoms">
+              No symptoms recorded for this period.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  Prescription Symptoms Modal  -->
+    <div class="modal fade" id="prescriptionModal" tabindex="-1" role="dialog" aria-labelledby="prescriptionModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="prescriptionModalLabel">Symptoms for {{prescriptionName}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div ng-show="hasPrescriptionSymptoms">
+              <div ng-repeat="sympt in prescriptionSymptoms">
+                <strong>Symptom recorded on: {{sympt.prescriptionSymptom.date}}</strong>
+                <div class="symptoms">
+                  <div class="sypmtom">
+                    Spotting: {{sympt.prescriptionSymptom.spotting}}
+                  </div>
+                  <div class="sypmtom">
+                    Nausea: {{sympt.prescriptionSymptom.nausea}}
+                  </div>
+                  <div class="sypmtom">
+                    Headache: {{sympt.prescriptionSymptom.headache}}
+                  </div>
+                  <div class="sypmtom">
+                    Sore Breasts: {{sympt.prescriptionSymptom.soreBreasts}}
+                  </div>
+                  <div class="sypmtom">
+                    Mood Swings: {{sympt.prescriptionSymptom.moodSwings}}
+                  </div>
+                  <div class="sypmtom">
+                    Notes: {{sympt.prescriptionSymptom.notes}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="!hasPrescriptionSymptoms">
+              No symptoms recorded for this prescription.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  Symptoms by Date Modal  -->
+    <div class="modal fade" id="dateModal" tabindex="-1" role="dialog" aria-labelledby="dateModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="dateModalLabel">Symptoms logged for {{searchDate | date: 'MM/dd/yyyy' }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <strong>Period Symptoms:</strong>
+            <div ng-show="hasPeriodSymptomsDate" class="mb-4">
+              <div ng-repeat="sympt in periodSymptomsDate">
+                <strong>Symptom recorded for period starting on {{sympt.periodSymptom.periodId | periodFromId}}:</strong>
+                <div class="symptoms">
+                  <div class="sypmtom">
+                    Spotting: {{sympt.periodSymptom.cramps}}
+                  </div>
+                  <div class="sypmtom">
+                    Nausea: {{sympt.periodSymptom.nausea}}
+                  </div>
+                  <div class="sypmtom">
+                    Headache: {{sympt.periodSymptom.headache}}
+                  </div>
+                  <div class="sypmtom">
+                    Flow: {{sympt.periodSymptom.flow}}
+                  </div>
+                  <div class="sypmtom">
+                    Lower Back Pain: {{sympt.periodSymptom.backPain}}
+                  </div>
+                  <div class="sypmtom">
+                    Bloating: {{sympt.periodSymptom.bloating}}
+                  </div>
+                  <div class="sypmtom">
+                    Notes: {{sympt.periodSymptom.notes}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="!hasPeriodSymptomsDate" class="mb-4">
+              No period symptoms recorded for this date.
+            </div>
+            <strong>Prescription Symptoms:</strong>
+            <div ng-show="hasPrescriptionSymptomsDate">
+              <div ng-repeat="sympt in prescriptionSymptomsDate">
+                <strong>Symptom recorded for {{sympt.prescriptionSymptom.prescriptionId | prescFromId }}:</strong>
+                <div class="symptoms">
+                  <div class="sypmtom">
+                    Spotting: {{sympt.prescriptionSymptom.spotting}}
+                  </div>
+                  <div class="sypmtom">
+                    Nausea: {{sympt.prescriptionSymptom.nausea}}
+                  </div>
+                  <div class="sypmtom">
+                    Headache: {{sympt.prescriptionSymptom.headache}}
+                  </div>
+                  <div class="sypmtom">
+                    Sore Breasts: {{sympt.prescriptionSymptom.soreBreasts}}
+                  </div>
+                  <div class="sypmtom">
+                    Mood Swings: {{sympt.prescriptionSymptom.moodSwings}}
+                  </div>
+                  <div class="sypmtom">
+                    Notes: {{sympt.prescriptionSymptom.notes}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="!hasPrescriptionSymptomsDate">
+              No prescription symptoms recorded for this date.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <% include ../templates/footer.ejs %>
     <script src="resources/js/history.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>

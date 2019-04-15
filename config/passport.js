@@ -1,20 +1,24 @@
 // config/passport.js
+//This file contains the authentication logic for the application
+//Authentication uses the open source node package Passport.js
 
 var UserStrategy = require('passport-local').Strategy;
 var User = require('../app/models/user');
 
 module.exports = function(passport) {
+  //Function to serialize the user
   passport.serializeUser(function(user, done) {
     done(null, user.id);
   });
   
+  //Function to deserialize the user
   passport.deserializeUser(function(id, done) {
     User.findById(id, function(err, user) {
       done(err, user);
     });
   });
   
-  //Signup function
+  //Function to register a new user
   passport.use('local-signup', new UserStrategy({
     usernameField: 'email',
     passwordField: 'password',
@@ -52,7 +56,7 @@ module.exports = function(passport) {
     });
   }));
   
-  //Login function
+  //Function to login a user
   passport.use('local-login', new UserStrategy({
     usernameField : 'email',
     passwordField : 'password',

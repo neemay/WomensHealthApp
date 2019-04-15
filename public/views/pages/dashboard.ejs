@@ -1,15 +1,11 @@
+<!-- Dashboard -->
 <!DOCTYPE html>
 <html lang="en" ng-app="obie">
   <head>
       <% include ../templates/head.ejs %>
   </head>
-
   <body ng-controller="controller" ng-init="init()">
-
     <% include ../templates/header.ejs %>
-
-
-    <!-- Insert Body here -->
     <div class="container-fluid ng-cloak">
       <div class="offset-md-2 col-md-8 secondary-page-header">
         <h2>Welcome, {{userName}}</h2>
@@ -28,7 +24,7 @@
               </div>
               <div ng-show="!userIsOnPeriod">
                 <p>
-                  <span ng-show="!noPeriod">It has been {{daysSince}} day(s) since your last period.</span>
+                  <span ng-show="!noPeriod">It has been {{daysSince}} day(s) since your last period ended.</span>
                   <span ng-show="noPeriod">You do not have any period history yet.</span>
                 </p>
                 <a href="/profile#startPeriodModal" class="btn-link"><button class="btn btn-primary">Record start of period</button></a>
@@ -46,13 +42,13 @@
                   {{presc.prescription.name}}
                 </div>
               </div>
+              <div ng-show="!activePrescriptions"><p>You currently have no active presctiptions.</p></div>
               <a href="/profile#prescriptionSymptomModal" class="btn-link"><button class="btn btn-primary">Add birth control symptoms</button></a>
             </div>
           </div>
         </div>
       </div>
 	</div>
-
     <% include ../templates/footer.ejs %>
     <script src="resources/js/dashboard.js"></script>
   </body>

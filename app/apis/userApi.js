@@ -1,22 +1,27 @@
 // app/apis/userApis.js
+// This file contains the api functions related to users
 
-//include any mongodb models here
+//Models referenced by this file
 var User = require('../../app/models/user');
 var Prescription = require('../../app/models/prescription');
+
+//Additional node modules required for email capabilities
 var nodemailer = require('nodemailer');
 var emailcreds = require('../../email-creds.json');
 var CronJob = require('cron').CronJob;
 
+//Transporter object for sending emails using given credentials
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: emailcreds
 });
 
 module.exports = function(app) {
-  //Driver function to set the cron job to send reminder emails
+  //Call to driver function to set the cron job to send reminder emails
   sendReminderEmails();
   
-  //Function to get the current user's preferred name
+  //Endpoint: getUserName
+  //Returns the user's preferred name
   app.get('/getUserName', function(req, res) {
     if(!req.user) {
       res.send({success: false});
@@ -24,7 +29,8 @@ module.exports = function(app) {
     res.send({success: true, name: req.user.user.name});
   });
 
-  //Function to get the current user's email
+  //Endpoint: getEmail
+  //Returns the user's email
   app.get('/getEmail', function(req, res) {
     if(!req.user) {
       res.send({success: false});
@@ -32,6 +38,8 @@ module.exports = function(app) {
     res.send({success: true, email: req.user.user.email});
   });
   
+  //Endpoint: setName
+  //Updates the user's preferred name
   app.post('/setName', function(req, res) {
     if(!req.user) {
       res.send({success: false});
@@ -46,6 +54,8 @@ module.exports = function(app) {
     });
   });
 
+  //Endpoint: getReminderSettings
+  //Returns the reminder settings for this user
   app.get('/getReminderSettings', function(req, res) {
     if(!req.user) {
       res.send({success: false});
@@ -63,6 +73,8 @@ module.exports = function(app) {
     });
   });
 
+  //Endpoint: setReminders
+  //Updates the reminder settings for this user with the given values
   app.post('/setReminders', function(req, res) {
     if(!req.user) {
       res.send({success: false});
@@ -82,13 +94,15 @@ module.exports = function(app) {
 
 };
 
+//Driver function to send reminder emails to users
+//Daily, Renewal, and Refill emails are sent daily at 9am
+//Yearly appointment emails are sent at 9am on the first of every month
 function sendReminderEmails() {
   const job = new CronJob('00 00 09 * * *', function() {
     sendBCDailyEmails();
     sendBCRenewalEmails();
     sendBCRefillEmails();
   });
-  //Send the yearly reminder emails at midnight on the first of the month
   const yearly = new CronJob('00 00 09 1 * *', function() {
     sendYearlyEmails();
   });
@@ -96,6 +110,8 @@ function sendReminderEmails() {
   yearly.start();
 }
 
+//Function to send daily birth control reminder emails
+//Only sent to users who have reminderBirthControlDaily set to true
 function sendBCDailyEmails() {
   User.find({'user.reminderBirthControlDaily': true}, function(err, users) {
     if(err)
@@ -115,22 +131,20 @@ function sendBCDailyEmails() {
   });
 }
 
+//Function to send renewal emails
+//Only sent to users who have reminderBirthControlRenewal set to true
+//Reminder email sent two weeks before any active prescription expiration date
 function sendBCRenewalEmails() {
   User.find({'user.reminderBirthControlRenewal': true}, function(err, users) {
     if(err)
       throw err;
     users.map(user => {
-      Prescription.findOne({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescription) {
-        console.log('test');
-        if(prescription) {
-          //console.log(prescription.expiration);
+      Prescription.find({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
+        prescriptions.map(prescription =>  {
           var date = new Date(prescription.prescription.expiration);
           var today = new Date();
           today.setHours(0,0,0,0);
-          //console.log(date);
-          //console.log(today);
           console.log(Math.round((date-today)/(1000*60*60*24)));
-          //Reminder will only be sent two weeks before expiration date
           if(Math.round((date-today)/(1000*60*60*24)) == 14) {
             console.log('Sending reminder email to: ' + user.user.email);
             transporter.sendMail({
@@ -143,12 +157,15 @@ function sendBCRenewalEmails() {
                 throw err;
             });
           }
-        }
+        });
       });
     });
   });
 }
 
+//Function to send yearly appointment emails
+//Only sent to user who have reminderYearlyAppointment set to true
+//Only send the email if this month is the month they set the reminder for
 function sendYearlyEmails() {
   User.find({'user.reminderYearlyAppointment': true}, function(err, users) {
     if(err)
@@ -174,6 +191,10 @@ function sendYearlyEmails() {
   });
 }
 
+//Function to send birth control reminder emails
+//Only sent to user who have reminderBirthControlRefill set to true
+//Emails are sent two weeks before refills for active prescriptions are set to run out
+//This is calculated by taking the date of the last refill plus the days supply of the prescription
 function sendBCRefillEmails() {
   User.find({'user.reminderBirthControlRefill': true}, function(err, users) {
     if(err)

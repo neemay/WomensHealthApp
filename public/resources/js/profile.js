@@ -1,5 +1,6 @@
 var app = angular.module('obie', []);
 app.controller('controller', function ($scope, $http, $window) {
+  //Initialize scope variables
   $scope.isDashboard = false;
   $scope.isProfile = true;
   $scope.isHistory = false;
@@ -23,7 +24,6 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.newPrescError = '';
   $scope.newPrescriptionRefills = 1;
   $scope.newPrescriptionDaysSupply = 28;
-  //$scope.prescription = '';
   
   //Initialize all of the dates
   //Timezones mess with the max calendar dates,
@@ -39,6 +39,7 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.newPrescriptionExpiration = $scope.today;
   $scope.newPrescriptionRefillDate = $scope.today;
   
+  //Function to call the logout endpoint
   $scope.logout = function() {
     $http({
       method: 'GET',
@@ -48,7 +49,9 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Initialization function
   $scope.init = function() {
+    //Get the user's name
     $http({
       method: 'GET',
       url: '/getUserName',
@@ -59,6 +62,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
+    //Get the user's email
     $http({
       method: 'GET',
       url: '/getEmail',
@@ -69,6 +73,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
+    //Get the user's period status
     $http({
       method: 'GET',
       url: '/isOnPeriod',
@@ -92,6 +97,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
+    //Get the user's reminder settings
     $http({
       method: 'GET',
       url: '/getReminderSettings',
@@ -106,8 +112,10 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
     
+    //Get the user's prescriptions
     $scope.getUserPrescriptions();
     
+    //Get the prescription list
     $http({
       method: 'GET',
       url: '/getPrescriptionList'
@@ -120,6 +128,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.errorMessage = 'Something went wrong. Please try again later.';
     });
 
+    //CHeck the url for a hash and open the associated modal if present
     if($window.location.hash == '#periodSymptomModal') {
       $('#periodSymptomModal').modal();
     }
@@ -134,6 +143,9 @@ app.controller('controller', function ($scope, $http, $window) {
     }   
   };
 
+  //Function to call the addPeriodStart endpoint
+  //On success, sets the date so a user cannot set the end of their period
+  //before the start date
   $scope.recordStartPeriod = function() {
     if($scope.startPeriod == null)
       return;
@@ -147,6 +159,10 @@ app.controller('controller', function ($scope, $http, $window) {
       $('#startPeriodModal').modal('hide');
       $scope.userIsOnPeriod = true;
       $scope.currentPeriod = convertDate($scope.startPeriod);
+      $scope.minDateEnd = new Date($scope.currentPeriod);
+      $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
+      $scope.minDateEnd.setHours(0,0,0,0);
+      $scope.startPeriod = $scope.today;
     }).error(function() {
       $('#startPeriodModal').modal('hide');
       $scope.alertError = true;
@@ -154,6 +170,9 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to call the addPeriodEnd endpoint
+  //On success, sets the date so a user cannot set the start of the
+  //next period before the end of this one
   $scope.recordEndPeriod = function() {
     if($scope.endPeriod == null)
       return;
@@ -166,6 +185,11 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#endPeriodModal').modal('hide');
       $scope.userIsOnPeriod = false;
+      $scope.lastPeriod = convertDate($scope.endPeriod);
+      $scope.minDateStart = new Date($scope.lastPeriod);
+      $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
+      $scope.minDateStart.setHours(0,0,0,0);
+      $scope.endPeriod = $scope.today;
     }).error(function() {
       $('#endPeriodModal').modal('hide');
       $scope.alertError = true;
@@ -173,6 +197,9 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to call the getUserPrescriptions endpoint
+  //On success, gets the list of user prescriptions and sets the default
+  //variables to the first prescription in the list
   $scope.getUserPrescriptions = function() {
     $scope.editingPrescription = true;
     $http({
@@ -183,6 +210,7 @@ app.controller('controller', function ($scope, $http, $window) {
       if(response.data.length > 0) {
         $scope.userPrescriptions = response.data;
         $scope.prescription = $scope.userPrescriptions[0];
+        $scope.prescriptionSympt = $scope.userPrescriptions[0];
         $scope.prescriptionName = response.data['0'].prescription.name;
         $scope.prescriptionStart = new Date(response.data['0'].prescription.startDate);
         $scope.prescriptionRefills = parseInt(response.data['0'].prescription.refills);
@@ -198,6 +226,7 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to load the selected prescription information from the list of prescriptions
   $scope.loadPrescription = function() {
     $scope.userPrescriptions.forEach(function(presc) {
       if($scope.prescription.prescription.prescriptionId == presc.prescription.prescriptionId) {
@@ -213,6 +242,7 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
   
+  //Function to load the start date for a prescription given its id
   $scope.loadPrescriptionDate = function() {
     $scope.userPrescriptions.forEach(function(presc) {
       if($scope.prescription.prescription.prescriptionId == presc.prescription.prescriptionId) {
@@ -221,6 +251,8 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
   
+  //Function to call the addPeriodSymptom endpoint and add a period symptom
+  //On success, resets all of the symptom variables
   $scope.recordPeriodSymptoms = function() {
     if($scope.symptomDatePeriod == null)
       return;
@@ -257,22 +289,28 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to call the addPrescription endpoint
+  //Checks that the user is not adding the same prescription as a prescription that is already active
+  //Checks that the user is not adding the same prescription and start date as an inactive prescription
+  //On success, resets the prescription variables
   $scope.addPrescription = function() {
     var exists = false;
-    $scope.userPrescriptions.forEach(function(presc) {
-      if(presc.prescription.status == 'Active') {
-        if($scope.newPrescriptionName == presc.prescription.name) {
-          $scope.newPrescError = 'You already have an active prescription of this kind. Please edit the active prescription directly or set its status to inactive before adding a new prescription.';
-          exists = true;
+    if($scope.userPrescriptions) {
+      $scope.userPrescriptions.forEach(function(presc) {
+        if(presc.prescription.status == 'Active') {
+          if($scope.newPrescriptionName == presc.prescription.name) {
+            $scope.newPrescError = 'You already have an active prescription of this kind. Please edit the active prescription directly or set its status to inactive before adding a new prescription.';
+            exists = true;
+          }
         }
-      }
-      else {
-        if($scope.newPrescriptionName == presc.prescription.name && convertDate($scope.newPrescriptionStart) == presc.prescription.startDate) {
-          $scope.newPrescError = 'You cannot add a prescription with the same name and start date as an already existing prescription.';
-          exists = true;
+        else {
+          if($scope.newPrescriptionName == presc.prescription.name && convertDate($scope.newPrescriptionStart) == presc.prescription.startDate) {
+            $scope.newPrescError = 'You cannot add a prescription with the same name and start date as an already existing prescription.';
+            exists = true;
+          }
         }
-      }
-    });
+      });
+    }
     if(exists)
       return;
     $http({
@@ -310,6 +348,7 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to call the updatePrescription endpoint and update a prescription
   $scope.updatePrescription = function() {
     $http({
       method: 'POST',
@@ -336,16 +375,20 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
   
+  //Function to display the delete confirmation modal
   $scope.confirmDelete = function() {
     $('#updatePrescriptionModal').modal('hide');
     $('#confirmDeleteModal').modal('show');
   };
   
+  //Function to display the update modal if delete is not confirmed
   $scope.nevermind = function() {
     $('#confirmDeleteModal').modal('hide');
     $('#updatePrescriptionModal').modal('show');
   };
   
+  //Function to call the deletePrescription endpoint and delete a prescription
+  //On success, getUserPrescriptions is called to update the prescription list
   $scope.deletePrescription = function() {
     $http({
       method: 'POST',
@@ -365,6 +408,8 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
   
+  //Function to call addPrescriptionSymptom and add a prescription symptom
+  //On success, resets the prescription symptoms variables
   $scope.recordPrescriptionSymptoms = function() {
     if($scope.symptomDatePresc == null)
       return;
@@ -372,7 +417,7 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'POST',
       url: '/addPrescriptionSymptom',
       data: {
-        id: $scope.prescription.prescription.prescriptionId,
+        id: $scope.prescriptionSympt.prescription.prescriptionId,
         date: convertDate($scope.symptomDatePresc),
         spotting: $scope.symptomSpottingPresc,
         nausea: $scope.symptomNauseaPresc,
@@ -400,6 +445,7 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to call the setReminders endpoint and update the user's reminder settings
   $scope.updateReminders = function() {
     $http({
       method: 'POST',
@@ -420,6 +466,9 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
  
+  //Function to call the addWeight endpoint and add the weight for this user
+  //Checks that the weight value is not empty and between 50 and 900 pounds
+  //On success, resets the weight variables
   $scope.addWeight = function() {
     if($scope.weightVal == '') {
       $scope.weightError = 'Please enter a valid weight';
@@ -450,6 +499,9 @@ app.controller('controller', function ($scope, $http, $window) {
     $scope.weightError = '';
   };
 
+  //Function to call the setName endpoint and update the user's preferred name
+  //Checks that the name is not empty
+  //On success, updates the user's name in the profile page
   $scope.changeName = function() {
     if($scope.preferredName == null || $scope.preferredName == '') {
       $scope.nameError = 'Please enter a name.';
@@ -474,20 +526,22 @@ app.controller('controller', function ($scope, $http, $window) {
     $scope.nameError = '';
   };
   
+  //Function to dismiss the success alerts
   $scope.dismissSuccess = function() {
     $scope.alertSuccess = false;
   };
   
+  //Function to dismiss the error alerts
   $scope.dismissError = function() {
     $scope.alertError = false;
   };
 });
 
 //Function to convert the date object to a string with only
-//the current date in YYYY/MM/DD format
+//the current date in MM/DD/YYYY format
 function convertDate(date) {
-  var day = date.getDate();
-  var month = date.getMonth() + 1;
+  var day = ('0' + date.getDate()).slice(-2);
+  var month = ('0' + (date.getMonth() + 1)).slice(-2);
   var year = date.getFullYear();
   return month + '/' + day + '/' + year;
 }
