@@ -86,7 +86,10 @@ app.controller('controller', function ($scope, $http, $window) {
         $scope.minDateEnd.setHours(0,0,0,0);
       }
       else {
-        $scope.lastPeriod = new Date(response.lastPeriod);
+        if(response.lastPeriod)
+          $scope.lastPeriod = new Date(response.lastPeriod);
+        else
+          $scope.lastPeriod = null;
         $scope.minDateStart = $scope.lastPeriod;
         $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
         $scope.minDateStart.setHours(0,0,0,0);
