@@ -78,17 +78,16 @@ app.controller('controller', function ($scope, $http, $window) {
       method: 'GET',
       url: '/isOnPeriod',
     }).success(function(response) {
-      console.log(response);
       $scope.userIsOnPeriod = response.isOnPeriod;
       if(response.isOnPeriod) {
-        $scope.currentPeriod = response.currentPeriod;
-        $scope.minDateEnd = new Date($scope.currentPeriod);
+        $scope.currentPeriod = new Date(response.currentPeriod);
+        $scope.minDateEnd = $scope.currentPeriod;
         $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
         $scope.minDateEnd.setHours(0,0,0,0);
       }
       else {
-        $scope.lastPeriod = response.lastPeriod;
-        $scope.minDateStart = new Date($scope.lastPeriod);
+        $scope.lastPeriod = new Date(response.lastPeriod);
+        $scope.minDateStart = $scope.lastPeriod;
         $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
         $scope.minDateStart.setHours(0,0,0,0);
       }
@@ -114,6 +113,7 @@ app.controller('controller', function ($scope, $http, $window) {
     
     //Get the user's prescriptions
     $scope.getUserPrescriptions();
+    $scope.getActivePrescriptions();
     
     //Get the prescription list
     $http({
@@ -140,7 +140,10 @@ app.controller('controller', function ($scope, $http, $window) {
     }
     else if($window.location.hash == '#startPeriodModal') {
       $('#startPeriodModal').modal();
-    }   
+    } 
+    else if($window.location.hash == '#addPrescriptionModal') {
+      $('#addPrescriptionModal').modal();
+    }
   };
 
   //Function to call the addPeriodStart endpoint
@@ -158,11 +161,13 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#startPeriodModal').modal('hide');
       $scope.userIsOnPeriod = true;
-      $scope.currentPeriod = convertDate($scope.startPeriod);
+      $scope.currentPeriod = $scope.startPeriod;
       $scope.minDateEnd = new Date($scope.currentPeriod);
       $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
       $scope.minDateEnd.setHours(0,0,0,0);
       $scope.startPeriod = $scope.today;
+      $scope.alertSuccess = true;
+      $scope.successMessage = 'Period start date saved successfully';
     }).error(function() {
       $('#startPeriodModal').modal('hide');
       $scope.alertError = true;
@@ -185,11 +190,13 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#endPeriodModal').modal('hide');
       $scope.userIsOnPeriod = false;
-      $scope.lastPeriod = convertDate($scope.endPeriod);
+      $scope.lastPeriod = $scope.endPeriod;
       $scope.minDateStart = new Date($scope.lastPeriod);
       $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
       $scope.minDateStart.setHours(0,0,0,0);
       $scope.endPeriod = $scope.today;
+      $scope.alertSuccess = true;
+      $scope.successMessage = 'Period end date saved successfully';
     }).error(function() {
       $('#endPeriodModal').modal('hide');
       $scope.alertError = true;
@@ -210,7 +217,6 @@ app.controller('controller', function ($scope, $http, $window) {
       if(response.data.length > 0) {
         $scope.userPrescriptions = response.data;
         $scope.prescription = $scope.userPrescriptions[0];
-        $scope.prescriptionSympt = $scope.userPrescriptions[0];
         $scope.prescriptionName = response.data['0'].prescription.name;
         $scope.prescriptionStart = new Date(response.data['0'].prescription.startDate);
         $scope.prescriptionRefills = parseInt(response.data['0'].prescription.refills);
@@ -226,6 +232,24 @@ app.controller('controller', function ($scope, $http, $window) {
     });
   };
 
+  //Function to get the active prescriptions for this user
+  $scope.getActivePrescriptions = function() {
+    $http({
+      method: 'GET',
+      url: '/getActiveUserPrescriptions'
+    }).success(function(response) {
+      $scope.activePrescriptions = null;
+      if(response.data.length > 0) {
+        $scope.activePrescriptions = response.data;
+        $scope.prescriptionSympt = $scope.activePrescriptions[0];
+      }
+      
+    }).error(function() {
+      $scope.alertError = true;
+      $scope.errorMessage = 'Something went wrong. Please try again later.';
+    });
+  };
+  
   //Function to load the selected prescription information from the list of prescriptions
   $scope.loadPrescription = function() {
     $scope.userPrescriptions.forEach(function(presc) {
@@ -340,6 +364,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.successMessage = 'Prescription saved successfully';
       $scope.newPrescError = '';
       $scope.getUserPrescriptions();
+      $scope.getActivePrescriptions();
     }).error(function() {
       $('#addPrescriptionModal').modal('hide');
       $scope.alertError = true;
@@ -350,6 +375,7 @@ app.controller('controller', function ($scope, $http, $window) {
 
   //Function to call the updatePrescription endpoint and update a prescription
   $scope.updatePrescription = function() {
+    $scope.dismissAlerts();
     $http({
       method: 'POST',
       url: '/updatePrescription',
@@ -368,6 +394,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $('#updatePrescriptionModal').modal('hide');
       $scope.alertSuccess = true;
       $scope.successMessage = 'Prescription updated successfully';
+      $scope.getActivePrescriptions();
     }).error(function() {
       $('#updatePrescriptionModal').modal('hide');
       $scope.alertError = true;
@@ -377,6 +404,7 @@ app.controller('controller', function ($scope, $http, $window) {
   
   //Function to display the delete confirmation modal
   $scope.confirmDelete = function() {
+    $scope.dismissAlerts();
     $('#updatePrescriptionModal').modal('hide');
     $('#confirmDeleteModal').modal('show');
   };
@@ -401,6 +429,7 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.alertSuccess = true;
       $scope.successMessage = 'Prescription deleted successfully';
       $scope.getUserPrescriptions();
+      $scope.getActivePrescriptions();
     }).error(function() {
       $('#confirmDeleteModal').modal('hide');
       $scope.alertError = true;
@@ -411,6 +440,7 @@ app.controller('controller', function ($scope, $http, $window) {
   //Function to call addPrescriptionSymptom and add a prescription symptom
   //On success, resets the prescription symptoms variables
   $scope.recordPrescriptionSymptoms = function() {
+    $scope.dismissAlerts();
     if($scope.symptomDatePresc == null)
       return;
     $http({
@@ -447,6 +477,7 @@ app.controller('controller', function ($scope, $http, $window) {
 
   //Function to call the setReminders endpoint and update the user's reminder settings
   $scope.updateReminders = function() {
+    $scope.dismissAlerts();
     $http({
       method: 'POST',
       url: '/setReminders',
@@ -526,22 +557,18 @@ app.controller('controller', function ($scope, $http, $window) {
     $scope.nameError = '';
   };
   
-  //Function to dismiss the success alerts
-  $scope.dismissSuccess = function() {
+  //Function to dismiss the success and error alerts
+  $scope.dismissAlerts = function() {
     $scope.alertSuccess = false;
-  };
-  
-  //Function to dismiss the error alerts
-  $scope.dismissError = function() {
     $scope.alertError = false;
   };
 });
 
 //Function to convert the date object to a string with only
-//the current date in MM/DD/YYYY format
+//the current date in YYYY/MM/DD format
 function convertDate(date) {
   var day = ('0' + date.getDate()).slice(-2);
   var month = ('0' + (date.getMonth() + 1)).slice(-2);
   var year = date.getFullYear();
-  return month + '/' + day + '/' + year;
+  return year + '/' + month + '/' + day;
 }

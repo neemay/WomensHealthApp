@@ -19,8 +19,10 @@ module.exports = function(app) {
       res.send({success: false});
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       isOnPeriod = user.user.isOnPeriod;
       if(isOnPeriod) { //return the start date of the current period
         Period.findOne({'period.email': user.user.email, 'period.endDate': null}, function(err, period) {
@@ -50,8 +52,10 @@ module.exports = function(app) {
     newPeriod.period.startDate = req.body.startDate;
     newPeriod.period.endDate = null;
     newPeriod.save(function(err) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       User.findOne({'user.email' : req.user.user.email}, function(err, user) {
         user.user.isOnPeriod = true;
         user.save();
@@ -66,8 +70,10 @@ module.exports = function(app) {
   //Updates the user's isOnPeriod state to false
   app.post('/addPeriodEnd', function(req, res) {
     Period.findOne({'period.email': req.user.user.email, 'period.endDate': null}, function(err, period) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       period.period.endDate = req.body.endDate;
       period.save();
       User.findOne({'user.email' : req.user.user.email}, function(err, user) {
@@ -108,8 +114,10 @@ module.exports = function(app) {
         newSymptom.periodSymptom.bloating = req.body.bloating;
         newSymptom.periodSymptom.notes = req.body.notes;
         newSymptom.save(function(err) {
-          if(err)
-            throw err;
+          if(err) {
+            console.log(err);
+            res.send({success: false});
+          }
           res.send({success: true});
         });
       }

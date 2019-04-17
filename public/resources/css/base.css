@@ -230,7 +230,7 @@ h5 {
   }
   
   .jumbotron{
-    margin-top: 20px;
+    margin-top: 0px;
   }
   
   .scroll {
@@ -250,5 +250,13 @@ h5 {
 
   .search .btn {
     margin-top: 5px;
+  }
+  
+  .mobile-align {
+    text-align: left;
+  }
+  
+  .mobile-block {
+    display: block;
   }
 }

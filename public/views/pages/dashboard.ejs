@@ -43,7 +43,8 @@
                 </div>
               </div>
               <div ng-show="!activePrescriptions"><p>You currently have no active presctiptions.</p></div>
-              <a href="/profile#prescriptionSymptomModal" class="btn-link"><button class="btn btn-primary">Add birth control symptoms</button></a>
+              <a href="/profile#addPrescriptionModal" class="btn-link"><button class="btn btn-primary">Add prescription</button></a>
+              <a href="/profile#prescriptionSymptomModal" class="btn-link"><button class="btn btn-primary" ng-show="activePrescriptions">Add prescription symptoms</button></a>
             </div>
           </div>
         </div>
