@@ -45,10 +45,10 @@
             </div>
             <div class="panel-body scroll">
               <div ng-show="hasUserPrescriptions">
-                <button type="button" class="btn btn-light"
+                <button type="button" class="btn btn-light mobile-align"
                   ng-repeat="prescription in userPrescriptions" ng-click="getPrescriptionSymptoms(prescription.prescription.prescriptionId, prescription.prescription.name)" data-toggle="modal" data-target="#prescriptionModal">
                   {{prescription.prescription.name}}
-                  <span class="badge badge-primary">{{prescription.prescription.startDate}} - {{prescription.prescription.status}}</span>
+                  <span class="badge badge-primary mobile-block">{{prescription.prescription.startDate}} - {{prescription.prescription.status}}</span>
                 </button>
               </div>
               <div ng-show="!hasUserPrescriptions">
@@ -76,8 +76,11 @@
                 </p>
               </div>
               <div ng-show="showWeightStats">
-                <div id="chart-container">
+                <div id="chart-container" ng-show="hasWeight">
                   <canvas id="weightStats"></canvas>
+                </div>
+                <div ng-show="!hasWeight">
+                  No weight history recorded.
                 </div>
               </div>
             </div>

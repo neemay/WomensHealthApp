@@ -22,8 +22,10 @@ module.exports = function(app) {
     newPrescription.prescription.status = req.body.status;
     newPrescription.prescription.notes = req.body.notes;
     newPrescription.save(function(err) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       res.send({success: true});
     });
   });
@@ -40,7 +42,7 @@ module.exports = function(app) {
   //Endpoint: getUserPrescriptions
   //Returns the list of prescriptions for this user
   app.get('/getUserPrescriptions', function(req, res) {
-    Prescription.find({'prescription.email': req.user.user.email}, function(err, prescriptions) {
+    Prescription.find({'prescription.email': req.user.user.email}, null, {sort: {'prescription.status': 1}}, function(err, prescriptions) {
       res.send({success: true, data: prescriptions});
     });
   });
@@ -57,8 +59,10 @@ module.exports = function(app) {
   //Updates the fields for this prescription given its id
   app.post('/updatePrescription', function(req, res) {
     Prescription.findOne({'prescription.prescriptionId': req.body.id}, function(err, prescription) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       prescription.prescription.refills = req.body.refills;
       prescription.prescription.daysSupply = req.body.daysSupply;
       prescription.prescription.refillDate = req.body.refillDate;
@@ -75,11 +79,15 @@ module.exports = function(app) {
   //Also deletes and symptoms associated with this prescription
   app.post('/deletePrescription', function(req, res) {
     Prescription.deleteOne({'prescription.prescriptionId': req.body.id}, function(err) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       PrescriptionSymptom.deleteMany({'prescriptionSymptom.prescriptionId': req.body.id}, function(err) {
-        if(err)
-          throw err;
+        if(err) {
+          console.log(err);
+          res.send({success: false});
+        }
         res.send({success: true});
       });
     });
@@ -112,8 +120,10 @@ module.exports = function(app) {
         newSymptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
         newSymptom.prescriptionSymptom.notes = req.body.notes;
         newSymptom.save(function(err) {
-          if(err)
-            throw err;
+          if(err) {
+            console.log(err);
+            res.send({success: false});
+          }
           res.send({success: true});
         });
       }

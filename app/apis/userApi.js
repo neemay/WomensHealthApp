@@ -45,8 +45,10 @@ module.exports = function(app) {
       res.send({success: false});
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       console.log('Preferred name for: ' + user.user.email + ' set to: '+ req.body.name);
       user.user.name = req.body.name;
       user.save();
@@ -61,8 +63,10 @@ module.exports = function(app) {
       res.send({success: false});
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       res.send({success: true, 
         reminderBirthControlDaily: user.user.reminderBirthControlDaily,
         reminderBirthControlRefill: user.user.reminderBirthControlRefill,
@@ -80,8 +84,10 @@ module.exports = function(app) {
       res.send({success: false});
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
-      if(err)
-        throw err;
+      if(err) {
+        console.log(err);
+        res.send({success: false});
+      }
       user.user.reminderBirthControlDaily = req.body.reminderBirthControlDaily;
       user.user.reminderBirthControlRefill = req.body.reminderBirthControlRefill;
       user.user.reminderBirthControlRenewal = req.body.reminderBirthControlRenewal;
@@ -98,12 +104,12 @@ module.exports = function(app) {
 //Daily, Renewal, and Refill emails are sent daily at 9am
 //Yearly appointment emails are sent at 9am on the first of every month
 function sendReminderEmails() {
-  const job = new CronJob('00 00 09 * * *', function() {
+  const job = new CronJob('00 00 13 * * *', function() {
     sendBCDailyEmails();
     sendBCRenewalEmails();
     sendBCRefillEmails();
   });
-  const yearly = new CronJob('00 00 09 1 * *', function() {
+  const yearly = new CronJob('00 00 13 1 * *', function() {
     sendYearlyEmails();
   });
   job.start();
@@ -114,8 +120,10 @@ function sendReminderEmails() {
 //Only sent to users who have reminderBirthControlDaily set to true
 function sendBCDailyEmails() {
   User.find({'user.reminderBirthControlDaily': true}, function(err, users) {
-    if(err)
-      throw err;
+    if(err) {
+      console.log(err);
+      return;
+    }
     users.map(user => {
       console.log('Sending reminder email to: ' + user.user.email);
       transporter.sendMail({
@@ -124,8 +132,10 @@ function sendBCDailyEmails() {
         subject: user.user.name + ', you have a notification from Obie!',
         html: '<div>Reminder to take your birth control today!</div>'
       }, function (err) {
-        if (err)
-          throw err;
+        if(err) {
+          console.log(err);
+          return;
+        }
       });
     });
   });
@@ -136,8 +146,10 @@ function sendBCDailyEmails() {
 //Reminder email sent two weeks before any active prescription expiration date
 function sendBCRenewalEmails() {
   User.find({'user.reminderBirthControlRenewal': true}, function(err, users) {
-    if(err)
-      throw err;
+    if(err) {
+      console.log(err);
+      return;
+    }
     users.map(user => {
       Prescription.find({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
         prescriptions.map(prescription =>  {
@@ -153,8 +165,10 @@ function sendBCRenewalEmails() {
               subject: user.user.name + ', you have a notification from Obie!',
               html: '<div>You prescription is expiring soon! Please follow up with your physician to renew your prescription.</div>'
             }, function (err) {
-              if (err)
-                throw err;
+              if(err) {
+                console.log(err);
+                return;
+              }
             });
           }
         });
@@ -168,8 +182,10 @@ function sendBCRenewalEmails() {
 //Only send the email if this month is the month they set the reminder for
 function sendYearlyEmails() {
   User.find({'user.reminderYearlyAppointment': true}, function(err, users) {
-    if(err)
-      throw err;
+    if(err) {
+      console.log(err);
+      return;
+    }
     users.map(user => {
       var day = new Date();
       var month = day.getMonth() + 1;
@@ -183,8 +199,10 @@ function sendYearlyEmails() {
           subject: user.user.name + ', you have a notification from Obie!',
           html: '<div>This is your reminder to schedule your yearly appointment at the OBGYN.</div>'
         }, function (err) {
-          if (err)
-            throw err;
+          if(err) {
+            console.log(err);
+            return;
+          }
         });
       }
     });
@@ -197,8 +215,10 @@ function sendYearlyEmails() {
 //This is calculated by taking the date of the last refill plus the days supply of the prescription
 function sendBCRefillEmails() {
   User.find({'user.reminderBirthControlRefill': true}, function(err, users) {
-    if(err)
-      throw err;
+    if(err) {
+      console.log(err);
+      return;
+    }
     users.map(user => {
       Prescription.find({'prescription.email': user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
         prescriptions.map(prescription =>  {
@@ -216,8 +236,10 @@ function sendBCRefillEmails() {
               subject: user.user.name + ', you have a notification from Obie!',
               html: '<div>Looks like you need to refill your prescription soon! Please follow up with your pharmacy to renew your prescription for ' + prescription.prescription.name + '.</div>'
             }, function (err) {
-              if (err)
-                throw err;
+              if(err) {
+                console.log(err);
+                return;
+              }
             });
           }
         });

@@ -9,13 +9,13 @@
     <!-- Insert Body here -->
     <div class="container-fluid ng-cloak">
       <div class="alert alert-success alert-dismissable fade show" role="alert" id="alertSuccess" ng-show="alertSuccess">
-        <button type="button" class="close" ng-click="dismissSuccess()" aria-label="Close">
+        <button type="button" class="close" ng-click="dismissAlerts()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         {{successMessage}}
       </div>
       <div class="alert alert-danger alert-dismissable fade show" role="alert" id="alertError" ng-show="alertError">
-        <button type="button" class="close" ng-click="dismissError()" aria-label="Close">
+        <button type="button" class="close" ng-click="dismissAlerts()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         {{errorMessage}}
@@ -32,18 +32,18 @@
             <div class="panel-body">
               <h5>My period</h5>
               <div class="btn-container">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#startPeriodModal" ng-disabled="userIsOnPeriod">Record start of period</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-disabled="!userIsOnPeriod">Record end of period</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-disabled="!userIsOnPeriod">Add period symptoms</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#startPeriodModal" ng-disabled="userIsOnPeriod" ng-click="dismissAlerts()">Record start of period</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#endPeriodModal" ng-disabled="!userIsOnPeriod" ng-click="dismissAlerts()">Record end of period</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#periodSymptomModal" ng-disabled="!userIsOnPeriod" ng-click="dismissAlerts()">Add period symptoms</button>
               </div>
               <h5>My prescription</h5>
               <div class="btn-container">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal">Add a prescription</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addPrescriptionModal" ng-click="dismissAlerts()">Add a prescription</button>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#updatePrescriptionModal" ng-click="getUserPrescriptions()" ng-disabled="!userPrescriptions">Update a prescription</button>
-                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal" ng-click="getUserPrescriptions()" ng-disabled="!userPrescriptions">Add prescription symptoms</button>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#prescriptionSymptomModal" ng-click="getActivePrescriptions()" ng-disabled="!activePrescriptions">Add prescription symptoms</button>
               </div>
               <h5>My statistics</h5>
-              <button class="btn btn-primary" data-toggle="modal" data-target="#addWeightModal">Add weight</button>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#addWeightModal" ng-click="dismissAlerts()">Add weight</button>
             </div>
           </div>
         </div>
@@ -105,7 +105,7 @@
             <div class="panel-body">
               <strong>Email:</strong> {{email}}<br/>
               <strong>Name:</strong> {{userName}}
-              <button class="btn btn-primary mt-2" data-toggle="modal" data-target="#nameModal">Edit preferred name</button>
+              <button class="btn btn-primary mt-2" data-toggle="modal" data-target="#nameModal" ng-click="dismissAlerts()">Edit preferred name</button>
 			</div>
           </div>
         </div>
@@ -148,7 +148,7 @@
           </div>
           <div class="modal-body">
             <form class="form-container">
-              <div class="mb-2" ng-show="lastPeriod">Your last recorded period ended on {{lastPeriod}}.</div>
+              <div class="mb-2" ng-show="lastPeriod">Your last recorded period ended on {{lastPeriod | date: 'MM/dd/yyyy'}}.</div>
               <div class="form-group">
                 <label>Enter Start Date</label>
                 <input type="date" class="form-control" id="startPeriod" ng-model="startPeriod" min="{{minDateStart | date: 'yyyy-MM-dd'}}" max="{{today | date: 'yyyy-MM-dd'}}">
@@ -171,7 +171,7 @@
           </div>
           <div class="modal-body">
             <form class="form-container">
-              <div class="mb-2">Your current period started on {{currentPeriod}}.</div>
+              <div class="mb-2">Your current period started on {{currentPeriod | date: 'MM/dd/yyyy'}}.</div>
               <div class="form-group">
                 <label>Enter End Date</label>
                 <input type="date" class="form-control" ng-model="endPeriod" min="{{minDateEnd | date: 'yyyy-MM-dd'}}" max="{{today | date: 'yyyy-MM-dd'}}">
@@ -438,7 +438,7 @@
             <form class="form-container">
               <div class="form-group">
                 <label>Prescription Name:</label>
-                <select ng-model="prescriptionSympt" class="form-control" ng-change="loadPrescription()" ng-options='presc as (presc.prescription.name + " - " + presc.prescription.status) for presc in userPrescriptions track by presc.prescription.prescriptionId'>
+                <select ng-model="prescriptionSympt" class="form-control" ng-change="loadPrescription()" ng-options='presc as presc.prescription.name for presc in activePrescriptions track by presc.prescription.prescriptionId'>
                 </select>
               </div>
               <div class="form-group">

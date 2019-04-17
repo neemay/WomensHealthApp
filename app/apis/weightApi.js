@@ -13,7 +13,6 @@ module.exports = function(app) {
       if(weight) {
         weight.weight.weightVal = req.body.weightVal;
         weight.save();
-        console.log('Updated weight for ' + req.user.user.email);
         res.send({success: true});
       }
       else {
@@ -22,9 +21,10 @@ module.exports = function(app) {
         newWeight.weight.recordDate = req.body.recordDate;
         newWeight.weight.weightVal = req.body.weightVal;
         newWeight.save(function(err) {
-          if(err)
-            throw err;
-          console.log('Added weight for ' + req.user.user.email);
+          if(err) {
+            console.log(err);
+            res.send({success: false});
+          }
           res.send({success: true});
         }); 
       }
@@ -34,7 +34,7 @@ module.exports = function(app) {
   //Endpoint: getUserWeights
   //Returns the weights stored for this user
   app.get('/getUserWeights', function(req, res) {
-    Weight.find({'weight.email': req.user.user.email}, function(err, weights) {
+    Weight.find({'weight.email': req.user.user.email}, null, {sort: {'weight.recordDate': 1}}, function(err, weights) {
       res.send({success: true, data: weights});
     });
   });

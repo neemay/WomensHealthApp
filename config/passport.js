@@ -46,8 +46,9 @@ module.exports = function(passport) {
           newUser.user.reminderYearlyAppointmentMonth = '1';
           
           newUser.save(function(err) {
-            if(err)
-              throw err;
+            if(err) {
+              return done(err);
+            }
             console.log('Registered new user');
             return done(null, newUser);
           });

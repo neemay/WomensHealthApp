@@ -27,6 +27,7 @@ app.controller('controller', function ($scope, $http, $window) {
   $scope.hasUserPeriods = false;
   $scope.hasUserPrescriptions = false;
   $scope.hasUserStats = true;
+  $scope.hasWeight = false;
   $scope.hasPrescriptionSymptoms = false;
   $scope.hasPeriodSymptomsDate = false;
   $scope.hasPrescriptionSymptomsDate = false;
@@ -180,61 +181,67 @@ app.controller('controller', function ($scope, $http, $window) {
       url: '/getUserWeights'
     }).success(function(response) {
       var data = response.data;
-      var dates = [];
-      var chartData = [];
-      var maxWeight = 0;
-      data.forEach(function(weight) {
-        if(parseInt(weight.weight.weightVal) > maxWeight) {
-          maxWeight = parseInt(weight.weight.weightVal);
-        }
-        chartData.push({
-          t: new Date(weight.weight.recordDate),
-          y: parseInt(weight.weight.weightVal)
-        });
-        dates.push(new Date(weight.weight.recordDate).toLocaleDateString());
-      });
-      maxWeight = maxWeight + 10;
-      
-      //Create the visualization
-      var ctx = $('#weightStats');
-      var chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: dates,
-          datasets: [{
-            data: chartData,
-            borderColor: 'rgb(81, 188, 182)',
-            backgroundColor: 'rgba(81, 188, 182, 0.1)',
-            pointRadius: 5,
-            pointHoverRadius: 5,
-            pointBackgroundColor: 'rgb(81, 188, 182)' 
-          }]
-        },
-        options: {
-          legend: {
-            display: false
-          },
-          scales: {
-            xAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: 'Date Recorded'
-              }
-            }],
-            yAxes: [{
-              scaleLabel: {
-                display: true,
-                labelString: 'Weight (lbs)'
-              },
-              ticks: {
-                suggestedMin: 50,
-                suggestedMax: maxWeight,
-                stepSize: 10
-              }
-            }]
+      if(response.data.length > 0) {
+        $scope.hasWeight = true;
+        var dates = [];
+        var chartData = [];
+        var maxWeight = 0;
+        data.forEach(function(weight) {
+          if(parseInt(weight.weight.weightVal) > maxWeight) {
+            maxWeight = parseInt(weight.weight.weightVal);
           }
-        }
-      });
+          chartData.push({
+            t: new Date(weight.weight.recordDate),
+            y: parseInt(weight.weight.weightVal)
+          });
+          dates.push(new Date(weight.weight.recordDate).toLocaleDateString());
+        });
+        maxWeight = maxWeight + 10;
+
+        //Create the visualization
+        var ctx = $('#weightStats');
+        var chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: dates,
+            datasets: [{
+              data: chartData,
+              borderColor: 'rgb(81, 188, 182)',
+              backgroundColor: 'rgba(81, 188, 182, 0.1)',
+              pointRadius: 5,
+              pointHoverRadius: 5,
+              pointBackgroundColor: 'rgb(81, 188, 182)' 
+            }]
+          },
+          options: {
+            legend: {
+              display: false
+            },
+            scales: {
+              xAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Date Recorded'
+                }
+              }],
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Weight (lbs)'
+                },
+                ticks: {
+                  suggestedMin: 50,
+                  suggestedMax: maxWeight,
+                  stepSize: 10
+                }
+              }]
+            }
+          }
+        });
+      } 
+      else {
+        $scope.hasWeight = false;
+      }
       $scope.showGeneralStats = false;
       $scope.showWeightStats = !$scope.showWeightStats;
       $('#generalStatsBtn').button('toggle');
@@ -244,10 +251,10 @@ app.controller('controller', function ($scope, $http, $window) {
 });
 
 //Function to convert the date object to a string with only
-//the current date in MM/DD/YYYY format
+//the current date in YYYY/MM/DD format
 function convertDate(date) {
   var day = ('0' + date.getDate()).slice(-2);
   var month = ('0' + (date.getMonth() + 1)).slice(-2);
   var year = date.getFullYear();
-  return month + '/' + day + '/' + year;
+  return year + '/' + month + '/' + day;
 }
