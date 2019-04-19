@@ -259,4 +259,13 @@ h5 {
   .mobile-block {
     display: block;
   }
+  
+  .btn-group-label {
+    float: none;
+    display: block;
+  }
+  
+  .symptom-btns {
+    text-align: left;
+  }
 }
