@@ -2,21 +2,31 @@ var app = angular.module('obie', []);
 //Filter to extract the prescription name from the prescriptionId
 app.filter('prescFromId', function() {
   return function(x) {
-    console.log(x);
     var index = x.indexOf(':') + 1;
     x = x.substr(index);
     index = x.indexOf(':');
     x = x.substr(0, index);
-    console.log(x);
     return x.replace(/-/g, ' ');
   };
 });
 //Filter to extract the period start date from the periodId
 app.filter('periodFromId', function() {
   return function(x) {
-    console.log(x);
     var index = x.indexOf(':') + 1;
     return x.substr(index);
+  };
+});
+//Filter to display date from YYYY/MM/DD format to MM/DD/YYYY format
+app.filter('dateConvert', function() {
+  return function(x) {
+    if(x == null)
+      return;
+    var s1 = x.indexOf('/');
+    var s2 = x.lastIndexOf('/');
+    var year = x.substr(0, s1);
+    var month = x.substr(s1 + 1, 2);
+    var day = x.substr(s2 + 1);
+    return month + "/" + day + "/" + year;
   };
 });
 app.controller('controller', function ($scope, $http, $window) {

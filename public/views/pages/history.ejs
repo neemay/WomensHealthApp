@@ -29,7 +29,7 @@
               <div ng-show="hasUserPeriods">
                 <button type="button" class="btn btn-light" ng-repeat="period in userPeriods" ng-click="getPeriodSymptoms(period.period.periodId, period.period.startDate)" data-toggle="modal" data-target="#periodModal">
                   Period on:
-                  <span class="badge badge-primary">{{period.period.startDate}} - {{period.period.endDate}} </span>
+                  <span class="badge badge-primary">{{period.period.startDate | dateConvert}} - {{period.period.endDate | dateConvert}} </span>
                 </button>
               </div>
               <div ng-show="!hasUserPeriods">
@@ -48,7 +48,7 @@
                 <button type="button" class="btn btn-light mobile-align"
                   ng-repeat="prescription in userPrescriptions" ng-click="getPrescriptionSymptoms(prescription.prescription.prescriptionId, prescription.prescription.name)" data-toggle="modal" data-target="#prescriptionModal">
                   {{prescription.prescription.name}}
-                  <span class="badge badge-primary mobile-block">{{prescription.prescription.startDate}} - {{prescription.prescription.status}}</span>
+                  <span class="badge badge-primary mobile-block">{{prescription.prescription.startDate | dateConvert}} - {{prescription.prescription.status}}</span>
                 </button>
               </div>
               <div ng-show="!hasUserPrescriptions">
@@ -94,7 +94,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="periodModalLabel">Symptoms for period starting on {{periodStart}}</h5>
+            <h5 class="modal-title" id="periodModalLabel">Symptoms for period starting on {{periodStart | dateConvert}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -102,7 +102,7 @@
           <div class="modal-body">
             <div ng-show="hasPeriodSymptoms">
               <div ng-repeat="sympt in periodSymptoms">
-                <strong>Symptom recorded on: {{sympt.periodSymptom.date}}</strong>
+                <strong>Symptom recorded on: {{sympt.periodSymptom.date | dateConvert}}</strong>
                 <div class="symptoms">
                   <div class="sypmtom">
                     Spotting: {{sympt.periodSymptom.cramps}}
@@ -151,7 +151,7 @@
           <div class="modal-body">
             <div ng-show="hasPrescriptionSymptoms">
               <div ng-repeat="sympt in prescriptionSymptoms">
-                <strong>Symptom recorded on: {{sympt.prescriptionSymptom.date}}</strong>
+                <strong>Symptom recorded on: {{sympt.prescriptionSymptom.date | dateConvert}}</strong>
                 <div class="symptoms">
                   <div class="sypmtom">
                     Spotting: {{sympt.prescriptionSymptom.spotting}}

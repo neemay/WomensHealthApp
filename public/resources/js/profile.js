@@ -80,17 +80,19 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function(response) {
       $scope.userIsOnPeriod = response.isOnPeriod;
       if(response.isOnPeriod) {
-        $scope.currentPeriod = new Date(response.currentPeriod);
-        $scope.minDateEnd = $scope.currentPeriod;
+        $scope.currentPeriod = response.currentPeriod;
+        $scope.currentPeriodDate = new Date(response.currentPeriod);
+        $scope.minDateEnd = $scope.currentPeriodDate;
         $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
         $scope.minDateEnd.setHours(0,0,0,0);
       }
       else {
+        $scope.lastPeriod = response.lastPeriod;
         if(response.lastPeriod)
-          $scope.lastPeriod = new Date(response.lastPeriod);
+          $scope.lastPeriodDate = new Date(response.lastPeriod);
         else
-          $scope.lastPeriod = null;
-        $scope.minDateStart = $scope.lastPeriod;
+          $scope.lastPeriodDate = null;
+        $scope.minDateStart = $scope.lastPeriodDate;
         $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
         $scope.minDateStart.setHours(0,0,0,0);
       }

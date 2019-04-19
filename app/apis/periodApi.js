@@ -135,7 +135,7 @@ module.exports = function(app) {
   //Endpoint: getPeriodSymptomsById
   //Returns all of the symptoms for a period given the periodId
   app.get('/getPeriodSymptomsById', function(req, res) {
-    PeriodSymptom.find({'periodSymptom.periodId': req.query.id}, function(err, symptoms) {
+    PeriodSymptom.find({'periodSymptom.periodId': req.query.id}, null, {sort: {'periodSymptom.date': 1}}, function(err, symptoms) {
       res.send({success: true, data: symptoms});
     });
   });

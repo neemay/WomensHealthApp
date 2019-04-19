@@ -133,7 +133,7 @@ module.exports = function(app) {
   //Endpoint: getPrescriptionSymptomsById
   //Returns the prescription symptoms for this user given the prescription id
   app.get('/getPrescriptionSymptomsById', function(req, res) {
-    PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': req.query.id}, function(err, symptoms) {
+    PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': req.query.id}, null, {sort: {'prescriptionSymptom.date': 1}}, function(err, symptoms) {
       res.send({success: true, data: symptoms});
     });
   });

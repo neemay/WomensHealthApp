@@ -148,7 +148,7 @@
           </div>
           <div class="modal-body">
             <form class="form-container">
-              <div class="mb-2" ng-show="lastPeriod">Your last recorded period ended on {{lastPeriod | date: 'MM/dd/yyyy'}}.</div>
+              <div class="mb-2" ng-show="lastPeriod">Your last recorded period ended on {{lastPeriodDate | date: 'MM/dd/yyyy'}}.</div>
               <div class="form-group">
                 <label>Enter Start Date</label>
                 <input type="date" class="form-control" id="startPeriod" ng-model="startPeriod" min="{{minDateStart | date: 'yyyy-MM-dd'}}" max="{{today | date: 'yyyy-MM-dd'}}">
@@ -171,7 +171,7 @@
           </div>
           <div class="modal-body">
             <form class="form-container">
-              <div class="mb-2">Your current period started on {{currentPeriod | date: 'MM/dd/yyyy'}}.</div>
+              <div class="mb-2">Your current period started on {{currentPeriodDate | date: 'MM/dd/yyyy'}}.</div>
               <div class="form-group">
                 <label>Enter End Date</label>
                 <input type="date" class="form-control" ng-model="endPeriod" min="{{minDateEnd | date: 'yyyy-MM-dd'}}" max="{{today | date: 'yyyy-MM-dd'}}">
