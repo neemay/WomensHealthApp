@@ -128,7 +128,7 @@ function sendBCDailyEmails() {
         from: emailcreds.user,
         to: user.user.email,
         subject: user.user.name + ', you have a notification from Obie!',
-        html: '<div>Reminder to take your birth control today!</div>'
+        html: '<div style="width: 100%; margin: 20px;"><div><img style="width: 200px;" src="http://ec2-3-19-77-44.us-east-2.compute.amazonaws.com:3000/resources/images/navbar-logo.png" /></div><div><h2>You have a new reminder from Obie!</h2><h3>Remember to take your birth control today.</h3><p>If you with to stop receiving these emails, please update your reminder preferences.</p></div></div>'
       }, function (err) {
         if(err) {
           console.log(err);
@@ -154,14 +154,13 @@ function sendBCRenewalEmails() {
           var date = new Date(prescription.prescription.expiration);
           var today = new Date();
           today.setHours(0,0,0,0);
-          console.log(Math.round((date-today)/(1000*60*60*24)));
           if(Math.round((date-today)/(1000*60*60*24)) == 14) {
             console.log('Sending reminder email to: ' + user.user.email);
             transporter.sendMail({
               from: emailcreds.user,
               to: user.user.email,
               subject: user.user.name + ', you have a notification from Obie!',
-              html: '<div>You prescription is expiring soon! Please follow up with your physician to renew your prescription.</div>'
+              html: '<div style="width: 100%; margin: 20px;"><div><img style="width: 200px;" src="http://ec2-3-19-77-44.us-east-2.compute.amazonaws.com:3000/resources/images/navbar-logo.png" /></div><div><h2>You have a new reminder from Obie!</h2><h3>Our records show that your prescription, ' + prescription.prescription.name + ', is set to expire on ' + prescription.prescription.expiration +'. Don\'t forget to follow up with your doctor to renew this prescription.</h3><p>If you with to stop receiving these emails, please update your reminder preferences.</p></div></div>'
             }, function (err) {
               if(err) {
                 console.log(err);
@@ -187,15 +186,13 @@ function sendYearlyEmails() {
     users.map(user => {
       var day = new Date();
       var month = day.getMonth() + 1;
-      console.log(month);
-      console.log(user.user.reminderYearlyAppointmentMonth);
       if(month == user.user.reminderYearlyAppointmentMonth) {
         console.log('Sending reminder email to: ' + user.user.email);
         transporter.sendMail({
           from: emailcreds.user,
           to: user.user.email,
           subject: user.user.name + ', you have a notification from Obie!',
-          html: '<div>This is your reminder to schedule your yearly appointment at the OBGYN.</div>'
+          html: '<div style="width: 100%; margin: 20px;"><div><img style="width: 200px;" src="http://ec2-3-19-77-44.us-east-2.compute.amazonaws.com:3000/resources/images/navbar-logo.png" /></div><div><h2>You have a new reminder from Obie!</h2><h3>Don\'t forget to schedule your yearly OBGYN appointment!</h3><p>If you with to stop receiving these emails, please update your reminder preferences.</p></div></div>'
         }, function (err) {
           if(err) {
             console.log(err);
@@ -232,7 +229,7 @@ function sendBCRefillEmails() {
               from: emailcreds.user,
               to: user.user.email,
               subject: user.user.name + ', you have a notification from Obie!',
-              html: '<div>Looks like you need to refill your prescription soon! Please follow up with your pharmacy to renew your prescription for ' + prescription.prescription.name + '.</div>'
+              html: '<div style="width: 100%; margin: 20px;"><div><img style="width: 200px;" src="http://ec2-3-19-77-44.us-east-2.compute.amazonaws.com:3000/resources/images/navbar-logo.png" /></div><div><h2>You have a new reminder from Obie!</h2><h3>Our records show that you need a refill for your prescription, ' + prescription.prescription.name + ', soon! Don\'t forget to follow up with your pharmacy to refill this prescription.</h3><p>If you with to stop receiving these emails, please update your reminder preferences.</p></div></div>'
             }, function (err) {
               if(err) {
                 console.log(err);
