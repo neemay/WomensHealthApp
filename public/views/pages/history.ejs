@@ -198,7 +198,7 @@
             <strong>Period Symptoms:</strong>
             <div ng-show="hasPeriodSymptomsDate" class="mb-4">
               <div ng-repeat="sympt in periodSymptomsDate">
-                <strong>Symptom recorded for period starting on {{sympt.periodSymptom.periodId | periodFromId}}:</strong>
+                <strong>Symptom recorded for period starting on {{sympt.periodSymptom.periodId | periodFromId | dateConvert}}:</strong>
                 <div class="symptoms">
                   <div class="sypmtom">
                     Spotting: {{sympt.periodSymptom.cramps}}
