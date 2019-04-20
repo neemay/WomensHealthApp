@@ -30,7 +30,6 @@ module.exports = function(passport) {
           return done(err);
         
         if(user) {
-          console.log('Email already exists');
           return done(null, false, req.flash('signupMessage', 'That email is already taken'));
         }
         else {
@@ -49,7 +48,7 @@ module.exports = function(passport) {
             if(err) {
               return done(err);
             }
-            console.log('Registered new user');
+            console.log('Registered new user: ' + email);
             return done(null, newUser);
           });
         }

@@ -1,4 +1,17 @@
 var app = angular.module('obie', []);
+//Filter to display date from YYYY/MM/DD format to MM/DD/YYYY format
+app.filter('dateConvert', function() {
+  return function(x) {
+    if(x == null || x == undefined)
+      return;
+    var s1 = x.indexOf('/');
+    var s2 = x.lastIndexOf('/');
+    var year = x.substr(0, s1);
+    var month = x.substr(s1 + 1, 2);
+    var day = x.substr(s2 + 1);
+    return month + "/" + day + "/" + year;
+  };
+});
 app.controller('controller', function ($scope, $http, $window) {
   //Initialize scope variables
   $scope.isDashboard = false;
@@ -81,18 +94,13 @@ app.controller('controller', function ($scope, $http, $window) {
       $scope.userIsOnPeriod = response.isOnPeriod;
       if(response.isOnPeriod) {
         $scope.currentPeriod = response.currentPeriod;
-        $scope.currentPeriodDate = new Date(response.currentPeriod);
-        $scope.minDateEnd = $scope.currentPeriodDate;
+        $scope.minDateEnd = new Date($scope.currentPeriod);
         $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
         $scope.minDateEnd.setHours(0,0,0,0);
       }
       else {
         $scope.lastPeriod = response.lastPeriod;
-        if(response.lastPeriod)
-          $scope.lastPeriodDate = new Date(response.lastPeriod);
-        else
-          $scope.lastPeriodDate = null;
-        $scope.minDateStart = $scope.lastPeriodDate;
+        $scope.minDateStart = new Date($scope.lastPeriod);
         $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
         $scope.minDateStart.setHours(0,0,0,0);
       }
@@ -166,7 +174,7 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#startPeriodModal').modal('hide');
       $scope.userIsOnPeriod = true;
-      $scope.currentPeriod = $scope.startPeriod;
+      $scope.currentPeriod = convertDate($scope.startPeriod);
       $scope.minDateEnd = new Date($scope.currentPeriod);
       $scope.minDateEnd.setDate($scope.minDateEnd.getDate() + 1);
       $scope.minDateEnd.setHours(0,0,0,0);
@@ -195,7 +203,7 @@ app.controller('controller', function ($scope, $http, $window) {
     }).success(function() {
       $('#endPeriodModal').modal('hide');
       $scope.userIsOnPeriod = false;
-      $scope.lastPeriod = $scope.endPeriod;
+      $scope.lastPeriod = convertDate($scope.endPeriod);
       $scope.minDateStart = new Date($scope.lastPeriod);
       $scope.minDateStart.setDate($scope.minDateStart.getDate() + 1);
       $scope.minDateStart.setHours(0,0,0,0);

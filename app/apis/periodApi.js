@@ -16,12 +16,12 @@ module.exports = function(app) {
     var currentPeriod = null;
     var lastPeriod = null;
     if(!req.user) {
-      res.send({success: false});
+      res.sendStatus(500);
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
       isOnPeriod = user.user.isOnPeriod;
       if(isOnPeriod) { //return the start date of the current period
@@ -36,7 +36,7 @@ module.exports = function(app) {
           if(period) {
             lastPeriod = period.period.endDate;
           }
-          res.send({success: true, isOnPeriod: isOnPeriod, lastPeriod: lastPeriod});
+          res.send({isOnPeriod: isOnPeriod, lastPeriod: lastPeriod});
         });
       }
     });
@@ -46,23 +46,34 @@ module.exports = function(app) {
   //Creates a new period object for this user with the given start date and a null end date
   //Updates the user's isOnPeriod state to true
   app.post('/addPeriodStart', function(req, res) {
-    var newPeriod = new Period();
-    newPeriod.period.periodId = req.user.user.email + ':' + req.body.startDate;
-    newPeriod.period.email = req.user.user.email;
-    newPeriod.period.startDate = req.body.startDate;
-    newPeriod.period.endDate = null;
-    newPeriod.save(function(err) {
+    Period.findOne({'period.email': req.user.user.email, 'period.endDate': null}, function(err, period) { 
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
-      User.findOne({'user.email' : req.user.user.email}, function(err, user) {
-        user.user.isOnPeriod = true;
-        user.save();
-      });
-      res.send({success: true});
+      else if(period) {
+        console.log("Cannot add another period when there exists an active one.")
+        res.sendStatus(500);
+      }
+      else {
+        var newPeriod = new Period();
+        newPeriod.period.periodId = req.user.user.email + ':' + req.body.startDate;
+        newPeriod.period.email = req.user.user.email;
+        newPeriod.period.startDate = req.body.startDate;
+        newPeriod.period.endDate = null;
+        newPeriod.save(function(err) {
+          if(err) {
+            console.log(err);
+            res.sendStatus(500);
+          }
+          User.findOne({'user.email' : req.user.user.email}, function(err, user) {
+            user.user.isOnPeriod = true;
+            user.save();
+          });
+          res.sendStatus(200);
+        });
+      }
     });
-
   });
 
   //Endpoint: addPeriodEnd
@@ -72,15 +83,21 @@ module.exports = function(app) {
     Period.findOne({'period.email': req.user.user.email, 'period.endDate': null}, function(err, period) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
-      period.period.endDate = req.body.endDate;
-      period.save();
-      User.findOne({'user.email' : req.user.user.email}, function(err, user) {
-        user.user.isOnPeriod = false;
-        user.save();
-      });
-      res.send({success: true});
+      else if(period == null) {
+        console.log("No period found to end.");
+        res.sendStatus(500);
+      } 
+      else{
+        period.period.endDate = req.body.endDate;
+        period.save();
+        User.findOne({'user.email' : req.user.user.email}, function(err, user) {
+          user.user.isOnPeriod = false;
+          user.save();
+        });
+        res.sendStatus(200);
+      }
     });
   });
 
@@ -100,7 +117,7 @@ module.exports = function(app) {
         symptom.periodSymptom.bloating = req.body.bloating;
         symptom.periodSymptom.notes = req.body.notes;
         symptom.save();
-        res.send({success: true});
+        res.sendStatus(200);
       }
       else {
         var newSymptom = new PeriodSymptom();
@@ -116,9 +133,9 @@ module.exports = function(app) {
         newSymptom.save(function(err) {
           if(err) {
             console.log(err);
-            res.send({success: false});
+            res.sendStatus(500);
           }
-          res.send({success: true});
+          res.sendStatus(200);
         });
       }
     });
@@ -128,7 +145,7 @@ module.exports = function(app) {
   //Returns all of the periods for a given user
   app.get('/getUserPeriods', function(req, res) {
     Period.find({'period.email': req.user.user.email}, function(err, periods) {
-      res.send({success: true, data: periods});
+      res.send({data: periods});
     });
   });
   
@@ -136,7 +153,7 @@ module.exports = function(app) {
   //Returns all of the symptoms for a period given the periodId
   app.get('/getPeriodSymptomsById', function(req, res) {
     PeriodSymptom.find({'periodSymptom.periodId': req.query.id}, null, {sort: {'periodSymptom.date': 1}}, function(err, symptoms) {
-      res.send({success: true, data: symptoms});
+      res.send({data: symptoms});
     });
   });
   
@@ -145,7 +162,7 @@ module.exports = function(app) {
   app.get('/getPeriodSymptomsByDate', function(req, res) {
     var pattern = '.*' + req.user.user.email + '.*';
     PeriodSymptom.find({'periodSymptom.periodId': {$regex: pattern}, 'periodSymptom.date': req.query.date}, function(err, symptoms) {
-      res.send({success: true, data: symptoms});
+      res.send({data: symptoms});
     });
   });
 };

@@ -24,35 +24,34 @@ module.exports = function(app) {
   //Returns the user's preferred name
   app.get('/getUserName', function(req, res) {
     if(!req.user) {
-      res.send({success: false});
+      res.sendStatus(500);
     }
-    res.send({success: true, name: req.user.user.name});
+    res.send({name: req.user.user.name});
   });
 
   //Endpoint: getEmail
   //Returns the user's email
   app.get('/getEmail', function(req, res) {
     if(!req.user) {
-      res.send({success: false});
+      res.sendStatus(500);
     }
-    res.send({success: true, email: req.user.user.email});
+    res.send({email: req.user.user.email});
   });
   
   //Endpoint: setName
   //Updates the user's preferred name
   app.post('/setName', function(req, res) {
     if(!req.user) {
-      res.send({success: false});
+      res.sendStatus(500);
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
-      console.log('Preferred name for: ' + user.user.email + ' set to: '+ req.body.name);
       user.user.name = req.body.name;
       user.save();
-      res.send({success: true});
+      res.sendStatus(200);
     });
   });
 
@@ -60,15 +59,14 @@ module.exports = function(app) {
   //Returns the reminder settings for this user
   app.get('/getReminderSettings', function(req, res) {
     if(!req.user) {
-      res.send({success: false});
+      res.sendStatus(500);
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
-      res.send({success: true, 
-        reminderBirthControlDaily: user.user.reminderBirthControlDaily,
+      res.send({reminderBirthControlDaily: user.user.reminderBirthControlDaily,
         reminderBirthControlRefill: user.user.reminderBirthControlRefill,
         reminderBirthControlRenewal: user.user.reminderBirthControlRenewal,
         reminderYearlyAppointment: user.user.reminderYearlyAppointment,
@@ -81,12 +79,12 @@ module.exports = function(app) {
   //Updates the reminder settings for this user with the given values
   app.post('/setReminders', function(req, res) {
     if(!req.user) {
-      res.send({success: false});
+      res.sendStatus(500);
     }
     User.findOne({'user.email': req.user.user.email}, function(err, user) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
       user.user.reminderBirthControlDaily = req.body.reminderBirthControlDaily;
       user.user.reminderBirthControlRefill = req.body.reminderBirthControlRefill;
@@ -94,7 +92,7 @@ module.exports = function(app) {
       user.user.reminderYearlyAppointment = req.body.reminderYearlyAppointment;
       user.user.reminderYearlyAppointmentMonth = req.body.reminderYearlyAppointmentMonth;
       user.save();
-      res.send({success: true});
+      res.sendStatus(200);
     });
   });
 

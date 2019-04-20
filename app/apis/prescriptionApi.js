@@ -24,9 +24,9 @@ module.exports = function(app) {
     newPrescription.save(function(err) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
-      res.send({success: true});
+      res.sendStatus(200);
     });
   });
 
@@ -43,7 +43,7 @@ module.exports = function(app) {
   //Returns the list of prescriptions for this user
   app.get('/getUserPrescriptions', function(req, res) {
     Prescription.find({'prescription.email': req.user.user.email}, null, {sort: {'prescription.status': 1}}, function(err, prescriptions) {
-      res.send({success: true, data: prescriptions});
+      res.send({data: prescriptions});
     });
   });
   
@@ -51,7 +51,7 @@ module.exports = function(app) {
   //Returns the list of active prescriptions for this user
   app.get('/getActiveUserPrescriptions', function(req, res) {
     Prescription.find({'prescription.email': req.user.user.email, 'prescription.status': 'Active'}, function(err, prescriptions) {
-      res.send({success: true, data: prescriptions});
+      res.send({data: prescriptions});
     });
   });
 
@@ -61,7 +61,7 @@ module.exports = function(app) {
     Prescription.findOne({'prescription.prescriptionId': req.body.id}, function(err, prescription) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
       prescription.prescription.refills = req.body.refills;
       prescription.prescription.daysSupply = req.body.daysSupply;
@@ -70,7 +70,7 @@ module.exports = function(app) {
       prescription.prescription.status = req.body.status;
       prescription.prescription.notes = req.body.notes;
       prescription.save();
-      res.send({success: true});
+      res.sendStatus(200);
     });
   });
 
@@ -81,14 +81,14 @@ module.exports = function(app) {
     Prescription.deleteOne({'prescription.prescriptionId': req.body.id}, function(err) {
       if(err) {
         console.log(err);
-        res.send({success: false});
+        res.sendStatus(500);
       }
       PrescriptionSymptom.deleteMany({'prescriptionSymptom.prescriptionId': req.body.id}, function(err) {
         if(err) {
           console.log(err);
-          res.send({success: false});
+          res.sendStatus(500);
         }
-        res.send({success: true});
+        res.sendStatus(200);
       });
     });
   });
@@ -107,7 +107,7 @@ module.exports = function(app) {
         symptom.prescriptionSymptom.moodSwings = req.body.moodSwings;
         symptom.prescriptionSymptom.notes = req.body.notes;
         symptom.save();
-        res.send({success: true});
+        res.sendStatus(200);
       }
       else {
         var newSymptom = new PrescriptionSymptom();
@@ -122,9 +122,9 @@ module.exports = function(app) {
         newSymptom.save(function(err) {
           if(err) {
             console.log(err);
-            res.send({success: false});
+            res.sendStatus(500);
           }
-          res.send({success: true});
+          res.sendStatus(200);
         });
       }
     });
@@ -134,7 +134,7 @@ module.exports = function(app) {
   //Returns the prescription symptoms for this user given the prescription id
   app.get('/getPrescriptionSymptomsById', function(req, res) {
     PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': req.query.id}, null, {sort: {'prescriptionSymptom.date': 1}}, function(err, symptoms) {
-      res.send({success: true, data: symptoms});
+      res.send({data: symptoms});
     });
   });
   
@@ -143,7 +143,7 @@ module.exports = function(app) {
   app.get('/getPrescriptionSymptomsByDate', function(req, res) {
     var pattern = '.*' + req.user.user.email + '.*';
     PrescriptionSymptom.find({'prescriptionSymptom.prescriptionId': {$regex: pattern}, 'prescriptionSymptom.date': req.query.date}, function(err, symptoms) {
-      res.send({success: true, data: symptoms});
+      res.send({data: symptoms});
     });
   });
 };
