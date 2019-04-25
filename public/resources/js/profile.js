@@ -255,6 +255,7 @@ app.controller('controller', function ($scope, $http, $window) {
       if(response.data.length > 0) {
         $scope.activePrescriptions = response.data;
         $scope.prescriptionSympt = $scope.activePrescriptions[0];
+        $scope.minPrescDate = new Date( $scope.activePrescriptions[0].prescription.startDate);
       }
       
     }).error(function() {
@@ -282,8 +283,8 @@ app.controller('controller', function ($scope, $http, $window) {
   //Function to load the start date for a prescription given its id
   $scope.loadPrescriptionDate = function() {
     $scope.userPrescriptions.forEach(function(presc) {
-      if($scope.prescription.prescription.prescriptionId == presc.prescription.prescriptionId) {
-        $scope.prescriptionStart = new Date(presc.prescription.startDate);
+      if($scope.prescriptionSympt.prescription.prescriptionId == presc.prescription.prescriptionId) {
+        $scope.minPrescDate = new Date(presc.prescription.startDate);
       }
     });
   };
